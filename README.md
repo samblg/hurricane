@@ -88,4 +88,4 @@ This indicates that Kake build system is ready to use in your environment, if yo
     kake
 
 ## Get Started
-After the installation, you can write a simple topology described in docs/introduction.md. Then submit the output shared library to Hurricane.
+After the installation, you can write a simple topology described in ![docs/introduction.md][docs/introduction.md]. Then submit the output shared library to Hurricane.
