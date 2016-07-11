@@ -3,6 +3,8 @@
 ##Brief Introduction
 Hurricane is a C++ based distributed real-time processing system.
 
+### Basic concepts
+
 ##Installation
 ###Dependencies
 Hurricane depends on Meshy network library (libmeshy, a transportation layer library designed for Hurricane real-time processing), you could find Meshy in deps folder, build Meshy before starting to build Hurricane. 
