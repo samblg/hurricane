@@ -1,0 +1,26 @@
+project:
+    name: example
+    version: 0.0.1
+    type: gmake
+
+make:
+    rules:
+        all:
+            dependencies:
+                - example
+        example:
+            dependencies:
+                - main.o
+                - hello.o
+            actions:
+                - { command: gcc, args: [ "-o", "example", "main.o", "hello.o" ] }
+        main.o:
+            dependencies:
+                - main.c
+            actions:
+                - { command: gcc, args: [ "-c", "-o", "main.o", "main.c"] }
+        hello.o:
+            dependencies:
+                - hello.c
+            actions:
+                - { command: gcc, args: [ "-c", "-o", "hello.o", "hello.c"] }

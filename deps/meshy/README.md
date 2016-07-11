@@ -1,20 +1,20 @@
-#Hurricane Real-time Processing
+# Meshy Network Engine
 
 ##Brief Introduction
-Hurricane is a C++ based distributed real-time processing system.
+A full-featured, high-performance and cross-platform event loop and network library that is based on C++, which also features REST service development kit.
 
 ##Installation
 ###Dependencies
-Hurricane depends on Meshy network library (libmeshy, a transportation layer library designed for Hurricane real-time processing), you could find Meshy in deps folder, build Meshy before starting to build Hurricane. 
-Hurricane supports to be built by Makefile (gmake) and Kakefile (Kake). Refer to the section "Build with Kake" for more details on how to build and install Hurricane.
+Meshy supports to be built by Makefile (gmake) and Kakefile (Kake). Refer to the section "Build with Kake" for more details on how to build and install Meshy.
 
-### Build Hurricane using Makefile
-For the sake of convenience of Linux users' usage, we provided Makefile to build Hurricane.
+
+### Build Meshy using Makefile
+For the sake of convenience of Linux users' usage, we provided Makefile to build Meshy.
 It's very simple to build with Makefile, simply type the following command:
 
 make
 
-### Build Hurricane using Kake
+### Build Meshy using Kake
 #### Brief Introduction to Kake
 Kake is a building system following the the "convention over configuration" paradigm
 

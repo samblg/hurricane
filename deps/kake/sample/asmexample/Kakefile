@@ -1,0 +1,12 @@
+project:
+    name: example
+    version: 0.0.1
+    type: cpp
+
+make:
+    configuration:
+        compiler:
+            asm:
+                flags: "-f elf64"
+        linker:
+            ld: gcc

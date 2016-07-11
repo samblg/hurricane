@@ -1,0 +1,7 @@
+#! /bin/sh
+
+MODULE_PATH="$1"
+PACKAGE_FLAG="__init__.py"
+
+mkdir "${MODULE_PATH}"
+touch "${MODULE_PATH}/${PACKAGE_FLAG}"

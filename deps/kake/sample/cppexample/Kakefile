@@ -1,0 +1,14 @@
+project:
+    name: example
+    version: 0.0.1
+    type: cpp
+
+make:
+    configuration:
+        compiler:
+            c:
+                include_paths: [ "/home/stormdev/Application/boost_1_57_0" ]
+        linker:
+            ld: g++
+            library_paths: [ "/home/stormdev/Application/boost_1_57_0/stage/lib" ]
+            libraries: [ "boost_regex" ]

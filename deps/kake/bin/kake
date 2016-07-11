@@ -1,0 +1,8 @@
+#! /bin/sh
+
+if [ -z "$KAKE_HOME" ]; then
+    echo "The environment variable KAKE_HOME is not set!"
+    echo "Please set KAKE_HOME before run kake"
+else
+    python3 "${KAKE_HOME}/src/main.py" $*
+fi

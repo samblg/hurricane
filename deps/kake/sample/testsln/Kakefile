@@ -1,0 +1,7 @@
+project:
+    name: testsln
+    version: 0.0.1
+    type: solution
+
+run:
+    default: testld

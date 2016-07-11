@@ -1,0 +1,25 @@
+make:
+    configuration:
+        target:
+            type:
+        compiler:
+            c:
+                src_exts:
+                cc:
+                include_paths:
+                flags:
+            cpp:
+                src_exts:
+                cc:
+                include_paths:
+                flags:
+                inherit_c_include_path:
+            fpic:
+        linker:
+            autolink:
+            ld:
+            flags:
+            library_paths:
+            libraries:
+        archiver:
+            ar:
