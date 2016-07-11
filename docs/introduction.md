@@ -1,6 +1,6 @@
 ## What's Hurricane
 
-Hurricane is Hurricane is a C++ based open-source distributed real-time processing system. 
+Hurricane is a C++ based open-source distributed real-time processing system. 
 Different from the batch processing system like Apache Hadoop, 
 Hurricane uses stream model to process data. It also supports multi-language interfaces, 
 such as Python, JavaScript, Java and Swift.
