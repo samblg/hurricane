@@ -47,6 +47,13 @@ It's very simple to build with Makefile, simply type the following command:
 
 make
 
+### Build Hurricane usin gmake
+Enter target/build/linux/x64/Release and type:
+
+    make install
+
+The nimbus and supervisor will be built into target/bin/linux/x64/Release. The demo project will submit a sample word count topololgy.
+
 ### Build Hurricane using Kake
 #### Brief Introduction to Kake
 Kake is a building system following the the "convention over configuration" paradigm

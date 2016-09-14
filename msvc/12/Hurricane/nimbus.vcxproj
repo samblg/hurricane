@@ -79,18 +79,28 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\hurricane\base\DataPackage.cpp" />
+    <ClCompile Include="..\..\..\src\hurricane\bolt\BoltDeclarer.cpp" />
+    <ClCompile Include="..\..\..\src\hurricane\collector\OutputCollector.cpp" />
     <ClCompile Include="..\..\..\src\hurricane\message\Command.cpp" />
     <ClCompile Include="..\..\..\src\hurricane\message\CommandClient.cpp" />
     <ClCompile Include="..\..\..\src\hurricane\message\CommandServer.cpp" />
     <ClCompile Include="..\..\..\src\hurricane\service\Nimbus.cpp" />
     <ClCompile Include="..\..\..\src\hurricane\service\Supervisor.cpp" />
     <ClCompile Include="..\..\..\src\hurricane\service\SupervisorContext.cpp" />
+    <ClCompile Include="..\..\..\src\hurricane\spout\SpoutDeclarer.cpp" />
+    <ClCompile Include="..\..\..\src\hurricane\task\TaskDeclarer.cpp" />
     <ClCompile Include="..\..\..\src\hurricane\tool\StartNimbus.cpp" />
+    <ClCompile Include="..\..\..\src\hurricane\topology\Topology.cpp" />
+    <ClCompile Include="..\..\..\src\hurricane\topology\TopologyLoader.cpp" />
     <ClCompile Include="..\..\..\src\hurricane\util\Configuration.cpp" />
     <ClCompile Include="..\..\..\src\hurricane\util\NetConnector.cpp" />
     <ClCompile Include="..\..\..\src\hurricane\util\NetListener.cpp" />
     <ClCompile Include="..\..\..\src\hurricane\util\Socket.cpp" />
     <ClCompile Include="..\..\..\src\hurricane\util\StringUtil.cpp" />
+    <ClCompile Include="..\..\..\src\sample\wordcount\HelloWorldSpout.cpp" />
+    <ClCompile Include="..\..\..\src\sample\wordcount\SplitSentenceBolt.cpp" />
+    <ClCompile Include="..\..\..\src\sample\wordcount\WordCountBolt.cpp" />
+    <ClCompile Include="..\..\..\src\sample\wordcount\WordCountTopology.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\hurricane\base\ByteArray.h" />
@@ -109,6 +119,10 @@
     <ClInclude Include="..\..\..\include\hurricane\util\NetListener.h" />
     <ClInclude Include="..\..\..\include\hurricane\util\Socket.h" />
     <ClInclude Include="..\..\..\include\hurricane\util\StringUtil.h" />
+    <ClInclude Include="..\..\..\include\sample\wordcount\HelloWorldSpout.h" />
+    <ClInclude Include="..\..\..\include\sample\wordcount\SplitSentenceBolt.h" />
+    <ClInclude Include="..\..\..\include\sample\wordcount\WordCountBolt.h" />
+    <ClInclude Include="..\..\..\include\sample\wordcount\WordCountTopology.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

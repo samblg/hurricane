@@ -13,3 +13,11 @@
 *.a
 
 *.swp
+
+msvc/**/Debug
+msvc/**/Release
+*.opensdf
+*.sdf
+target/bin/linux/x64/Release/*
+target/lib/linux/x64/Release/*
+target/build/linux/x64/Release/*

@@ -1,0 +1,32 @@
+'use strict';
+
+module.exports = {
+    name: 'supervisor',
+    version: '0.0.1',
+    type: 'cpp',
+    target: 'executable',
+    targetPath: '../../../target',
+    compiler: {
+        cxx: 'g++',
+        cxxflags: ['-std=c++11'],
+        src: [
+            '../../../src/hurricane/base',
+            '../../../src/hurricane/bolt',
+            '../../../src/hurricane/collector',
+            '../../../src/hurricane/message',
+            '../../../src/hurricane/service',
+            '../../../src/hurricane/spout',
+            '../../../src/hurricane/task',
+            '../../../src/hurricane/topology',
+            '../../../src/hurricane/util',
+            '../../../src/hurricane/tool/StartSupervisor.cpp',
+            '../../../src/sample/wordcount'
+        ],
+        includePaths: [
+            '../../../include'
+        ]
+    },
+    linker: {
+        ld: 'g++',
+    }
+};
