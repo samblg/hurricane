@@ -12,7 +12,9 @@ namespace hurricane {
 			struct Type {
 				enum {
 					Invalid = 0,
-					Join
+                    Join,
+                    Heartbeat,
+                    SyncMetadata
 				};
 			};
 

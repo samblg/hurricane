@@ -98,7 +98,7 @@ namespace hurricane {
 			int Send(const char* buf, size_t size) {
 				int iSend = send(_socket, buf, size, 0);
 				if ( iSend == SOCKET_ERROR )
-				{
+                {
                     throw SocketException("send() Failed");
 				}
 
@@ -224,7 +224,7 @@ namespace hurricane {
 				if ( ret == INVALID_SOCKET )
 				{
                     DISPLAY_SOCKET_ERROR("connect() Failed");
-					exit(-1);
+                    throw SocketException("connect() Failed");
 				}
 			}
 		};

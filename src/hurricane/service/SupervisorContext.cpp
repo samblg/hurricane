@@ -24,38 +24,21 @@ namespace hurricane {
             hurricane::base::Variants busyBoltsVariants = hurricane::base::Variant::FromStdSet(_busyBolts);
             variants.insert(variants.end(), busyBoltsVariants.begin(), busyBoltsVariants.end());
 
+            variants.push_back({ static_cast<int>(_taskInfos.size()) });
+            for ( hurricane::task::TaskInfo& taskInfo : _taskInfos ) {
+                hurricane::base::Variants taskVariants = taskInfo.ToVariants();
+                variants.insert(variants.end(), taskVariants.begin(), taskVariants.end());
+            }
+
             return variants;
         }
 
         void SupervisorContext::ParseVariants(const std::vector<hurricane::base::Variant>& variants) {
-            _id = variants[0].GetStringValue();
-            _spoutCount = variants[1].GetIntValue();
-            _boltCount = variants[2].GetIntValue();
-
-            int32_t currentIndex = 3;
-
-            int32_t freeSpoutsSize = variants[currentIndex].GetIntValue(); 
-            currentIndex ++;
-            _freeSpouts = hurricane::base::Variant::ToStdSet<int>(variants.cbegin() + currentIndex, variants.cbegin() + currentIndex + freeSpoutsSize);
-            currentIndex += freeSpoutsSize;
-
-            int32_t freeBoltsSize = variants[currentIndex].GetIntValue();
-            currentIndex ++;
-            _freeBolts = hurricane::base::Variant::ToStdSet<int>(variants.cbegin() + currentIndex, variants.cbegin() + currentIndex + freeBoltsSize);
-            currentIndex += freeBoltsSize;
-
-            int32_t busySpoutsSize = variants[currentIndex].GetIntValue();
-            currentIndex ++;
-            _busySpouts = hurricane::base::Variant::ToStdSet<int>(variants.cbegin() + currentIndex, variants.cbegin() + currentIndex + busySpoutsSize);
-            currentIndex += busySpoutsSize;
-
-            int32_t busyBoltsSize = variants[currentIndex].GetIntValue();
-            currentIndex ++;
-            _busyBolts = hurricane::base::Variant::ToStdSet<int>(variants.cbegin() + currentIndex, variants.cbegin() + currentIndex + busyBoltsSize);
-            currentIndex += busyBoltsSize;
+            ParseVariants(variants.cbegin());
         }
 
-        void SupervisorContext::ParseVariants(std::vector<hurricane::base::Variant>::const_iterator begin) {
+        std::vector<hurricane::base::Variant>::const_iterator
+        SupervisorContext::ParseVariants(std::vector<hurricane::base::Variant>::const_iterator begin) {
             auto currentIterator = begin;
 
             _id = currentIterator->GetStringValue();
@@ -84,6 +67,15 @@ namespace hurricane {
             currentIterator ++;
             _busyBolts = hurricane::base::Variant::ToStdSet<int>(currentIterator, currentIterator + busyBoltsSize);
             currentIterator += busyBoltsSize;
+
+            int taskInfoCount = currentIterator->GetIntValue();
+            _taskInfos.resize(taskInfoCount);
+            currentIterator ++;
+            for ( hurricane::task::TaskInfo& taskInfo : _taskInfos ) {
+                currentIterator = taskInfo.ParseVariant(currentIterator);
+            }
+
+            return currentIterator;
         }
 
         SupervisorContext SupervisorContext::FromVariants(std::vector<hurricane::base::Variant>::const_iterator begin) {

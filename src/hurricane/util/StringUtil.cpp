@@ -20,6 +20,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <cctype>
+#include <sstream>
 
 using std::vector;
 using std::string;
@@ -72,4 +73,12 @@ std::string RandomString(const std::string & candidate, int length)
     }
 
     return result;
+}
+
+std::string Int2String(int value)
+{
+    std::ostringstream os;
+    os << value;
+
+    return os.str();
 }

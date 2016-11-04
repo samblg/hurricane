@@ -17,6 +17,7 @@
  */
 
 #include "hurricane/util/NetConnector.h"
+#include <iostream>
 
 namespace hurricane {
 	namespace util {
@@ -24,9 +25,18 @@ namespace hurricane {
 
 		void NetConnector::Connect()
 		{
-			_client = std::make_shared<TcpClient>();
+            if ( !_client.get() ) {
+                _client = std::make_shared<TcpClient>();
 
-			_client->Connect(_host.GetHost(), _host.GetPort());
+                try {
+                    _client->Connect(_host.GetHost(), _host.GetPort());
+                }
+                catch ( const std::exception& e ) {
+                    std::cout << "Release client" << std::endl;
+                    _client.reset();
+                    throw e;
+                }
+            }
 		}
 
 		void NetConnector::Connect(ConnectCallback callback) {
@@ -41,8 +51,8 @@ namespace hurricane {
 		}
 
 		void NetConnector::SendAndReceive(const char* buffer, int32_t size, DataReceiver receiver)
-		{
-			_client->Send(buffer, size);
+        {
+            _client->Send(buffer, size);
 			char resultBuffer[RECEIVE_BUFFER_SIZE];
 			int readSize = _client->Receive(resultBuffer, RECEIVE_BUFFER_SIZE);
 

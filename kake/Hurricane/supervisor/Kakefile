@@ -28,5 +28,8 @@ module.exports = {
     },
     linker: {
         ld: 'g++',
+    },
+    dependencies: {
+        pthread: 'latest'
     }
 };

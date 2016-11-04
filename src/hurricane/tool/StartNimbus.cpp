@@ -20,9 +20,9 @@ int main(int argc, char *argv[])
 }
 
 void StartNimbus(const std::string& configFileName) {
-	hurricane::util::Configuration supervisorConfiguration;
-	supervisorConfiguration.Parse(configFileName);
+    hurricane::util::Configuration nimbusConfigratuion;
+    nimbusConfigratuion.Parse(configFileName);
 
-	hurricane::service::Nimbus nimbus(hurricane::base::NetAddress("127.0.0.1", 6009));
+    hurricane::service::Nimbus nimbus(nimbusConfigratuion);
 	nimbus.StartListen();
 }

@@ -29,8 +29,8 @@ namespace hurricane {
 		{
 			_server = std::make_shared<TcpServer>();
 
-			_server->Listen(_host.GetHost(), _host.GetPort());
-			std::cout << "Listen on " << _host.GetHost() << ":" << _host.GetPort() << std::endl;
+            _server->Listen(_host.GetHost(), _host.GetPort());
+            std::cout << "Listen on " << _host.GetHost() << ":" << _host.GetPort() << std::endl;
 
 			while ( 1 )
 			{

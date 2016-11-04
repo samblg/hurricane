@@ -19,6 +19,10 @@ namespace hurricane {
 				return *this;
 			}
 
+            std::shared_ptr<ISpout> GetSpout() const {
+                return _spout;
+            }
+
 		private:
 			std::shared_ptr<ISpout> _spout;
 		};

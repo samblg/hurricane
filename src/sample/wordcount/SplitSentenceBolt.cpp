@@ -1,11 +1,14 @@
 #include "sample/wordcount/SplitSentenceBolt.h"
 #include "hurricane/util/StringUtil.h"
+#include <sys/time.h>
 
 void SplitSentenceBolt::Prepare(std::shared_ptr<hurricane::collector::OutputCollector> outputCollector) {
 	_outputCollector = outputCollector;
+    _logFile.open("timestamp.txt");
 }
 
 void SplitSentenceBolt::Cleanup() {
+    _logFile.close();
 }
 
 std::vector<std::string> SplitSentenceBolt::DeclareFields() {
@@ -13,10 +16,21 @@ std::vector<std::string> SplitSentenceBolt::DeclareFields() {
 }
 
 void SplitSentenceBolt::Execute(const hurricane::base::Tuple& tuple) {
-	std::string sentence = tuple[0].ToString();
+    std::string sentence = tuple[0].ToString();
 	std::vector<std::string> words = SplitString(sentence, ' ');
 
-	for ( const std::string& word : words ) {
-		_outputCollector->Emit({ word });
-	}
+    int64_t sourceMicroseconds = tuple[1].ToInt64();
+
+    for ( const std::string& word : words ) {
+//        _outputCollector->Emit({ word });
+    }
+
+    timeval currentTime;
+    gettimeofday(&currentTime, nullptr);
+
+    int64_t currentMicroseconds = currentTime.tv_sec;
+    currentMicroseconds *= 1000000;
+    currentMicroseconds += currentTime.tv_usec;
+
+    _logFile << sourceMicroseconds << ' ' << currentMicroseconds << std::endl;
 }

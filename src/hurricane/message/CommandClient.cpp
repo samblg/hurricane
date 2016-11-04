@@ -15,8 +15,7 @@ namespace hurricane {
 
 		void CommandClient::SendCommand(const Command& command, SendCommandCallback callback) {
 			try {
-				hurricane::base::ByteArray commandBytes = command.Serialize();
-				std::cout << commandBytes.size() << std::endl;
+                hurricane::base::ByteArray commandBytes = command.Serialize();
 
 				_connector->SendAndReceive(commandBytes.data(), commandBytes.size(), [callback](char* resultBuffer, int32_t readSize) {
 					hurricane::message::Response response;

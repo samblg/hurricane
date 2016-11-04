@@ -4,11 +4,78 @@
 #include "hurricane/base/Variant.h"
 #include <string>
 #include <cstdint>
+#include <list>
 
 namespace hurricane {
+    namespace service {
+        class SupervisorContext;
+    }
+
 	namespace task {
+        class PathInfo {
+        public:
+            struct GroupMethod {
+                enum {
+                    Invalid = 0,
+                    Global,
+                    Field,
+                    Random
+                };
+            };
+
+            PathInfo() : _groupMethod(GroupMethod::Invalid), _destinationExecutorIndex(-1) {}
+
+            int GetGroupMethod() const {
+                return _groupMethod;
+            }
+
+            void SetGroupMethod(int groupMethod) {
+                _groupMethod = groupMethod;
+            }
+
+            const hurricane::base::NetAddress& GetDestinationSupervisor() const {
+                return _destinationSupervisor;
+            }
+
+            void SetDestinationSupervisor(const hurricane::base::NetAddress& destinationSupervisor) {
+                _destinationSupervisor = destinationSupervisor;
+            }
+
+            int GetDestinationExecutorIndex() const {
+                return _destinationExecutorIndex;
+            }
+
+            void SetDestinationExecutorIndex(int destinationExecutorIndex) {
+                _destinationExecutorIndex = destinationExecutorIndex;
+            }
+
+            const std::string& GetFieldName() const {
+                return _fieldName;
+            }
+
+            void SetFieldName(const std::string& fieldName) {
+                _fieldName = fieldName;
+            }
+
+            std::vector<hurricane::base::Variant> ToVariants() const;
+            void ParseVariant(const std::vector<hurricane::base::Variant>& variants);
+            std::vector<hurricane::base::Variant>::const_iterator
+                ParseVariant(std::vector<hurricane::base::Variant>::const_iterator begin);
+            static PathInfo FromVariants(const std::vector<hurricane::base::Variant>& variants);
+            static PathInfo FromVariants(std::vector<hurricane::base::Variant>::const_iterator begin);
+
+        private:
+            int _groupMethod;
+            hurricane::base::NetAddress _destinationSupervisor;
+            int32_t _destinationExecutorIndex;
+            std::string _fieldName;
+        };
+
 		class TaskInfo {
-		public:
+        public:
+            TaskInfo() : _supervisorContext(nullptr), _executorIndex(-1) {
+            }
+
 			const std::string& GetTopologyName() const {
 				return _topologyName;
 			}
@@ -23,52 +90,53 @@ namespace hurricane {
 
 			void SetTaskName(const std::string& taskName) {
 				_taskName = taskName;
-			}
+            }
 
-			const hurricane::base::NetAddress& GetSourceSupervisor() const {
-				return _sourceSupervisor;
-			}
+            const std::list<PathInfo>& GetPaths() const {
+                return _paths;
+            }
 
-			void SetSourceSupervisor(const hurricane::base::NetAddress& sourceSupervisor) {
-				_sourceSupervisor = sourceSupervisor;
-			}
+            void SetPaths(const std::list<PathInfo>& paths) {
+                _paths = paths;
+            }
 
-			int GetSourceExecutorIndex() const {
-				return _sourceExecutorIndex;
-			}
+            void AddPath(const PathInfo& path) {
+                _paths.push_back(path);
+            }
 
-			void SetSourceExecutorIndex(int sourceExecutorIndex) {
-				_sourceExecutorIndex = sourceExecutorIndex;
-			}
+            const hurricane::service::SupervisorContext* GetSupervisorContext() const {
+                return _supervisorContext;
+            }
 
-			const hurricane::base::NetAddress& GetDestinationSupervisor() const {
-				return _destinationSupervisor;
-			}
+            hurricane::service::SupervisorContext* GetSupervisorContext() {
+                return _supervisorContext;
+            }
 
-			void SetDestinationSupervisor(const hurricane::base::NetAddress& destinationSupervisor) {
-				_destinationSupervisor = destinationSupervisor;
-			}
+            void SetSupervisorContext(hurricane::service::SupervisorContext* context) {
+                _supervisorContext = context;
+            }
 
-			int GetDestinationExecutorIndex() const {
-				return _destinationExecutorIndex;
-			}
+            int GetExecutorIndex() const {
+                return _executorIndex;
+            }
 
-			void SetDestinationExecutorIndex(int destinationExecutorIndex) {
-				_destinationExecutorIndex = destinationExecutorIndex;
-			}
+            void SetExecutorIndex(int executorIndex) {
+                _executorIndex = executorIndex;
+            }
 
-            std::vector<hurricane::base::Variant> ToVariants();
+            std::vector<hurricane::base::Variant> ToVariants() const;
             void ParseVariant(const std::vector<hurricane::base::Variant>& variants);
+            std::vector<hurricane::base::Variant>::const_iterator
+            ParseVariant(std::vector<hurricane::base::Variant>::const_iterator begin);
             static TaskInfo FromVariants(const std::vector<hurricane::base::Variant>& variants);
+            static TaskInfo FromVariants(std::vector<hurricane::base::Variant>::const_iterator begin);
 
 			std::string _topologyName;
-			std::string _taskName;
+            std::string _taskName;
+            std::list<PathInfo> _paths;
 
-			hurricane::base::NetAddress _sourceSupervisor;
-			int32_t _sourceExecutorIndex;
-
-			hurricane::base::NetAddress _destinationSupervisor;
-			int32_t _destinationExecutorIndex;
+            hurricane::service::SupervisorContext* _supervisorContext;
+            int _executorIndex;
 		};
 	}
 }

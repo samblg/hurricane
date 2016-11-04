@@ -90,10 +90,21 @@ namespace hurricane {
 					command.Deserialize(commandBytes);
 
 					int32_t commandType = command.GetType();
-					CommandHandler handler = commandHandlers.at(commandType);
-					Responser responser = std::bind(&CommandServer::Response, this, rawConnection, std::placeholders::_1);
+                    try {
+                        CommandHandler handler = commandHandlers.at(commandType);
+                        Responser responser = std::bind(&CommandServer::Response, this, rawConnection, std::placeholders::_1);
 
-					handler(context, command, responser);
+                        handler(context, command, responser);
+                    }
+                    catch ( const std::exception& e ) {
+                        std::cout << "Some errors in command handler" << std::endl;
+                        std::cerr << e.what() << std::endl;
+
+                        Responser responser = std::bind(&CommandServer::Response, this, rawConnection, std::placeholders::_1);
+
+                        hurricane::message::Response response(hurricane::message::Response::Status::Failed);
+                        responser(response);
+                    }
 				});
 			});
 

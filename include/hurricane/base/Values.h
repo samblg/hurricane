@@ -203,6 +203,10 @@ namespace hurricane {
 				_values.push_back(value);
 			}
 
+            const Values& GetValues() const {
+                return _values;
+            }
+
 		private:
 			Values _values;
 		};

@@ -24,22 +24,22 @@ namespace hurricane {
 				SetGroupMethod(hurricane::task::TaskDeclarer::GroupMethod::Global);
 
 				return *this;
-			}
+            }
 
-			BoltDeclarer& Random(const std::string& sourceTaskName) {
-				SetSourceTaskName(sourceTaskName);
-				SetGroupMethod(hurricane::task::TaskDeclarer::GroupMethod::Random);
-
-				return *this;
-			}
-
-			BoltDeclarer& Group(const std::string& sourceTaskName, const std::string& groupField) {
+            BoltDeclarer& Field(const std::string& sourceTaskName, const std::string& groupField) {
 				SetSourceTaskName(sourceTaskName);
 				SetGroupMethod(hurricane::task::TaskDeclarer::GroupMethod::Field);
 				SetGroupField(groupField);
 
 				return *this;
 			}
+
+            BoltDeclarer& Random(const std::string& sourceTaskName) {
+                SetSourceTaskName(sourceTaskName);
+                SetGroupMethod(hurricane::task::TaskDeclarer::GroupMethod::Random);
+
+                return *this;
+            }
 
 			const std::string& GetGroupField() const {
 				return _groupField;
@@ -48,6 +48,11 @@ namespace hurricane {
 			void SetGroupField(const std::string& groupField) {
 				_groupField = groupField;
 			}
+
+            std::shared_ptr<IBolt> GetBolt() const {
+                return _bolt;
+            }
+
 		private:
 			std::shared_ptr<IBolt> _bolt;
 			std::string _groupField;

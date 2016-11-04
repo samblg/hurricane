@@ -21,3 +21,5 @@ msvc/**/Release
 target/bin/linux/x64/Release/*
 target/lib/linux/x64/Release/*
 target/build/linux/x64/Release/*
+target/run/supervisor
+target/run/nimbus

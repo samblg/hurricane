@@ -21,6 +21,13 @@ namespace hurricane {
 			~CommandClient();
 
 			void SendCommand(const Command& command, SendCommandCallback callback);
+            hurricane::util::NetConnector* GetConnector() {
+                return _connector;
+            }
+
+            const hurricane::util::NetConnector* GetConnector() const {
+                return _connector;
+            }
 
 		private:
 			hurricane::util::NetConnector* _connector;

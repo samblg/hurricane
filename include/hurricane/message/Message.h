@@ -18,7 +18,8 @@
 
 #pragma once
 
-#include <Windows.h>
+#include "hurricane/base/BlockingQueue.h"
+#include "hurricane/base/Variant.h"
 #include <iostream>
 #include <thread>
 #include <functional>
@@ -33,6 +34,10 @@ namespace hurricane {
 			Message(int32_t type) : _type(type) {
 			}
 
+            Message(int32_t type, const base::Variants& arguments) :
+                    _type(type), _arguments(arguments) {
+            }
+
 			int32_t GetType() const {
 				return _type;
 			}
@@ -41,23 +46,34 @@ namespace hurricane {
 				_type = type;
 			}
 
+            const base::Variants& GetArguments() const {
+                return _arguments;
+            }
+
+            void SetArguments(const base::Variants& arguments) {
+                _arguments = arguments;
+            }
+
 		private:
 			int32_t _type;
+            base::Variants _arguments;
 		};
+
+        class MessageQueue: public base::BlockingQueue<Message*> {
+        };
 
 		class MessageLoop {
 		public:
-			typedef std::function<void(Message*)> MessageHandler;
+            typedef std::function<void(Message&)> MessageHandler;
 
-			MessageLoop() {
-				_threadId = GetCurrentThreadId();
+            MessageLoop() {
 			}
 
 			MessageLoop(const MessageLoop&) = delete;
 			const MessageLoop& operator=(const MessageLoop&) = delete;
 
 			template <class ObjectType, class MethodType>
-			void MessageMap(int messageType, ObjectType* self, MethodType method) {
+            void MessageMap(int messageType, ObjectType* self, MethodType method) {
 				MessageMap(messageType, std::bind(method, self, std::placeholders::_1));
 			}
 
@@ -66,27 +82,29 @@ namespace hurricane {
 			}
 
 			void Run() {
-				MSG msg;
+                Message* msg = nullptr;
 
-				while ( GetMessage(&msg, 0, 0, 0) ) {
-					std::cerr << "Recived Message" << std::endl;
-					auto handler = _messageHandlers.find(msg.message);
+                while ( true ) {
+                    _messageQueue.Pop(msg);
+                    if ( msg ) {
+                        auto handler = _messageHandlers.find(msg->GetType());
 
-					if ( handler != _messageHandlers.end() ) {
-						handler->second((Message*)(msg.wParam));
-					}
+                        if ( handler != _messageHandlers.end() ) {
+                            handler->second(*msg);
+                        }
 
-					DispatchMessage(&msg);
-				}
+                        delete msg;
+                    }
+                }
 			}
 
-			void PostMessage(Message* message) {
-				PostThreadMessage(_threadId, message->GetType(), WPARAM(message), 0);
+            void PostMessage(Message* message) {
+                _messageQueue.Push(message);
 			}
 
 		private:
-			std::map<int, MessageHandler> _messageHandlers;
-			int32_t _threadId;
+            std::map<int, MessageHandler> _messageHandlers;
+            MessageQueue _messageQueue;
 		};
 
 		class MessageLoopManager {
