@@ -15,9 +15,10 @@ hurricane::topology::Topology* GetTopology() {
         .Random("hello-world-spout")
 		.ParallismHint(3);
 
-//	topology->SetBolt("word-count-bolt", new WordCountBolt)
-//		.Group("split-sentence-bolt", "word")
-//		.ParallismHint(2);
+//    topology->SetBolt("word-count-bolt", new WordCountBolt)
+//        .Field("split-sentence-bolt", "word")
+//        .Random("split-sentence-bolt")
+//        .ParallismHint(2);
 
 	return topology;
 }

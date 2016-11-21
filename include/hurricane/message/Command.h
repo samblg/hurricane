@@ -14,7 +14,8 @@ namespace hurricane {
 					Invalid = 0,
                     Join,
                     Heartbeat,
-                    SyncMetadata
+                    SyncMetadata,
+                    SendTuple
 				};
 			};
 

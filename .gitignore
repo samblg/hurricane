@@ -20,6 +20,7 @@ msvc/**/Release
 *.sdf
 target/bin/linux/x64/Release/*
 target/lib/linux/x64/Release/*
-target/build/linux/x64/Release/*
+target/build/linux/x64/Release/nimbus/nimbus
+target/build/linux/x64/Release/supervisor/supervisor
 target/run/supervisor
 target/run/nimbus

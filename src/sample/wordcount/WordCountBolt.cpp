@@ -13,7 +13,7 @@ std::vector<std::string> WordCountBolt::DeclareFields() {
 }
 
 void WordCountBolt::Execute(const hurricane::base::Tuple& tuple) {
-	std::string word = tuple[0].ToString();
+    std::string word = tuple[0].GetStringValue();
 
 	auto wordCountIterator = _wordCounts.find(word);
 	if ( wordCountIterator == _wordCounts.end() ) {

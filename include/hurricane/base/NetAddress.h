@@ -19,13 +19,14 @@
 #pragma once
 
 #include <string>
+#include "hurricane/base/Variant.h"
 
 namespace hurricane {
 namespace base {
-    class NetAddress {
+    class NetAddress : public Serializable {
     public:
-		NetAddress() : _port(0) {
-		}
+        NetAddress() : _port(0) {
+        }
 
         NetAddress(const std::string& host, int port) : _host(host), _port(port) {
         }
@@ -44,6 +45,16 @@ namespace base {
 
         void SetPort(int port) {
             _port = port;
+        }
+
+        virtual void Serialize(Variants& variants) const override {
+            Variant::Serialize(variants, _host);
+            Variant::Serialize(variants, _port);
+        }
+
+        virtual void Deserialize(Variants::const_iterator& it) override {
+            Variant::Deserialize(it, _host);
+            Variant::Deserialize(it, _port);
         }
 
     private:

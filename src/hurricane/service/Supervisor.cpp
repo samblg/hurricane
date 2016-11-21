@@ -76,7 +76,8 @@ namespace hurricane {
             command.AddArgument({ "supervisor" });
             command.AddArgument({ this->_host });
             command.AddArgument({ this->_port });
-            std::vector<hurricane::base::Variant> context = _selfContext->ToVariants();
+            std::vector<hurricane::base::Variant> context;
+            _selfContext->Serialize(context);
             command.AddArguments(context);
 
             commandClient->SendCommand(command, [callback](const hurricane::message::Response& response) {
@@ -99,7 +100,7 @@ namespace hurricane {
     {
         const std::vector<hurricane::base::Variant>& arguments = command.GetArguments();
 
-        int syncMethod = arguments[0].GetIntValue();
+        int syncMethod = arguments[0].GetInt32Value();
         if ( syncMethod != 1 ) {
             hurricane::message::Response response(hurricane::message::Response::Status::Failed);
             responser(response);
@@ -108,7 +109,9 @@ namespace hurricane {
         }
 
         hurricane::message::Response response(hurricane::message::Response::Status::Successful);
-        _selfContext->ParseVariants(arguments.cbegin() + 1);
+        base::Variants::const_iterator currentIterator = arguments.cbegin() + 1;
+        _selfContext->Deserialize(currentIterator);
+
         OwnSupervisorTasks();
         _outputDispatcher.SetTaskInfos(_selfContext->GetTaskInfos());
 
@@ -250,13 +253,15 @@ namespace hurricane {
                 std::cout << "      Path: " << std::endl;
                 int groupMethod = path.GetGroupMethod();
                 std::cout << "        Group method: " << groupMethod << std::endl;
+
                 if ( path.GetGroupMethod() == hurricane::task::PathInfo::GroupMethod::Global) {
                     std::cout << "        Destination host: " <<
-                                 path.GetDestinationSupervisor().GetHost() << std::endl;
+                                 path.GetDestinationExecutors()[0].GetSupervisor().GetHost() << std::endl;
                     std::cout << "        Destination port: " <<
-                                 path.GetDestinationSupervisor().GetPort() << std::endl;
+                                 path.GetDestinationExecutors()[0].GetSupervisor().GetPort() << std::endl;
+                    std::cout << "        Destination executor index: " <<
+                                 path.GetDestinationExecutors()[0].GetExecutorIndex() << std::endl;
                 }
-                std::cout << "        Destination executor index: " << path.GetDestinationExecutorIndex() << std::endl;
             }
         }
     }

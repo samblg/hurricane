@@ -37,24 +37,129 @@ namespace hurricane {
             virtual int32_t Write(ByteArrayWriter& writer, const Variant& variant) = 0;
         };
 
-        class IntWritable : public Writable {
+        class Int32Writable : public Writable {
         public:
 			std::string GetType() const {
-				return "int";
+                return "int32";
 			}
 
             int32_t Read(ByteArrayReader& reader, Variant& variant) override {
                 int32_t intValue = reader.read<int32_t>();
-                variant.SetIntValue(intValue);
+                variant.SetInt32Value(intValue);
 
                 return sizeof(int32_t);
             }
 
             int32_t Write(ByteArrayWriter& writer, const Variant& variant) override {
-                int value = variant.GetIntValue();
+                int32_t value = variant.GetInt32Value();
                 writer.write(value);
 
                 return sizeof(int32_t);
+            }
+        };
+
+        class Int64Writable : public Writable {
+        public:
+            std::string GetType() const {
+                return "int64";
+            }
+
+            int32_t Read(ByteArrayReader& reader, Variant& variant) override {
+                int64_t intValue = reader.read<int64_t>();
+                variant.SetInt64Value(intValue);
+
+                return sizeof(int64_t);
+            }
+
+            int32_t Write(ByteArrayWriter& writer, const Variant& variant) override {
+                int64_t value = variant.GetInt64Value();
+                writer.write(value);
+
+                return sizeof(int64_t);
+            }
+        };
+
+        class UInt32Writable : public Writable {
+        public:
+            std::string GetType() const {
+                return "uint32";
+            }
+
+            int32_t Read(ByteArrayReader& reader, Variant& variant) override {
+                uint32_t intValue = reader.read<uint32_t>();
+                variant.SetUInt32Value(intValue);
+
+                return sizeof(uint32_t);
+            }
+
+            int32_t Write(ByteArrayWriter& writer, const Variant& variant) override {
+                uint32_t value = variant.GetUInt32Value();
+                writer.write(value);
+
+                return sizeof(uint32_t);
+            }
+        };
+
+        class UInt64Writable : public Writable {
+        public:
+            std::string GetType() const {
+                return "uint64";
+            }
+
+            int32_t Read(ByteArrayReader& reader, Variant& variant) override {
+                uint64_t intValue = reader.read<uint64_t>();
+                variant.SetUInt64Value(intValue);
+
+                return sizeof(uint64_t);
+            }
+
+            int32_t Write(ByteArrayWriter& writer, const Variant& variant) override {
+                uint64_t value = variant.GetUInt64Value();
+                writer.write(value);
+
+                return sizeof(uint64_t);
+            }
+        };
+
+        class BooleanWritable : public Writable {
+        public:
+            std::string GetType() const {
+                return "boolean";
+            }
+
+            int32_t Read(ByteArrayReader& reader, Variant& variant) override {
+                bool boolValue = reader.read<bool>();
+                variant.SetBooleanValue(boolValue);
+
+                return sizeof(bool);
+            }
+
+            int32_t Write(ByteArrayWriter& writer, const Variant& variant) override {
+                bool value = variant.GetBooleanValue();
+                writer.write(value);
+
+                return sizeof(bool);
+            }
+        };
+
+        class FloatWritable : public Writable {
+        public:
+            std::string GetType() const {
+                return "float";
+            }
+
+            int32_t Read(ByteArrayReader& reader, Variant& variant) override {
+                float floatValue = reader.read<float>();
+                variant.SetFloatValue(floatValue);
+
+                return sizeof(float);
+            }
+
+            int32_t Write(ByteArrayWriter& writer, const Variant& variant) override {
+                float value = variant.GetFloatValue();
+                writer.write(value);
+
+                return sizeof(float);
             }
         };
 

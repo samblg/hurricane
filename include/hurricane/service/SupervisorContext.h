@@ -8,7 +8,7 @@
 
 namespace hurricane {
 	namespace service {
-		class SupervisorContext {
+        class SupervisorContext : base::Serializable {
         public:
             enum class ExecutorType {
                 Spout,
@@ -187,12 +187,8 @@ namespace hurricane {
                 return _spoutCount + subIndex;
             }
 
-            std::vector<hurricane::base::Variant> ToVariants();
-            void ParseVariants(const std::vector<hurricane::base::Variant>& variants);
-            std::vector<hurricane::base::Variant>::const_iterator
-                ParseVariants(std::vector<hurricane::base::Variant>::const_iterator begin);
-            static SupervisorContext FromVariants(const std::vector<hurricane::base::Variant>& variants);
-            static SupervisorContext FromVariants(std::vector<hurricane::base::Variant>::const_iterator begin);
+            virtual void Serialize(hurricane::base::Variants& variants) const override;
+            virtual void Deserialize(hurricane::base::Variants::const_iterator& it) override;
 
 		private:
 			std::string _id;

@@ -24,8 +24,13 @@ namespace hurricane {
 		class AllWritables {
 		public:
 			AllWritables() {
-				_writables.insert({ 0, std::shared_ptr<Writable>(new IntWritable) });
-				_writables.insert({ 3, std::shared_ptr<Writable>(new StringWritable) });
+				_writables.insert({ 0, std::shared_ptr<Writable>(new Int32Writable) });
+                _writables.insert({ 1, std::shared_ptr<Writable>(new Int64Writable) });
+                _writables.insert({ 2, std::shared_ptr<Writable>(new UInt32Writable) });
+                _writables.insert({ 3, std::shared_ptr<Writable>(new UInt64Writable) });
+                _writables.insert({ 4, std::shared_ptr<Writable>(new BooleanWritable) });
+                _writables.insert({ 5, std::shared_ptr<Writable>(new FloatWritable) });
+                _writables.insert({ 6, std::shared_ptr<Writable>(new StringWritable) });
 			}
 
 			std::map<int8_t, std::shared_ptr<Writable>> _writables;
@@ -39,13 +44,21 @@ namespace hurricane {
 		}
 
         std::map<Variant::Type, int8_t> Variant::TypeCodes = {
-            { Variant::Type::Integer, 0 },
-            { Variant::Type::String, 3 }
+            { Variant::Type::Int32, 0 },
+            { Variant::Type::Int64, 1 },
+            { Variant::Type::UInt32, 2 },
+            { Variant::Type::UInt64, 3 },
+            { Variant::Type::Boolean, 4 },
+            { Variant::Type::Float, 5 },
+            { Variant::Type::String, 6 }
         };
 
         std::map < Variant::Type, std::string > Variant::TypeNames = {
             { Variant::Type::Invalid, "Invalid" },
-            { Variant::Type::Integer, "Integer" },
+            { Variant::Type::Int32, "Int32" },
+            { Variant::Type::Int64, "Int64" },
+            { Variant::Type::UInt32, "UInt32" },
+            { Variant::Type::UInt64, "UInt64" },
             { Variant::Type::Boolean, "Boolean" },
             { Variant::Type::Float, "Float" },
             { Variant::Type::String, "String" }

@@ -4,57 +4,34 @@
 namespace hurricane {
 namespace task {
 
-std::vector<hurricane::base::Variant> PathInfo::ToVariants() const {
-    std::vector<hurricane::base::Variant> variants;
+using hurricane::base::Variant;
+using hurricane::base::Variants;
+using hurricane::base::Serializable;
 
-    variants.push_back({ _groupMethod });
-    variants.push_back({ _destinationSupervisor.GetHost() });
-    variants.push_back({ _destinationSupervisor.GetPort() });
-    variants.push_back({ _destinationExecutorIndex });
-
-    return variants;
-}
-
-void PathInfo::ParseVariant(const std::vector<hurricane::base::Variant>& variants) {
-    ParseVariant(variants.cbegin());
-}
-
-std::vector<hurricane::base::Variant>::const_iterator
-    PathInfo::ParseVariant(std::vector<hurricane::base::Variant>::const_iterator begin)
+void PathInfo::Serialize(base::Variants& variants) const
 {
-    auto currentIterator = begin;
-
-    _groupMethod = currentIterator->GetIntValue();
-    ++ currentIterator;
-
-    std::string host = currentIterator->GetStringValue();
-    ++ currentIterator;
-
-    int port = currentIterator->GetIntValue();
-    ++ currentIterator;
-
-    _destinationSupervisor.SetHost(host);
-    _destinationSupervisor.SetPort(port);
-
-    _destinationExecutorIndex = currentIterator->GetIntValue();
-    ++ currentIterator;
-
-    return currentIterator;
+    Variant::Serialize(variants, _groupMethod);
+    Variant::Serialize(variants, _fieldName);
+    Variant::Serialize(variants, _destinationExecutors);
 }
 
-PathInfo PathInfo::FromVariants(const std::vector<hurricane::base::Variant>& variants) {
-    PathInfo pathInfo;
-    pathInfo.ParseVariant(variants);
-
-    return pathInfo;
-}
-
-PathInfo PathInfo::FromVariants(std::vector<hurricane::base::Variant>::const_iterator begin)
+void PathInfo::Deserialize(Variants::const_iterator& it)
 {
-    PathInfo pathInfo;
-    pathInfo.ParseVariant(begin);
+    Variant::Deserialize(it, _groupMethod);
+    Variant::Deserialize(it, _fieldName);
+    Variant::Deserialize(it, _destinationExecutors);
+}
 
-    return pathInfo;
+void ExecutorPosition::Serialize(base::Variants& variants) const
+{
+    Variant::Serialize(variants, _supervisor);
+    Variant::Serialize(variants, _executorIndex);
+}
+
+void ExecutorPosition::Deserialize(Variants::const_iterator& it)
+{
+    Variant::Deserialize(it, _supervisor);
+    Variant::Deserialize(it, _executorIndex);
 }
 
 }

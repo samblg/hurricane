@@ -15,6 +15,7 @@ std::vector<std::string> HelloWorldSpout::DeclareFields() {
 }
 
 void HelloWorldSpout::NextTuple() {
+//    std::cout << "next tuple" << std::endl;
     timeval currentTime;
     gettimeofday(&currentTime, nullptr);
 

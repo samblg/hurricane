@@ -35,14 +35,16 @@ namespace hurricane {
 		}
 
 		void Nimbus::OnJoin(SupervisorContext* context, const hurricane::message::Command& command,
-				hurricane::message::CommandServer<hurricane::message::BaseCommandServerContext>::Responser responser) {
-			std::string joinerType = command.GetArgument(0).GetStringValue();
+                hurricane::message::CommandServer<hurricane::message::BaseCommandServerContext>::Responser responser) {
+            std::string joinerType = command.GetArgument(0).GetStringValue();
+            std::string supervisorHost = command.GetArgument(1).GetStringValue();
+            int supervisorPort = command.GetArgument(2).GetInt32Value();
 
             std::cout << "Join node: " << joinerType << std::endl;
             
-            SupervisorContext supervisorContext = SupervisorContext::FromVariants(command.GetArguments().cbegin() + 3);
-            std::string supervisorHost = command.GetArgument(1).GetStringValue();
-            int supervisorPort = command.GetArgument(2).GetIntValue();
+            SupervisorContext supervisorContext;
+            base::Variants::const_iterator currentIterator = command.GetArguments().cbegin() + 3;
+            supervisorContext.Deserialize(currentIterator);
 
             std::cout << "Supervisor name: " << supervisorContext.GetId() << std::endl;
             std::cout << "Host: " << supervisorHost << std::endl;
@@ -268,11 +270,12 @@ namespace hurricane {
                     std::cout << "        Group method: " << groupMethod << std::endl;
                     if ( path.GetGroupMethod() == hurricane::task::PathInfo::GroupMethod::Global) {
                         std::cout << "        Destination host: " <<
-                                     path.GetDestinationSupervisor().GetHost() << std::endl;
+                                     path.GetDestinationExecutors()[0].GetSupervisor().GetHost() << std::endl;
                         std::cout << "        Destination port: " <<
-                                     path.GetDestinationSupervisor().GetPort() << std::endl;
+                                     path.GetDestinationExecutors()[0].GetSupervisor().GetPort() << std::endl;
+                        std::cout << "        Destination executor index: " <<
+                                     path.GetDestinationExecutors()[0].GetExecutorIndex() << std::endl;
                     }
-                    std::cout << "        Destination executor index: " << path.GetDestinationExecutorIndex() << std::endl;
                 }
             }
         }
@@ -291,7 +294,10 @@ namespace hurricane {
                     // 1 means Nimbus to Supervisor
                     // 2 means Supervisor to Nimbus
                     command.AddArgument({ 1 });
-                    command.AddArguments(supervisorContext.ToVariants());
+
+                    base::Variants supervisorContextVariants;
+                    supervisorContext.Serialize(supervisorContextVariants);
+                    command.AddArguments(supervisorContextVariants);
                     supervisorClient->SendCommand(command,
                         [supervisorId, this](const hurricane::message::Response& response) -> void {
                         if ( response.GetStatus() == hurricane::message::Response::Status::Successful ) {
@@ -340,6 +346,14 @@ namespace hurricane {
                 std::vector<hurricane::task::TaskInfo*> destTasks =
                         FindTask(nameToBoltTasks, destTaskName);
 
+                std::vector<task::ExecutorPosition>  destExecutorPositions;
+                for ( hurricane::task::TaskInfo* destTask : destTasks ) {
+                    destExecutorPositions.push_back(task::ExecutorPosition(
+                        destTask->GetSupervisorContext()->GetNetAddress(),
+                        destTask->GetExecutorIndex()
+                    ));
+                }
+
                 std::set<int> globalSelectedSources;
                 for ( hurricane::task::TaskInfo* destTask : destTasks ) {
                     if ( boltDeclarer.GetGroupMethod() == task::TaskDeclarer::GroupMethod::Global ) {
@@ -358,8 +372,10 @@ namespace hurricane {
 
                         hurricane::task::PathInfo pathInfo;
                         pathInfo.SetGroupMethod(hurricane::task::PathInfo::GroupMethod::Global);
-                        pathInfo.SetDestinationExecutorIndex(destTask->GetExecutorIndex());
-                        pathInfo.SetDestinationSupervisor(destTask->GetSupervisorContext()->GetNetAddress());
+                        pathInfo.SetDestinationExecutors({task::ExecutorPosition(
+                                destTask->GetSupervisorContext()->GetNetAddress(),
+                                destTask->GetExecutorIndex()
+                        )});
 
                         sourceTask->AddPath(pathInfo);
                         globalSelectedSources.insert(sourceTaskIndex);
@@ -379,8 +395,7 @@ namespace hurricane {
                         for ( hurricane::task::TaskInfo* sourceTask : sourceTasks ) {
                             hurricane::task::PathInfo pathInfo;
                             pathInfo.SetGroupMethod(hurricane::task::PathInfo::GroupMethod::Random);
-                            pathInfo.SetDestinationExecutorIndex(destTask->GetExecutorIndex());
-                            pathInfo.SetDestinationSupervisor(destTask->GetSupervisorContext()->GetNetAddress());
+                            pathInfo.SetDestinationExecutors(destExecutorPositions);
 
                             sourceTask->AddPath(pathInfo);
                         }

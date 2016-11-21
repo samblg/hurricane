@@ -5,14 +5,48 @@
 #include <string>
 #include <cstdint>
 #include <list>
+#include <map>
 
 namespace hurricane {
     namespace service {
         class SupervisorContext;
     }
 
-	namespace task {
-        class PathInfo {
+    namespace task {
+        class ExecutorPosition : public hurricane::base::Serializable {
+        public:
+            ExecutorPosition() : _executorIndex(-1) {
+            }
+
+            ExecutorPosition(const hurricane::base::NetAddress& supervisor, int executorIndex) :
+                        _supervisor(supervisor), _executorIndex(executorIndex) {
+            }
+
+            const hurricane::base::NetAddress& GetSupervisor() const {
+                return _supervisor;
+            }
+
+            void SetSupervisor(const hurricane::base::NetAddress& supervisor) {
+                _supervisor = supervisor;
+            }
+
+            int GetExecutorIndex() const {
+                return _executorIndex;
+            }
+
+            void SetExecutorIndex(int executorIndex) {
+                _executorIndex = executorIndex;
+            }
+
+            virtual void Serialize(hurricane::base::Variants& variants) const override;
+            virtual void Deserialize(hurricane::base::Variants::const_iterator& it) override;
+
+        private:
+            hurricane::base::NetAddress _supervisor;
+            int32_t _executorIndex;
+        };
+
+        class PathInfo : public hurricane::base::Serializable {
         public:
             struct GroupMethod {
                 enum {
@@ -23,7 +57,7 @@ namespace hurricane {
                 };
             };
 
-            PathInfo() : _groupMethod(GroupMethod::Invalid), _destinationExecutorIndex(-1) {}
+            PathInfo() : _groupMethod(GroupMethod::Invalid) {}
 
             int GetGroupMethod() const {
                 return _groupMethod;
@@ -31,22 +65,6 @@ namespace hurricane {
 
             void SetGroupMethod(int groupMethod) {
                 _groupMethod = groupMethod;
-            }
-
-            const hurricane::base::NetAddress& GetDestinationSupervisor() const {
-                return _destinationSupervisor;
-            }
-
-            void SetDestinationSupervisor(const hurricane::base::NetAddress& destinationSupervisor) {
-                _destinationSupervisor = destinationSupervisor;
-            }
-
-            int GetDestinationExecutorIndex() const {
-                return _destinationExecutorIndex;
-            }
-
-            void SetDestinationExecutorIndex(int destinationExecutorIndex) {
-                _destinationExecutorIndex = destinationExecutorIndex;
             }
 
             const std::string& GetFieldName() const {
@@ -57,21 +75,24 @@ namespace hurricane {
                 _fieldName = fieldName;
             }
 
-            std::vector<hurricane::base::Variant> ToVariants() const;
-            void ParseVariant(const std::vector<hurricane::base::Variant>& variants);
-            std::vector<hurricane::base::Variant>::const_iterator
-                ParseVariant(std::vector<hurricane::base::Variant>::const_iterator begin);
-            static PathInfo FromVariants(const std::vector<hurricane::base::Variant>& variants);
-            static PathInfo FromVariants(std::vector<hurricane::base::Variant>::const_iterator begin);
+            const std::vector<ExecutorPosition>& GetDestinationExecutors() const {
+                return _destinationExecutors;
+            }
+
+            void SetDestinationExecutors(const std::vector<ExecutorPosition>& executors) {
+                _destinationExecutors = executors;
+            }
+
+            virtual void Serialize(hurricane::base::Variants& variants) const override;
+            virtual void Deserialize(hurricane::base::Variants::const_iterator& it) override;
 
         private:
             int _groupMethod;
-            hurricane::base::NetAddress _destinationSupervisor;
-            int32_t _destinationExecutorIndex;
             std::string _fieldName;
+            std::vector<ExecutorPosition> _destinationExecutors;
         };
 
-		class TaskInfo {
+        class TaskInfo : public hurricane::base::Serializable {
         public:
             TaskInfo() : _supervisorContext(nullptr), _executorIndex(-1) {
             }
@@ -124,12 +145,8 @@ namespace hurricane {
                 _executorIndex = executorIndex;
             }
 
-            std::vector<hurricane::base::Variant> ToVariants() const;
-            void ParseVariant(const std::vector<hurricane::base::Variant>& variants);
-            std::vector<hurricane::base::Variant>::const_iterator
-            ParseVariant(std::vector<hurricane::base::Variant>::const_iterator begin);
-            static TaskInfo FromVariants(const std::vector<hurricane::base::Variant>& variants);
-            static TaskInfo FromVariants(std::vector<hurricane::base::Variant>::const_iterator begin);
+            virtual void Serialize(hurricane::base::Variants& variants) const override;
+            virtual void Deserialize(hurricane::base::Variants::const_iterator& it) override;
 
 			std::string _topologyName;
             std::string _taskName;

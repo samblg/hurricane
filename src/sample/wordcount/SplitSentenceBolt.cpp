@@ -16,13 +16,14 @@ std::vector<std::string> SplitSentenceBolt::DeclareFields() {
 }
 
 void SplitSentenceBolt::Execute(const hurricane::base::Tuple& tuple) {
-    std::string sentence = tuple[0].ToString();
+    std::string sentence = tuple[0].GetStringValue();
 	std::vector<std::string> words = SplitString(sentence, ' ');
 
-    int64_t sourceMicroseconds = tuple[1].ToInt64();
+    int64_t sourceMicroseconds = tuple[1].GetInt64Value();
 
     for ( const std::string& word : words ) {
-//        _outputCollector->Emit({ word });
+        std::cout << word << std::endl;
+        _outputCollector->Emit({ word });
     }
 
     timeval currentTime;

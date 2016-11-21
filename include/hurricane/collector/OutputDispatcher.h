@@ -62,6 +62,7 @@ private:
     void MainThread();
     bool ProcessPath(const task::TaskInfo& taskInfo, const task::PathInfo& path,
             OutputItem* outputItem);
+    void SendTupleTo(OutputItem* outputItem, const task::ExecutorPosition& executorPosition);
 
 private:
     std::shared_ptr<OutputQueue> _queue;
@@ -70,8 +71,6 @@ private:
     int _selfSpoutCount;
 
     std::vector<hurricane::task::TaskInfo> _taskInfos;
-    std::map<std::string, std::vector<hurricane::task::PathInfo>> _globalPaths;
-    std::map<std::string, std::vector<hurricane::task::PathInfo>> _
 
     std::vector<std::shared_ptr<hurricane::collector::TaskQueue>> _selfTasks;
     std::map<std::string, message::CommandClient*> _commandClients;
