@@ -22,13 +22,6 @@ void SpoutExecutor::SetSpout(spout::ISpout* spout)
 
 void SpoutExecutor::MainLoop()
 {
-<<<<<<< HEAD
-    while ( true ) {
-        _spout->NextTuple();
-    }
-}
-
-=======
     int flowTime = 1000 * 1000 / _flowParam;
     while ( true ) {
         _spout->NextTuple();
@@ -45,7 +38,6 @@ void SpoutExecutor::SetFlowParam(int flowParam)
 {
     _flowParam = flowParam;
 }
->>>>>>> master
 
 }
 }

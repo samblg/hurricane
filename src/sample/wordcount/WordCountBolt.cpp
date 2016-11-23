@@ -25,11 +25,8 @@ std::vector<std::string> WordCountBolt::DeclareFields() {
 
 void WordCountBolt::Execute(const hurricane::base::Tuple& tuple) {
     std::string word = tuple[0].GetStringValue();
-<<<<<<< HEAD
-=======
     int64_t sourceMicroseconds = tuple[1].GetInt64Value();
     int32_t id = tuple[2].GetInt32Value();
->>>>>>> master
 
 	auto wordCountIterator = _wordCounts.find(word);
 	if ( wordCountIterator == _wordCounts.end() ) {
@@ -41,8 +38,6 @@ void WordCountBolt::Execute(const hurricane::base::Tuple& tuple) {
 
     std::cout << word << ' ' << wordCountIterator->second << std::endl;
 	_outputCollector->Emit({ word, wordCountIterator->second });
-<<<<<<< HEAD
-=======
 
     timeval currentTime;
     gettimeofday(&currentTime, nullptr);
@@ -52,5 +47,4 @@ void WordCountBolt::Execute(const hurricane::base::Tuple& tuple) {
     currentMicroseconds += currentTime.tv_usec;
 
     *_logFile << sourceMicroseconds << ' ' << currentMicroseconds << std::endl;
->>>>>>> master
 }

@@ -3,10 +3,7 @@
 #include "hurricane/util/NetConnector.h"
 #include "hurricane/util/Configuration.h"
 #include "hurricane/topology/Topology.h"
-<<<<<<< HEAD
-=======
 #include "hurricane/topology/TopologyLoader.h"
->>>>>>> master
 #include "hurricane/task/SpoutExecutor.h"
 #include "hurricane/task/BoltExecutor.h"
 #include "hurricane/spout/ISpout.h"
@@ -14,10 +11,6 @@
 #include "hurricane/collector/OutputCollector.h"
 #include "hurricane/collector/OutputQueue.h"
 #include "hurricane/collector/TaskQueue.h"
-<<<<<<< HEAD
-#include "sample/wordcount/WordCountTopology.h"
-=======
->>>>>>> master
 
 namespace hurricane {
     namespace service {
@@ -31,15 +24,6 @@ namespace hurricane {
         _supervisorConfiguration.reset(new hurricane::util::Configuration(configuration));
         _name = configuration.GetProperty("supervisor.name");
 
-<<<<<<< HEAD
-        initNimbusConnector();
-        InitSelfContext();
-        reserveExecutors();
-        initEvents();
-    }
-
-    void Supervisor::initNimbusConnector()
-=======
         InitNimbusConnector();
         InitSelfContext();
         ReserveExecutors();
@@ -47,7 +31,6 @@ namespace hurricane {
     }
 
     void Supervisor::InitNimbusConnector()
->>>>>>> master
     {
         hurricane::base::NetAddress nimbusAddress(_supervisorConfiguration->GetProperty("nimbus.host"),
             _supervisorConfiguration->GetIntegerProperty("nimbus.port"));
@@ -55,11 +38,7 @@ namespace hurricane {
         _nimbusClient = new hurricane::message::CommandClient(_nimbusConnector);
     }
 
-<<<<<<< HEAD
-    void Supervisor::reserveExecutors()
-=======
     void Supervisor::ReserveExecutors()
->>>>>>> master
     {
         _spoutExecutors.resize(_supervisorConfiguration->GetIntegerProperty("supervisor.spout.num"));
         _boltExecutors.resize(_supervisorConfiguration->GetIntegerProperty("supervisor.bolt.num"));
@@ -76,12 +55,6 @@ namespace hurricane {
         _outputDispatcher.SetSelfAddress(hurricane::base::NetAddress(_host, _port));
         _outputDispatcher.SetSelfTasks(_boltTaskQueues);
         _outputDispatcher.SetSelfSpoutCount(_spoutExecutors.size());
-<<<<<<< HEAD
-        _outputDispatcher.Start();
-    }
-
-    void Supervisor::initEvents()
-=======
 
         hurricane::base::NetAddress nimbusAddress(_supervisorConfiguration->GetProperty("nimbus.host"),
             _supervisorConfiguration->GetIntegerProperty("nimbus.port"));
@@ -93,13 +66,10 @@ namespace hurricane {
     }
 
     void Supervisor::InitEvents()
->>>>>>> master
     {
         OnConnection(std::bind(&Supervisor::OnConnect, this, std::placeholders::_1));
         OnCommand(hurricane::message::Command::Type::Heartbeat, this, &Supervisor::OnHeartbeat);
         OnCommand(hurricane::message::Command::Type::SyncMetadata, this, &Supervisor::OnSyncMetadata);
-<<<<<<< HEAD
-=======
         OnCommand(hurricane::message::Command::Type::SendTuple, this, &Supervisor::OnSendTuple);
     }
 
@@ -125,7 +95,6 @@ namespace hurricane {
 
         _outputDispatcher.SetTaskFields(_taskFields);
         _outputDispatcher.SetTaskFieldsMap(_taskFieldsMap);
->>>>>>> master
     }
 
     void Supervisor::OnConnect(SupervisorContext* context) {
@@ -181,21 +150,15 @@ namespace hurricane {
         ShowSupervisorMetadata();
         ShowTaskInfos();
 
-<<<<<<< HEAD
-        _topology.reset(GetTopology());
-=======
         std::string topologyName = _supervisorConfiguration->GetProperty("topology.name");
         _topology = hurricane::topology::TopologyLoader::GetInstance().GetTopology(topologyName);
 
         InitTaskFieldsMap();
->>>>>>> master
         InitExecutors();
 
         responser(response);
     }
 
-<<<<<<< HEAD
-=======
     void Supervisor::OnSendTuple(SupervisorContext* context, const message::Command& command,
                                  message::CommandServer<hurricane::message::BaseCommandServerContext>::Responser responser)
     {
@@ -225,7 +188,6 @@ namespace hurricane {
         responser(response);
     }
 
->>>>>>> master
     void Supervisor::InitSelfContext() {
         this->_selfContext.reset(new SupervisorContext);
         _selfContext->SetId(_name);
@@ -259,11 +221,7 @@ namespace hurricane {
 
             std::shared_ptr<collector::OutputQueue> outputQueue = _outputDispatcher.GetQueue();
             collector::OutputCollector* collector = new collector::OutputCollector(spoutIndex,
-<<<<<<< HEAD
-                    outputQueue);
-=======
                     taskName, outputQueue);
->>>>>>> master
             _spoutCollectors[spoutIndex].reset(collector);
 
             spout::ISpout* spout = spoutDeclarer.GetSpout()->Clone();
@@ -271,11 +229,8 @@ namespace hurricane {
 
             std::shared_ptr<task::SpoutExecutor> spoutExecutor(new task::SpoutExecutor);
             spoutExecutor->SetSpout(spout);
-<<<<<<< HEAD
-=======
             int flowParam = _supervisorConfiguration->GetIntegerProperty("spout.flow.param");
             spoutExecutor->SetFlowParam(flowParam);
->>>>>>> master
             _spoutExecutors[spoutIndex] = spoutExecutor;
         }
     }
@@ -296,11 +251,7 @@ namespace hurricane {
 
             std::shared_ptr<collector::OutputQueue> outputQueue = _outputDispatcher.GetQueue();
             collector::OutputCollector* collector = new collector::OutputCollector(
-<<<<<<< HEAD
-                        spoutCount + boltIndex, outputQueue);
-=======
                         spoutCount + boltIndex, taskName, outputQueue);
->>>>>>> master
             _boltCollectors[boltIndex].reset(collector);
 
             bolt::IBolt* bolt = boltDeclarer.GetBolt()->Clone();

@@ -14,11 +14,6 @@ void OutputDispatcher::SetTaskInfos(const std::vector<task::TaskInfo>& taskInfos
     _taskInfos = taskInfos;
 }
 
-<<<<<<< HEAD
-void OutputDispatcher::Start()
-{
-//    _randomTaskInfos.clear();
-=======
 void OutputDispatcher::SetNimbusClient(message::CommandClient* nimbusClient)
 {
     _nimbusClient.reset(nimbusClient);
@@ -26,7 +21,6 @@ void OutputDispatcher::SetNimbusClient(message::CommandClient* nimbusClient)
 
 void OutputDispatcher::Start()
 {
->>>>>>> master
     _thread = std::thread(&OutputDispatcher::MainThread, this);
 }
 
@@ -50,35 +44,6 @@ void OutputDispatcher::MainThread()
 bool OutputDispatcher::ProcessPath(const task::TaskInfo& taskInfo, const task::PathInfo& path,
         OutputItem* outputItem)
 {
-<<<<<<< HEAD
-
-    if ( path.GetGroupMethod() == task::PathInfo::GroupMethod::Global ) {
-//        hurricane::base::NetAddress destAddress = path.GetDestinationSupervisor();
-//        std::string destIdentifier = destAddress.GetHost() + Int2String(destAddress.GetPort());
-
-//        if ( destIdentifier == selfIdentifier ) {
-//            int executorIndex = path.GetDestinationExecutorIndex();
-//            int boltIndex = executorIndex - _selfSpoutCount;
-
-//            std::shared_ptr<hurricane::collector::TaskQueue> taskQueue = _selfTasks[boltIndex];
-//            TaskItem* taskItem = new TaskItem(outputItem->GetTaskIndex(), outputItem->GetTuple());
-//            taskQueue->Push(taskItem);
-
-//            return true;
-//        }
-
-//        std::map<std::string, message::CommandClient*>::iterator commandClientPair =
-//                _commandClients.find(destIdentifier);
-//        if ( commandClientPair == _commandClients.end() ) {
-//            util::NetConnector* connector = new util::NetConnector(destAddress);
-//            message::CommandClient* commandClient = new message::CommandClient(connector);
-//            _commandClients.insert({destIdentifier, commandClient});
-
-//            commandClientPair = _commandClients.find(destIdentifier);
-//        }
-
-//        // TODO: Add remote connection
-=======
     std::string sourceTaskName = taskInfo.GetTaskName();
     std::string destTaskName = path.GetTaskName();
 
@@ -89,22 +54,11 @@ bool OutputDispatcher::ProcessPath(const task::TaskInfo& taskInfo, const task::P
         const task::ExecutorPosition& executorPosition = path.GetDestinationExecutors()[0];
 
         SendTupleTo(outputItem, executorPosition);
->>>>>>> master
     }
     else if ( path.GetGroupMethod() == task::PathInfo::GroupMethod::Random ) {
         int destCount = path.GetDestinationExecutors().size();
         int destIndex = rand() % destCount;
 
-<<<<<<< HEAD
-//        std::cout << "Random: ";
-        const task::ExecutorPosition& executorPosition = path.GetDestinationExecutors()[destIndex];
-//        std::cout << executorPosition.GetSupervisor().GetHost() << ":"
-//                << executorPosition.GetSupervisor().GetPort()
-//                << "(" << executorPosition.GetExecutorIndex() << ")" << std::endl;
-
-        SendTupleTo(outputItem, executorPosition);
-    }
-=======
         const task::ExecutorPosition& executorPosition = path.GetDestinationExecutors()[destIndex];
 
         SendTupleTo(outputItem, executorPosition);
@@ -135,7 +89,6 @@ bool OutputDispatcher::ProcessPath(const task::TaskInfo& taskInfo, const task::P
             SendTupleTo(outputItem, executorPosition);
         }
     }
->>>>>>> master
 }
 
 void OutputDispatcher::SendTupleTo(OutputItem* outputItem, const task::ExecutorPosition& executorPosition)
@@ -164,29 +117,6 @@ void OutputDispatcher::SendTupleTo(OutputItem* outputItem, const task::ExecutorP
         }
 
         message::CommandClient* commandClient = commandClientPair->second;
-<<<<<<< HEAD
-        std::cout << commandClient << std::endl;
-
-        commandClient->GetConnector()->Connect([outputItem, commandClient, destIdentifier, this] {
-            hurricane::message::Command command(hurricane::message::Command::Type::SendTuple);
-
-            base::Variants selfAddressVariants;
-            _selfAddress.Serialize(selfAddressVariants);
-
-            command.AddArguments(selfAddressVariants);
-            // FIXME
-            command.AddArguments(outputItem->GetTuple().GetValues());
-
-            commandClient->SendCommand(command,
-                [destIdentifier, this](const hurricane::message::Response& response) -> void {
-                if ( response.GetStatus() == hurricane::message::Response::Status::Successful ) {
-                    std::cout << "Send to " << destIdentifier << " successfully." << std::endl;
-                }
-                else {
-                    std::cout << "Send to " << destIdentifier << " failed." << std::endl;
-                }
-            });
-=======
 
         commandClient->GetConnector()->Connect([
                 outputItem, commandClient, destIdentifier, executorPosition, this] {
@@ -212,13 +142,10 @@ void OutputDispatcher::SendTupleTo(OutputItem* outputItem, const task::ExecutorP
             catch ( util::SocketException& e ) {
 //                std::cout << e.what() << std::endl;
             }
->>>>>>> master
         });
     }
 }
 
-<<<<<<< HEAD
-=======
 void OutputDispatcher::AskField(TaskPathName taskPathName,
         const std::string& fieldValue, OutputDispatcher::AskFieldCallback callback)
 {
@@ -240,6 +167,5 @@ void OutputDispatcher::AskField(TaskPathName taskPathName,
     });
 }
 
->>>>>>> master
 }
 }

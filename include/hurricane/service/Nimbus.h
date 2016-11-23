@@ -68,14 +68,10 @@ namespace hurricane {
 			hurricane::base::NetAddress _nimbusHost;
             std::vector<SupervisorContext> _supervisors;
             int _supervisorCount;
-<<<<<<< HEAD
-            std::map<std::string, std::shared_ptr<hurricane::message::CommandClient>> _supervisorClients;
-=======
             std::shared_ptr<hurricane::util::Configuration> _configuration;
             std::map<std::string, std::shared_ptr<hurricane::message::CommandClient>> _supervisorClients;
             std::map<TaskPathName, std::vector<task::ExecutorPosition>> _fieldsCandidates;
             std::map<TaskPathName, std::map<std::string, task::ExecutorPosition>> _fieldsDestinations;
->>>>>>> master
         };
 	}
 }

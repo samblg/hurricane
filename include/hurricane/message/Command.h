@@ -15,12 +15,8 @@ namespace hurricane {
                     Join,
                     Heartbeat,
                     SyncMetadata,
-<<<<<<< HEAD
-                    SendTuple
-=======
                     SendTuple,
                     AskField
->>>>>>> master
 				};
 			};
 

@@ -82,8 +82,6 @@ std::string Int2String(int value)
 
     return os.str();
 }
-<<<<<<< HEAD
-=======
 
 std::string JoinStrings(const std::vector<std::string>& words)
 {
@@ -96,4 +94,3 @@ std::string JoinStrings(const std::vector<std::string>& words)
 
     return sentence;
 }
->>>>>>> master

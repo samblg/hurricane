@@ -13,13 +13,8 @@ namespace collector {
     class OutputCollector {
     public:
         OutputCollector() : _taskIndex(-1) {}
-<<<<<<< HEAD
-        OutputCollector(int taskIndex, std::shared_ptr<OutputQueue> queue) :
-            _taskIndex(taskIndex), _queue(queue) {
-=======
         OutputCollector(int taskIndex, const std::string& taskName, std::shared_ptr<OutputQueue> queue) :
             _taskIndex(taskIndex), _taskName(taskName), _queue(queue) {
->>>>>>> master
         }
 
         void SetQueue(std::shared_ptr<OutputQueue> queue) {
@@ -34,10 +29,7 @@ namespace collector {
 
     private:
         int _taskIndex;
-<<<<<<< HEAD
-=======
         std::string _taskName;
->>>>>>> master
         std::shared_ptr<OutputQueue> _queue;
     };
 

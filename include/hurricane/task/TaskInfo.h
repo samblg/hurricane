@@ -67,8 +67,6 @@ namespace hurricane {
                 _groupMethod = groupMethod;
             }
 
-<<<<<<< HEAD
-=======
             void SetDestinationTask(const std::string& taskName) {
                 _destinationTask = taskName;
             }
@@ -77,7 +75,6 @@ namespace hurricane {
                 return _destinationTask;
             }
 
->>>>>>> master
             const std::string& GetFieldName() const {
                 return _fieldName;
             }
@@ -99,10 +96,7 @@ namespace hurricane {
 
         private:
             int _groupMethod;
-<<<<<<< HEAD
-=======
             std::string _destinationTask;
->>>>>>> master
             std::string _fieldName;
             std::vector<ExecutorPosition> _destinationExecutors;
         };

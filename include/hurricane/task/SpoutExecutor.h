@@ -23,21 +23,15 @@ public:
         return _spout;
     }
 
-<<<<<<< HEAD
-=======
     int GetFlowParam() const;
     void SetFlowParam(int GetFlowParam);
 
->>>>>>> master
 private:
     void MainLoop();
 
     std::thread _thread;
     std::shared_ptr<spout::ISpout> _spout;
-<<<<<<< HEAD
-=======
     int _flowParam;
->>>>>>> master
 };
 
 }

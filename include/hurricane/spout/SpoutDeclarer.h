@@ -25,8 +25,6 @@ namespace hurricane {
                 return _spout;
             }
 
-<<<<<<< HEAD
-=======
             const std::vector<std::string>& GetFields() const {
                 return _fields;
             }
@@ -35,7 +33,6 @@ namespace hurricane {
                 return _fieldsMap;
             }
 
->>>>>>> master
 		private:
 			std::shared_ptr<ISpout> _spout;
             std::vector<std::string> _fields;

@@ -8,27 +8,19 @@ namespace collector {
 
 class OutputItem {
 public:
-<<<<<<< HEAD
-    OutputItem(int taskIndex, const base::Tuple& tuple) :
-            _taskIndex(taskIndex), _tuple(tuple) {
-=======
     OutputItem(int taskIndex, const base::Tuple& tuple, const std::string& taskName) :
             _taskIndex(taskIndex), _tuple(tuple) {
         _tuple.SetSourceTask(taskName);
->>>>>>> master
     }
 
     int GetTaskIndex() const {
         return _taskIndex;
     }
 
-<<<<<<< HEAD
-=======
     base::Tuple& GetTuple() {
         return _tuple;
     }
 
->>>>>>> master
     const base::Tuple& GetTuple() const {
         return _tuple;
     }

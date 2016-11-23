@@ -1,8 +1,5 @@
 #include "sample/wordcount/HelloWorldSpout.h"
-<<<<<<< HEAD
-=======
 #include "hurricane/util/StringUtil.h"
->>>>>>> master
 #include <sys/time.h>
 #include <thread>
 #include <chrono>
@@ -20,11 +17,7 @@ std::vector<std::string> HelloWorldSpout::DeclareFields() {
 }
 
 void HelloWorldSpout::NextTuple() {
-<<<<<<< HEAD
-//    std::cout << "next tuple" << std::endl;
-=======
     static int32_t id = 0;
->>>>>>> master
     timeval currentTime;
     gettimeofday(&currentTime, nullptr);
 
@@ -32,13 +25,6 @@ void HelloWorldSpout::NextTuple() {
     currentMicroseconds *= 1000000;
     currentMicroseconds += currentTime.tv_usec;
 
-<<<<<<< HEAD
-	_outputCollector->Emit({
-        "Hello World", currentMicroseconds
-	});
-
-    std::this_thread::sleep_for(std::chrono::microseconds(100));
-=======
     ++ id;
 
     std::vector<std::string> words(5);
@@ -50,5 +36,4 @@ void HelloWorldSpout::NextTuple() {
 	_outputCollector->Emit({
         sentence, currentMicroseconds, id
     });
->>>>>>> master
 }

@@ -11,10 +11,7 @@ using hurricane::base::Serializable;
 void PathInfo::Serialize(base::Variants& variants) const
 {
     Variant::Serialize(variants, _groupMethod);
-<<<<<<< HEAD
-=======
     Variant::Serialize(variants, _destinationTask);
->>>>>>> master
     Variant::Serialize(variants, _fieldName);
     Variant::Serialize(variants, _destinationExecutors);
 }
@@ -22,10 +19,7 @@ void PathInfo::Serialize(base::Variants& variants) const
 void PathInfo::Deserialize(Variants::const_iterator& it)
 {
     Variant::Deserialize(it, _groupMethod);
-<<<<<<< HEAD
-=======
     Variant::Deserialize(it, _destinationTask);
->>>>>>> master
     Variant::Deserialize(it, _fieldName);
     Variant::Deserialize(it, _destinationExecutors);
 }

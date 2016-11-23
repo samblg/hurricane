@@ -55,8 +55,6 @@ namespace hurricane {
                 return _bolt;
             }
 
-<<<<<<< HEAD
-=======
             const std::vector<std::string>& GetFields() const {
                 return _fields;
             }
@@ -65,7 +63,6 @@ namespace hurricane {
                 return _fieldsMap;
             }
 
->>>>>>> master
 		private:
 			std::shared_ptr<IBolt> _bolt;
 			std::string _groupField;
