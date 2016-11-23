@@ -3,9 +3,14 @@
 ##0.6.1 Branch
 This branch includes the following major updates:
 
-- Support of a new order preserving mechanism. (Message distribution in managers is in parallel way.)
+- New order preserving mechanism. (Message distribution in managers is in parallel way.)
 - New features in kake build system. (Isolation of project and platform configurations, completed log mechanism and support of build/install/clean commands.)
-- kqueue enhancment in meshy network libaray.
+- kqueue enhancment in meshy network library.
+
+###0.6.2 TODO-list
+- New APIs in meshy network library.
+- OpenSSL support in meshy network library.
+- Windows server platform support. (Providing Microsoft Visual Studio projects.)
 
 ##Brief Introduction
 Hurricane is a C++ based distributed real-time processing system.
