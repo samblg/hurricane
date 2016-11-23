@@ -2,13 +2,8 @@
 
 module.exports = {
     pthread: {
-<<<<<<< HEAD
-        scope: 'system',
-        inputs: ['pthread']
-=======
         version: '1.0.0',
         scope: 'system',
         inputs: [ 'pthread' ]
->>>>>>> master
     }
 };

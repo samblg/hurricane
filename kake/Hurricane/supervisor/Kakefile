@@ -22,15 +22,13 @@ module.exports = {
             '../../../src/hurricane/tool/StartSupervisor.cpp'
         ],
         includePaths: [
-            '../../../include'
+            '../../../include',
+            '../../../deps/meshy/include'
         ]
     },
     linker: {
         ld: 'g++',
-<<<<<<< HEAD
-=======
         ldflags: [ '-ldl' ]
->>>>>>> master
     },
     dependencies: {
         pthread: 'latest'

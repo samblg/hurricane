@@ -36,7 +36,7 @@ void WordCountBolt::Execute(const hurricane::base::Tuple& tuple) {
 
 	wordCountIterator->second ++;
 
-    std::cout << word << ' ' << wordCountIterator->second << std::endl;
+//    std::cout << word << ' ' << wordCountIterator->second << std::endl;
 	_outputCollector->Emit({ word, wordCountIterator->second });
 
     timeval currentTime;

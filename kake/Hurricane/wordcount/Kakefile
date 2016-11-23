@@ -17,11 +17,12 @@ module.exports = {
             '../../../src/hurricane/spout',
             '../../../src/hurricane/task/TaskDeclarer.cpp',
             '../../../src/hurricane/topology/Topology.cpp',
-            '../../../src/hurricane/util/Configuration.cpp',
-            '../../../src/hurricane/util/StringUtil.cpp',
+            '../../../src/hurricane/util',
+            '../../../src/sample'
         ],
         includePaths: [
-            '../../../include'
+            '../../../include',
+            '../../../deps/meshy/include'
         ]
     },
     linker: {

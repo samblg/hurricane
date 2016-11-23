@@ -18,6 +18,9 @@
 
 #include "hurricane/util/NetConnector.h"
 #include <iostream>
+#ifdef USE_MESHY
+#include "Meshy.h"
+#endif
 
 namespace hurricane {
 	namespace util {
