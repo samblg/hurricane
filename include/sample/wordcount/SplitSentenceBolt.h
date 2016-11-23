@@ -5,7 +5,7 @@
 class SplitSentenceBolt : public hurricane::bolt::IBolt {
 public:
     virtual hurricane::bolt::IBolt* Clone() override {
-        return new SplitSentenceBolt(*this);
+        return new SplitSentenceBolt;
     }
 	virtual void Prepare(std::shared_ptr<hurricane::collector::OutputCollector> outputCollector) override;
 	virtual void Cleanup() override;
@@ -13,5 +13,5 @@ public:
 	virtual void Execute(const hurricane::base::Tuple& tuple) override;
 
 private:
-	std::shared_ptr<hurricane::collector::OutputCollector> _outputCollector;
+    std::shared_ptr<hurricane::collector::OutputCollector> _outputCollector;
 };

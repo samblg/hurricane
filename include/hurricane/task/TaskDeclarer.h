@@ -17,9 +17,9 @@ namespace hurricane {
 
 			struct GroupMethod {
 				enum {
-					Global = 0,
-					Random = 1,
-					Field = 2
+                    Global = 0,
+                    Field = 1,
+                    Random = 2
 				};
 			};
 

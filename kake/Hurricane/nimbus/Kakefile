@@ -19,8 +19,7 @@ module.exports = {
             '../../../src/hurricane/task',
             '../../../src/hurricane/topology',
             '../../../src/hurricane/util',
-            '../../../src/hurricane/tool/StartNimbus.cpp',
-            '../../../src/sample/wordcount'
+            '../../../src/hurricane/tool/StartNimbus.cpp'
         ],
         includePaths: [
             '../../../include'
@@ -28,5 +27,9 @@ module.exports = {
     },
     linker: {
         ld: 'g++',
+        ldflags: [ '-ldl' ]
+    },
+    dependencies: {
+        pthread: 'latest'
     }
 };

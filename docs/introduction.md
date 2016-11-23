@@ -1,6 +1,6 @@
 ## What's Hurricane
 
-Hurricane is a C++ based open-source distributed real-time processing system. 
+Hurricane is Hurricane is a C++ based open-source distributed real-time processing system. 
 Different from the batch processing system like Apache Hadoop, 
 Hurricane uses stream model to process data. It also supports multi-language interfaces, 
 such as Python, JavaScript, Java and Swift.
@@ -20,6 +20,8 @@ For the sake of briefness, the spout we defined only generate the text "Hello Wo
 So the remaining part of program will calculate the count of word "Hello" and "World".
 
 Before showng the code, we use a diagram to show the structure of program.
+
+![Word Count Diagram](wordcount.png)
 
 ###HelloWorldSpout.h
 
@@ -439,3 +441,10 @@ Task is a spout or bolt which is executed by executor.
 
 Different from Apache Storm, a Hurricane executor only execute one task, 
 because it is simple and easy to schedule.
+
+### Summary
+At last, let we summarize this chapter by a architecture diagram of Hurricane.
+
+![Hurricane Architecture](architecture.png)
+
+Now we advice you to read the code of Hurricane to know more of Hurricane.

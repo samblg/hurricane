@@ -12,12 +12,12 @@ hurricane::topology::Topology* GetTopology() {
 		.ParallismHint(1);
 
 	topology->SetBolt("split-sentence-bolt", new SplitSentenceBolt)
-		.Global("hello-world-spout")
+        .Random("hello-world-spout")
 		.ParallismHint(3);
 
-	topology->SetBolt("word-count-bolt", new WordCountBolt)
-		.Group("split-sentence-bolt", "word")
-		.ParallismHint(2);
+    topology->SetBolt("word-count-bolt", new WordCountBolt)
+        .Field("split-sentence-bolt", "word")
+        .ParallismHint(2);
 
 	return topology;
 }

@@ -13,6 +13,7 @@ namespace hurricane {
 
 		class CommandClient {
 		public:
+            typedef std::function<void()> ConnectCallback;
 			typedef std::function<void(const Response& response)> SendCommandCallback;
 
 			CommandClient(hurricane::util::NetConnector* connector) : _connector(connector) {
@@ -20,7 +21,15 @@ namespace hurricane {
 
 			~CommandClient();
 
+            void Connect(ConnectCallback callback);
 			void SendCommand(const Command& command, SendCommandCallback callback);
+            hurricane::util::NetConnector* GetConnector() {
+                return _connector;
+            }
+
+            const hurricane::util::NetConnector* GetConnector() const {
+                return _connector;
+            }
 
 		private:
 			hurricane::util::NetConnector* _connector;

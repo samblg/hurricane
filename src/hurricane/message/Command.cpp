@@ -13,7 +13,7 @@ namespace hurricane {
 			}
 
 			_arguments = dataPackage.GetVariants();
-			_type = _arguments[0].GetIntValue();
+            _type = _arguments[0].GetInt32Value();
 			_arguments.erase(_arguments.begin());
 		}
 
@@ -37,7 +37,7 @@ namespace hurricane {
 			}
 
 			_arguments = dataPackage.GetVariants();
-			_status = _arguments[0].GetIntValue();
+            _status = _arguments[0].GetInt32Value();
 			_arguments.erase(_arguments.begin());
 		}
 

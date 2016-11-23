@@ -32,7 +32,7 @@ namespace meshy {
 
         HttpConnection(TcpConnection* connection);
 
-        void HandleData(const char* buffer, int64_t size);
+        int HandleData(const char* buffer, int64_t size);
 
         void OnData(DataHandler dataHandler) {
             _dataHandler = dataHandler;

@@ -1,4 +1,9 @@
 'use strict';
 
 module.exports = {
+    pthread: {
+        version: '1.0.0',
+        scope: 'system',
+        inputs: [ 'pthread' ]
+    }
 };

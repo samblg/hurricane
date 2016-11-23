@@ -6,6 +6,7 @@ module.exports = {
     type: 'solution',
     projects: [
         'nimbus',
-        'supervisor'
+        'supervisor',
+        'wordcount'
     ]
 };

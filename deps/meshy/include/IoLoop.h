@@ -25,6 +25,6 @@ const int MAX_RECV_BUFF = 65535;
 #include "iocp/iocploop.h"
 #define IoLoop IocpLoop
 #elif defined(OS_LINUX)
-#include "epoll/epollloop.h"
+#include "epoll/EPollLoop.h"
 #define IoLoop EPollLoop
 #endif

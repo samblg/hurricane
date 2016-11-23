@@ -22,7 +22,7 @@
 #include "utils/logger.h"
 #include <cstdint>
 #include <cassert>
-#include <epoll/EpollLoop.h>
+#include <epoll/EPollLoop.h>
 
 #ifndef DISABLE_ASSERT
 #ifdef assert
@@ -83,17 +83,13 @@ namespace meshy {
             return errorCode;
         }
 
-<<<<<<< HEAD
-=======
-        this->SetDataSink(dataSink);
->>>>>>> c3c3bbe5a3163254407f40c2d102dcdc4c4383c1
         EPollLoop::Get()->AddServer(listenfd, this);
     }
 
     EPollConnectionPtr EPollServer::Accept(int32_t sockfd) {
-        int32_t conn_sock;
-        int32_t addrlen;
-        int32_t remote;
+        int32_t conn_sock = 0;
+        int32_t addrlen = 0;
+        int32_t remote = 0;
 
         int32_t listenfd = GetNativeSocket();
         while ((conn_sock = accept(listenfd, (struct sockaddr *) &remote,
@@ -110,14 +106,10 @@ namespace meshy {
             }
 
             EPollConnectionPtr connection = std::make_shared<EPollConnection>(conn_sock);
-<<<<<<< HEAD
             if ( _connectHandler ) {
                 _connectHandler(connection.get());
             }
 
-=======
-            connection->SetDataSink(this->GetDataSink());
->>>>>>> c3c3bbe5a3163254407f40c2d102dcdc4c4383c1
             return connection;
         } // while
 

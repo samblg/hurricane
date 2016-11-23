@@ -31,8 +31,7 @@
 #include "linux/net_linux.h"
 #include "net.h"
 
-#include "epoll/EpollStream.h"
-
+#include "epoll/EPollStream.h"
 
 namespace meshy {
     class EPollLoop;

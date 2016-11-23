@@ -7,6 +7,12 @@ namespace hurricane {
 				_bolt(bolt){
 			SetType(hurricane::task::TaskDeclarer::Type::Bolt);
 			SetTaskName(boltName);
+
+            _fields = _bolt->DeclareFields();
+            int fieldIndex = 0;
+            for ( const std::string& field : _fields ) {
+                _fieldsMap.insert({field, fieldIndex});
+            }
 		}
 	}
 }

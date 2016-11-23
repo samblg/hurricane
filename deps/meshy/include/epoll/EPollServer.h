@@ -25,7 +25,6 @@
 
 
 namespace meshy {
-
     class EPollServer : public BasicServer<EPollConnectionPtr> {
     public:
         EPollServer() { }
@@ -33,10 +32,10 @@ namespace meshy {
 
         int32_t Listen(const std::string& host, int32_t port, int32_t backlog = 20) override;
 
-        void OnConnectIndication(ConnectIndicationHandler handler) {
+        void OnConnect(ConnectHandler handler) {
             _connectHandler = handler;
         }
-        void OnDisconnectIndication(DisconnectIndicationHandler handler) {
+        void OnDisconnec(DisconnectHandler handler) {
             _disconnectIndication = handler;
         }
 
@@ -46,8 +45,8 @@ namespace meshy {
         int32_t _Bind(const std::string& host, int32_t port);
 
         DataSink* _dataSink;
-        ConnectIndicationHandler _connectHandler;
-        DisconnectIndicationHandler _disconnectIndication;
+        ConnectHandler _connectHandler;
+        DisconnectHandler _disconnectIndication;
     };
 
 }

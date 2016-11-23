@@ -18,10 +18,10 @@
 
 #include <unistd.h>
 #include <utils/logger.h>
-#include <epoll/epollloop.h>
+#include <epoll/EPollLoop.h>
 #include "epoll/EPollClient.h"
 #include "utils/common_utils.h"
-#include "epoll/EpollLoop.h"
+#include "epoll/EPollLoop.h"
 
 namespace meshy {
     void EPollClient::Connect(const std::string& host, int port) {

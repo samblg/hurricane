@@ -6,4 +6,8 @@ namespace hurricane {
 	}
 }
 
+#include "hurricane/base/externc.h"
+
+BEGIN_EXTERN_C
 hurricane::topology::Topology* GetTopology();
+END_EXTERN_C

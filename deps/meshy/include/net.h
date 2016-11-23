@@ -50,7 +50,7 @@ namespace meshy {
 #ifdef OS_WIN32
 			closesocket(_nativeSocket);
 #else
-			Close(_nativeSocket);
+            close(_nativeSocket);
 #endif
 		}
 
@@ -70,13 +70,13 @@ namespace meshy {
 
 	class IStream {
 	public:
-        typedef std::function<void(const char* buf, int64_t size)> DataIndicationHandler;
+        typedef std::function<int32_t(const char* buf, int64_t size)> DataHandler;
 
 		virtual int32_t Receive(char* buffer, int32_t bufferSize, int32_t& readSize) = 0;
 		virtual int32_t Send(const ByteArray& byteArray) = 0;
 
-        virtual void OnDataIndication(DataIndicationHandler handler) = 0;
-        virtual DataIndicationHandler GetDataIndication() = 0;
+        virtual void OnData(DataHandler handler) = 0;
+        virtual DataHandler GetDataHandler() = 0;
 	};
 
     class IConnectable {
@@ -87,14 +87,14 @@ namespace meshy {
 	template<class ConnectionType>
 	class BasicServer : public Socket {
 	public:
-        typedef std::function<void(IStream* stream)> ConnectIndicationHandler;
-        typedef std::function<void(IStream* stream)> DisconnectIndicationHandler;
+        typedef std::function<void(IStream* stream)> ConnectHandler;
+        typedef std::function<void(IStream* stream)> DisconnectHandler;
 
 		BasicServer() { }
 
 		virtual int32_t Listen(const std::string& host, int32_t port, int backlog) = 0;
-        virtual void OnConnectIndication(ConnectIndicationHandler handler) = 0;
-        virtual void OnDisconnectIndication(DisconnectIndicationHandler handler) = 0;
+        virtual void OnConnect(ConnectHandler handler) = 0;
+        virtual void OnDisconnec(DisconnectHandler handler) = 0;
 
         virtual ConnectionType Accept(int32_t listenfd) = 0;
 	};

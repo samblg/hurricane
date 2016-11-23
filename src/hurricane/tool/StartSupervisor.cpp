@@ -28,7 +28,7 @@ void StartSupervisor(const std::string& configFileName) {
     std::cout << supervisorConfiguration.GetProperty("supervisor.host") << std::endl;
     std::cout << supervisorConfiguration.GetIntegerProperty("supervisor.port") << std::endl;
 
-	hurricane::service::Supervisor supervisor(supervisorConfiguration);
+    hurricane::service::Supervisor supervisor(supervisorConfiguration);
 	supervisor.JoinNimbus([&supervisor](const hurricane::message::Response& response) {
 		if ( response.GetStatus() != hurricane::message::Response::Status::Successful ) {
 			std::cerr << "Can't join nimbus." << std::endl;
@@ -36,7 +36,10 @@ void StartSupervisor(const std::string& configFileName) {
 
 			exit(EXIT_FAILURE);
 		}
+        else {
+            std::cout << "Join successfully" << std::endl;
+        }
 
-		supervisor.StartListen();
+        supervisor.StartListen();
 	});
 }

@@ -1,5 +1,0 @@
-test
-**/__pycache__
-**/*.swp
-sample/*/target
-sample/*/project/*/target

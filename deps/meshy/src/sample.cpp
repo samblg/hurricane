@@ -52,40 +52,37 @@ int main() {
 
 	meshy::PackageDataSink dataSink(&mainEventQueue);
 
-    meshy::HttpServer server;
+//    meshy::HttpServer server;
+//    server.Listen("127.0.0.1", DefaultPort);
+//    server.OnConnection([=](meshy::HttpConnection* connection) {
+//        connection->OnRequest([connection](const meshy::HttpRequest& request) {
+//            std::cout << "Request arrived" << std::endl;
+//            std::cout << request.GetMethod() << std::endl;
+//            std::cout << request.GetPath() << std::endl;
+//            std::cout << request.GetVersion() << std::endl;
+
+//            meshy::HttpResponse response;
+//            response.SetVersion("HTTP/1.1");
+//            response.SetStatusCode(200);
+//            response.SetStatusMessage("OK");
+//            response.SetContent("Hello! Sink in Thread!");
+
+//            connection->SendResponse(response);
+//        });
+
+//        connection->OnData([connection](const std::string& data) {
+//            std::cout << "Data arrived" << std::endl;
+//            std::cout << data << std::endl;
+//        });
+//    });
+
+    meshy::TcpServer server;
+
+    meshy::PackageDataSink* packageDataSink = &dataSink;
     server.Listen("127.0.0.1", DefaultPort);
-    server.OnConnection([=](meshy::HttpConnection* connection) {
-        connection->OnRequest([connection](const meshy::HttpRequest& request) {
-            std::cout << "Request arrived" << std::endl;
-            std::cout << request.GetMethod() << std::endl;
-            std::cout << request.GetPath() << std::endl;
-            std::cout << request.GetVersion() << std::endl;
-
-            meshy::HttpResponse response;
-            response.SetVersion("HTTP/1.1");
-            response.SetStatusCode(200);
-            response.SetStatusMessage("OK");
-            response.SetContent("Hello! Sink in Thread!");
-
-            connection->SendResponse(response);
-        });
-
-        connection->OnData([connection](const std::string& data) {
-            std::cout << "Data arrived" << std::endl;
-            std::cout << data << std::endl;
-        });
+    server.OnConnect([=](meshy::IStream* stream) {
+        stream->OnData(packageDataSink->StreamDataHandler(stream));
     });
-
-    //meshy::TcpServer server;
-
-    //meshy::PackageDataSink* packageDataSink = &dataSink;
-	//server.Listen("127.0.0.1", DefaultPort);
-	//server.OnConnectIndication([=](meshy::IStream* stream) {
-	//	std::cout << stream << std::endl;
-    //    stream->OnDataIndication([packageDataSink, stream](const char* buf, int64_t size) mutable {
-    //        packageDataSink->OnDataIndication(stream, buf, size);
-    //    });
-	//});
 
 	SampleEventQueueLoop sampleQueue(&mainEventQueue);
 	sampleQueue.Start();
