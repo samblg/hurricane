@@ -33,7 +33,7 @@ namespace meshy {
 
         ~PackageDataSink();
 
-        int32_t OnDataIndication(IStream *stream, const char *buf, int64_t bytes) override;
+        int32_t Write(IStream *stream, const char *buf, int64_t bytes) override;
 
     private:
         EventQueue *_eventQueue;

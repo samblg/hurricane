@@ -54,16 +54,16 @@ namespace meshy {
             _events = events;
         }
 
-        void OnDataIndication(DataIndicationHandler handler) override {
+        void OnData(DataHandler handler) override {
             _dataHandler = handler;
         }
-        DataIndicationHandler GetDataIndication() override {
+        DataHandler GetDataHandler() override {
             return _dataHandler;
         }
 
     private:
         uint32_t _events;
-        DataIndicationHandler _dataHandler;
+        DataHandler _dataHandler;
     };
 
     typedef std::shared_ptr <EPollStream> EPollStreamPtr;

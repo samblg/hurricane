@@ -82,3 +82,18 @@ std::string Int2String(int value)
 
     return os.str();
 }
+<<<<<<< HEAD
+=======
+
+std::string JoinStrings(const std::vector<std::string>& words)
+{
+    std::string sentence;
+    for ( const std::string& word : words ) {
+        sentence += word + ' ';
+    }
+
+    sentence.pop_back();
+
+    return sentence;
+}
+>>>>>>> master

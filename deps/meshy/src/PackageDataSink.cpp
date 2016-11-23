@@ -53,7 +53,7 @@ namespace meshy {
         }
     }
 
-    int32_t PackageDataSink::OnDataIndication(IStream *stream, const char *buf, int64_t bytes) {
+    int32_t PackageDataSink::Write(IStream *stream, const char *buf, int64_t bytes) {
         _data.Concat(ByteArray(buf, bytes));
         // The package is Complete
         if (_data.size() >= _totalSize) {
@@ -63,7 +63,6 @@ namespace meshy {
             _data.clear();
             _totalSize = 0;
         }
-
 
         return bytes;
     }

@@ -29,6 +29,7 @@
 namespace hurricane {
     namespace base {
         typedef Variant Value;
+<<<<<<< HEAD
 //        class TypeMismatchException : std::exception {
 //        public:
 //            TypeMismatchException(const std::string& message) :
@@ -166,6 +167,8 @@ namespace hurricane {
 //            InnerValue _value;
 //            std::string _stringValue;
 //        };
+=======
+>>>>>>> master
 
         class Values : public std::vector<Value> {
         public:
@@ -182,7 +185,7 @@ namespace hurricane {
             }
         };
 
-		class Tuple {
+        class Tuple : public base::Serializable {
 		public:
 			Tuple() = default;
 			Tuple(std::initializer_list<Value> values) : _values(values) {
@@ -196,6 +199,14 @@ namespace hurricane {
 				return _values[index];
 			}
 
+            Value& operator[](const std::string& fieldName) {
+                return _values[_fieldsMap->at(fieldName)];
+            }
+
+            const Value& operator[](const std::string& fieldName) const {
+                return _values[_fieldsMap->at(fieldName)];
+            }
+
 			int GetSize() const {
 				return _values.size();
 			}
@@ -204,12 +215,53 @@ namespace hurricane {
 				_values.push_back(value);
 			}
 
+<<<<<<< HEAD
+=======
+            void SetSourceTask(const std::string& sourceTask) {
+                _sourceTask = sourceTask;
+            }
+
+            const std::string& GetSourceTask() const {
+                return _sourceTask;
+            }
+
+            void SetDestTask(const std::string& destTask) {
+                _destTask = destTask;
+            }
+
+            const std::string& GetDestTask() const {
+                return _destTask;
+            }
+
+>>>>>>> master
             const Values& GetValues() const {
                 return _values;
             }
 
+<<<<<<< HEAD
+=======
+            void SetFields(const std::vector<std::string>* fields) {
+                _fields = fields;
+            }
+
+            const std::vector<std::string>* GetFields() const {
+                return _fields;
+            }
+
+            void SetFieldsMap(const std::map<std::string, int>* fieldsMap) {
+                _fieldsMap = fieldsMap;
+            }
+
+            void Serialize(Variants& variants) const override;
+            void Deserialize(Variants::const_iterator& it) override;
+
+>>>>>>> master
 		private:
-			Values _values;
-		};
+            std::string _sourceTask;
+            std::string _destTask;
+            Values _values;
+            const std::vector<std::string>* _fields;
+            const std::map<std::string, int>* _fieldsMap;
+        };
     }
 }

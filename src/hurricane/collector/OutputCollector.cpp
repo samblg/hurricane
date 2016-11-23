@@ -8,7 +8,11 @@ namespace hurricane {
 	namespace collector {
         void OutputCollector::Emit(const hurricane::base::Tuple& tuple) {
             if ( _taskIndex != -1 ) {
+<<<<<<< HEAD
                 _queue->Push(new OutputItem(_taskIndex, tuple));
+=======
+                _queue->Push(new OutputItem(_taskIndex, tuple, _taskName));
+>>>>>>> master
             }
 		}
 	}

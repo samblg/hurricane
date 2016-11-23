@@ -1,6 +1,7 @@
 #pragma once
 
 #include "hurricane/bolt/IBolt.h"
+#include <fstream>
 
 #include <map>
 #include <string>
@@ -19,4 +20,5 @@ public:
 private:
 	std::shared_ptr<hurricane::collector::OutputCollector> _outputCollector;
 	std::map<std::string, int32_t> _wordCounts;
+    std::ofstream* _logFile;
 };

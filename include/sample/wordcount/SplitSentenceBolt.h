@@ -14,6 +14,10 @@ public:
 	virtual void Execute(const hurricane::base::Tuple& tuple) override;
 
 private:
+<<<<<<< HEAD
 	std::shared_ptr<hurricane::collector::OutputCollector> _outputCollector;
     std::ofstream _logFile;
+=======
+    std::shared_ptr<hurricane::collector::OutputCollector> _outputCollector;
+>>>>>>> master
 };

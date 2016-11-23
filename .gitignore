@@ -24,3 +24,10 @@ target/build/linux/x64/Release/nimbus/nimbus
 target/build/linux/x64/Release/supervisor/supervisor
 target/run/supervisor
 target/run/nimbus
+target/build/linux/x64/Release/*
+
+*.config
+*.creator
+*.creator.user
+*.files
+*.includes

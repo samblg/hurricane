@@ -1,10 +1,15 @@
 #include "sample/wordcount/HelloWorldSpout.h"
+<<<<<<< HEAD
+=======
+#include "hurricane/util/StringUtil.h"
+>>>>>>> master
 #include <sys/time.h>
 #include <thread>
 #include <chrono>
 
 void HelloWorldSpout::Prepare(std::shared_ptr<hurricane::collector::OutputCollector> outputCollector) {
-	_outputCollector = outputCollector;
+    _outputCollector = outputCollector;
+    _words = SplitString("Hello world there are some words we generate new sentence randomly", ' ');
 }
 
 void HelloWorldSpout::Cleanup() {
@@ -15,7 +20,11 @@ std::vector<std::string> HelloWorldSpout::DeclareFields() {
 }
 
 void HelloWorldSpout::NextTuple() {
+<<<<<<< HEAD
 //    std::cout << "next tuple" << std::endl;
+=======
+    static int32_t id = 0;
+>>>>>>> master
     timeval currentTime;
     gettimeofday(&currentTime, nullptr);
 
@@ -23,9 +32,23 @@ void HelloWorldSpout::NextTuple() {
     currentMicroseconds *= 1000000;
     currentMicroseconds += currentTime.tv_usec;
 
+<<<<<<< HEAD
 	_outputCollector->Emit({
         "Hello World", currentMicroseconds
 	});
 
     std::this_thread::sleep_for(std::chrono::microseconds(100));
+=======
+    ++ id;
+
+    std::vector<std::string> words(5);
+    for ( int i = 0; i < 5; i ++ ) {
+        words[i] = _words[rand() % _words.size()];
+    }
+
+    std::string sentence = JoinStrings(words);
+	_outputCollector->Emit({
+        sentence, currentMicroseconds, id
+    });
+>>>>>>> master
 }

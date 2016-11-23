@@ -26,10 +26,10 @@ namespace meshy {
             _connection(connection) {
         std::cout << _connection << std::endl;
         auto tcpDataHandler = std::bind(&HttpConnection::HandleData, this, std::placeholders::_1, std::placeholders::_2);
-        _connection->OnDataIndication(tcpDataHandler);
+        _connection->OnData(tcpDataHandler);
     }
 
-    void HttpConnection::HandleData(const char *buffer, int64_t size) {
+    int HttpConnection::HandleData(const char *buffer, int64_t size) {
         std::cout << buffer << std::endl;
         std::cout << size << std::endl;
         std::string requestText(buffer, size);

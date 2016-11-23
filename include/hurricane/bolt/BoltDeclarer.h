@@ -3,6 +3,8 @@
 #include "hurricane/task/TaskDeclarer.h"
 #include <memory>
 #include <string>
+#include <map>
+#include <vector>
 
 namespace hurricane {
 	namespace bolt {
@@ -53,9 +55,22 @@ namespace hurricane {
                 return _bolt;
             }
 
+<<<<<<< HEAD
+=======
+            const std::vector<std::string>& GetFields() const {
+                return _fields;
+            }
+
+            const std::map<std::string, int>& GetFieldsMap() const {
+                return _fieldsMap;
+            }
+
+>>>>>>> master
 		private:
 			std::shared_ptr<IBolt> _bolt;
 			std::string _groupField;
+            std::vector<std::string> _fields;
+            std::map<std::string, int> _fieldsMap;
 		};
 	}
 }

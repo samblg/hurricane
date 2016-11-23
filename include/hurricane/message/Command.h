@@ -15,7 +15,12 @@ namespace hurricane {
                     Join,
                     Heartbeat,
                     SyncMetadata,
+<<<<<<< HEAD
                     SendTuple
+=======
+                    SendTuple,
+                    AskField
+>>>>>>> master
 				};
 			};
 
@@ -99,6 +104,12 @@ namespace hurricane {
 			const std::vector<hurricane::base::Variant>& GetArguments() const {
 				return _arguments;
 			}
+
+            void AddArguments(const std::vector<hurricane::base::Variant>& arguments) {
+                for ( const hurricane::base::Variant & argument : arguments ) {
+                    _arguments.push_back(argument);
+                }
+            }
 
 			void AddArgument(const hurricane::base::Variant& argument) {
 				_arguments.push_back(argument);

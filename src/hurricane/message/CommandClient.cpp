@@ -10,8 +10,13 @@ namespace hurricane {
 			if ( _connector ) {
 				delete _connector;
 				_connector = nullptr;
-			}
-		}
+            }
+        }
+
+        void CommandClient::Connect(CommandClient::ConnectCallback callback)
+        {
+            this->_connector->Connect(callback);
+        }
 
 		void CommandClient::SendCommand(const Command& command, SendCommandCallback callback) {
 			try {

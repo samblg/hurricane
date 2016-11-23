@@ -3,8 +3,12 @@
 #include <sys/time.h>
 
 void SplitSentenceBolt::Prepare(std::shared_ptr<hurricane::collector::OutputCollector> outputCollector) {
+<<<<<<< HEAD
 	_outputCollector = outputCollector;
     _logFile.open("timestamp.txt");
+=======
+    _outputCollector = outputCollector;
+>>>>>>> master
 }
 
 void SplitSentenceBolt::Cleanup() {
@@ -17,6 +21,7 @@ std::vector<std::string> SplitSentenceBolt::DeclareFields() {
 
 void SplitSentenceBolt::Execute(const hurricane::base::Tuple& tuple) {
     std::string sentence = tuple[0].GetStringValue();
+<<<<<<< HEAD
 	std::vector<std::string> words = SplitString(sentence, ' ');
 
     int64_t sourceMicroseconds = tuple[1].GetInt64Value();
@@ -34,4 +39,14 @@ void SplitSentenceBolt::Execute(const hurricane::base::Tuple& tuple) {
     currentMicroseconds += currentTime.tv_usec;
 
     _logFile << sourceMicroseconds << ' ' << currentMicroseconds << std::endl;
+=======
+    int64_t sourceMicroseconds = tuple[1].GetInt64Value();
+    int32_t id = tuple[2].GetInt32Value();
+
+    std::vector<std::string> words = SplitString(sentence, ' ');
+
+    for ( const std::string& word : words ) {
+        _outputCollector->Emit({ word, sourceMicroseconds, id });
+    }
+>>>>>>> master
 }

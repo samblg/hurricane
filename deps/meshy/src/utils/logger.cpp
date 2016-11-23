@@ -70,7 +70,7 @@ namespace meshy {
         _fileStream = new std::ofstream();
         std::ios_base::openmode mode = std::ios_base::out;
         mode |= std::ios_base::trunc;
-        _fileStream->Open(fileName, mode);
+        _fileStream->open(fileName, mode);
 
         // Error handling
         if (!_fileStream->is_open()) {

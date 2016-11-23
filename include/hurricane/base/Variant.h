@@ -281,6 +281,14 @@ namespace hurricane {
                 _stringValue = value;
             }
 
+<<<<<<< HEAD
+=======
+            static void Deserialize(Variants::const_iterator& it, Variant& value) {
+                value = *it;
+                it ++;
+            }
+
+>>>>>>> master
             static void Deserialize(Variants::const_iterator& it, int32_t& value) {
                 value = it->GetInt32Value();
                 it ++;
@@ -320,12 +328,21 @@ namespace hurricane {
                     Deserialize(it, value);
                 }
             }
+<<<<<<< HEAD
 
             template <class Element>
             static void Deserialize(Variants::const_iterator& it, std::list<Element>& values) {
                 size_t size = 0;
                 Deserialize(it, size);
 
+=======
+
+            template <class Element>
+            static void Deserialize(Variants::const_iterator& it, std::list<Element>& values) {
+                size_t size = 0;
+                Deserialize(it, size);
+
+>>>>>>> master
                 values.resize(size);
                 for ( Element& value : values ) {
                     Deserialize(it, value);
@@ -361,6 +378,7 @@ namespace hurricane {
                     values.insert({ key, value });
                 }
             }
+<<<<<<< HEAD
 
             static void Serialize(Variants& variants, int32_t value) {
                 variants.push_back(Variant(value));
@@ -390,6 +408,41 @@ namespace hurricane {
                 variants.push_back(Variant(value));
             }
 
+=======
+
+            static void Serialize(Variants& variants, const Variant& value) {
+                variants.push_back(value);
+            }
+
+            static void Serialize(Variants& variants, int32_t value) {
+                variants.push_back(Variant(value));
+            }
+
+            static void Serialize(Variants& variants, int64_t value) {
+                variants.push_back(Variant(value));
+            }
+
+            static void Serialize(Variants& variants, uint32_t value) {
+                variants.push_back(Variant(value));
+            }
+
+            static void Serialize(Variants& variants, uint64_t value) {
+                variants.push_back(Variant(value));
+            }
+
+            static void Serialize(Variants& variants, bool value) {
+                variants.push_back(Variant(value));
+            }
+
+            static void Serialize(Variants& variants, float value) {
+                variants.push_back(Variant(value));
+            }
+
+            static void Serialize(Variants& variants, const std::string& value) {
+                variants.push_back(Variant(value));
+            }
+
+>>>>>>> master
             template <class Element>
             static void Serialize(Variants& variants, std::vector<Element> values) {
                 variants.push_back(Variant(values.size()));

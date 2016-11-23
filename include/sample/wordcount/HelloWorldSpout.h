@@ -1,6 +1,7 @@
 #pragma once
 
 #include "hurricane/spout/ISpout.h"
+#include <vector>
 
 class HelloWorldSpout : public hurricane::spout::ISpout {
 public:
@@ -14,4 +15,5 @@ public:
 
 private:
 	std::shared_ptr<hurricane::collector::OutputCollector> _outputCollector;
+    std::vector<std::string> _words;
 };

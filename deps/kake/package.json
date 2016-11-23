@@ -1,0 +1,11 @@
+{
+  "name": "kake",
+  "description": "Makefile generator",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "fibers": "latest",
+    "pixl-xml": "latest",
+    "uuid": "latest"
+  }
+}

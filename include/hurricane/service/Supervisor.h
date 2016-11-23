@@ -48,6 +48,11 @@ namespace hurricane {
                             hurricane::message::CommandServer<hurricane::message::BaseCommandServerContext>::Responser responser);
             void OnSyncMetadata(SupervisorContext* context, const hurricane::message::Command& command,
                             hurricane::message::CommandServer<hurricane::message::BaseCommandServerContext>::Responser responser);
+<<<<<<< HEAD
+=======
+            void OnSendTuple(SupervisorContext* context, const hurricane::message::Command& command,
+                            hurricane::message::CommandServer<hurricane::message::BaseCommandServerContext>::Responser responser);
+>>>>>>> master
 
 
         private:
@@ -58,9 +63,16 @@ namespace hurricane {
             void ShowTaskInfos();
             void InitSpoutExecutors();
             void InitBoltExecutors();
+<<<<<<< HEAD
             void initNimbusConnector();
             void reserveExecutors();
             void initEvents();
+=======
+            void InitNimbusConnector();
+            void ReserveExecutors();
+            void InitEvents();
+            void InitTaskFieldsMap();
+>>>>>>> master
 
 		private:
             std::string _name;
@@ -77,6 +89,11 @@ namespace hurricane {
             std::vector<std::shared_ptr<hurricane::collector::TaskQueue>> _boltTaskQueues;
             std::shared_ptr<topology::Topology> _topology;
             hurricane::collector::OutputDispatcher _outputDispatcher;
+<<<<<<< HEAD
+=======
+            std::map<std::string, const std::vector<std::string>*> _taskFields;
+            std::map<std::string, const std::map<std::string, int>*> _taskFieldsMap;
+>>>>>>> master
         };
 	}
 }

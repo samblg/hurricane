@@ -1,0 +1,12 @@
+'use strict';
+
+module.exports = {
+    name: 'AuthenCoreSDK',
+    version: '0.1.0',
+    type: 'solution',
+    projects: [
+        'meshy/meshy',
+        'meshy/sample',
+        'meshy/client-sample'
+    ]
+};

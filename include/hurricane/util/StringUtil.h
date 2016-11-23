@@ -24,4 +24,8 @@
 std::vector<std::string> SplitString(const std::string& value, char seperator);
 std::string TrimString(const std::string& value);
 std::string RandomString(const std::string& candidate, int length);
+<<<<<<< HEAD
+=======
+std::string JoinStrings(const std::vector<std::string>& words);
+>>>>>>> master
 std::string Int2String(int value);

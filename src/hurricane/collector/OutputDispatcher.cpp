@@ -14,9 +14,19 @@ void OutputDispatcher::SetTaskInfos(const std::vector<task::TaskInfo>& taskInfos
     _taskInfos = taskInfos;
 }
 
+<<<<<<< HEAD
 void OutputDispatcher::Start()
 {
 //    _randomTaskInfos.clear();
+=======
+void OutputDispatcher::SetNimbusClient(message::CommandClient* nimbusClient)
+{
+    _nimbusClient.reset(nimbusClient);
+}
+
+void OutputDispatcher::Start()
+{
+>>>>>>> master
     _thread = std::thread(&OutputDispatcher::MainThread, this);
 }
 
@@ -40,6 +50,7 @@ void OutputDispatcher::MainThread()
 bool OutputDispatcher::ProcessPath(const task::TaskInfo& taskInfo, const task::PathInfo& path,
         OutputItem* outputItem)
 {
+<<<<<<< HEAD
 
     if ( path.GetGroupMethod() == task::PathInfo::GroupMethod::Global ) {
 //        hurricane::base::NetAddress destAddress = path.GetDestinationSupervisor();
@@ -67,11 +78,24 @@ bool OutputDispatcher::ProcessPath(const task::TaskInfo& taskInfo, const task::P
 //        }
 
 //        // TODO: Add remote connection
+=======
+    std::string sourceTaskName = taskInfo.GetTaskName();
+    std::string destTaskName = path.GetTaskName();
+
+    outputItem->GetTuple().SetSourceTask(sourceTaskName);
+    outputItem->GetTuple().SetDestTask(destTaskName);
+
+    if ( path.GetGroupMethod() == task::PathInfo::GroupMethod::Global ) {
+        const task::ExecutorPosition& executorPosition = path.GetDestinationExecutors()[0];
+
+        SendTupleTo(outputItem, executorPosition);
+>>>>>>> master
     }
     else if ( path.GetGroupMethod() == task::PathInfo::GroupMethod::Random ) {
         int destCount = path.GetDestinationExecutors().size();
         int destIndex = rand() % destCount;
 
+<<<<<<< HEAD
 //        std::cout << "Random: ";
         const task::ExecutorPosition& executorPosition = path.GetDestinationExecutors()[destIndex];
 //        std::cout << executorPosition.GetSupervisor().GetHost() << ":"
@@ -80,6 +104,38 @@ bool OutputDispatcher::ProcessPath(const task::TaskInfo& taskInfo, const task::P
 
         SendTupleTo(outputItem, executorPosition);
     }
+=======
+        const task::ExecutorPosition& executorPosition = path.GetDestinationExecutors()[destIndex];
+
+        SendTupleTo(outputItem, executorPosition);
+    }
+    else if ( path.GetGroupMethod() == task::PathInfo::GroupMethod::Field ) {
+        TaskPathName taskPathName = { sourceTaskName, destTaskName };
+
+        auto taskPairIter = _fieldsDestinations.find(taskPathName);
+        if ( taskPairIter == _fieldsDestinations.end() ) {
+            _fieldsDestinations.insert({ taskPathName, std::map<std::string, task::ExecutorPosition>() });
+            taskPairIter = _fieldsDestinations.find(taskPathName);
+        }
+
+        std::map<std::string, task::ExecutorPosition>& destinations = taskPairIter->second;
+        int fieldIndex = this->_taskFieldsMap[sourceTaskName]->at(path.GetFieldName());
+        std::string fieldValue = outputItem->GetTuple()[fieldIndex].GetStringValue();
+        auto fieldDestIter = destinations.find(fieldValue);
+
+        if ( fieldDestIter == destinations.end() ) {
+            AskField(taskPathName, fieldValue,
+                     [taskPathName, outputItem, fieldValue, this](task::ExecutorPosition executorPosition) -> void {
+                _fieldsDestinations[taskPathName].insert({fieldValue, executorPosition});
+                SendTupleTo(outputItem, executorPosition);
+            });
+        }
+        else {
+            const task::ExecutorPosition& executorPosition = fieldDestIter->second;
+            SendTupleTo(outputItem, executorPosition);
+        }
+    }
+>>>>>>> master
 }
 
 void OutputDispatcher::SendTupleTo(OutputItem* outputItem, const task::ExecutorPosition& executorPosition)
@@ -108,6 +164,7 @@ void OutputDispatcher::SendTupleTo(OutputItem* outputItem, const task::ExecutorP
         }
 
         message::CommandClient* commandClient = commandClientPair->second;
+<<<<<<< HEAD
         std::cout << commandClient << std::endl;
 
         commandClient->GetConnector()->Connect([outputItem, commandClient, destIdentifier, this] {
@@ -129,9 +186,60 @@ void OutputDispatcher::SendTupleTo(OutputItem* outputItem, const task::ExecutorP
                     std::cout << "Send to " << destIdentifier << " failed." << std::endl;
                 }
             });
+=======
+
+        commandClient->GetConnector()->Connect([
+                outputItem, commandClient, destIdentifier, executorPosition, this] {
+            hurricane::message::Command command(hurricane::message::Command::Type::SendTuple);
+
+            base::Variants commandVariants;
+            _selfAddress.Serialize(commandVariants);
+            executorPosition.Serialize(commandVariants);
+            outputItem->GetTuple().Serialize(commandVariants);
+
+            command.AddArguments(commandVariants);
+
+            try {
+                commandClient->SendCommand(command,
+                    [destIdentifier, this](const hurricane::message::Response& response) -> void {
+                    if ( response.GetStatus() == hurricane::message::Response::Status::Successful ) {
+                    }
+                    else {
+                        std::cout << "Send to " << destIdentifier << " failed." << std::endl;
+                    }
+                });
+            }
+            catch ( util::SocketException& e ) {
+//                std::cout << e.what() << std::endl;
+            }
+>>>>>>> master
         });
     }
 }
 
+<<<<<<< HEAD
+=======
+void OutputDispatcher::AskField(TaskPathName taskPathName,
+        const std::string& fieldValue, OutputDispatcher::AskFieldCallback callback)
+{
+    _nimbusClient->Connect([taskPathName, fieldValue, callback, this]() {
+        hurricane::message::Command command(hurricane::message::Command::Type::AskField);
+        command.AddArgument(taskPathName.first);
+        command.AddArgument(taskPathName.second);
+        command.AddArgument(fieldValue);
+
+        _nimbusClient->SendCommand(command, [callback](const hurricane::message::Response& response) {
+            task::ExecutorPosition destination;
+            const base::Variants respArguments = response.GetArguments();
+
+            base::Variants::const_iterator argIter = respArguments.cbegin();
+            destination.Deserialize(argIter);
+
+            callback(destination);
+        });
+    });
+}
+
+>>>>>>> master
 }
 }

@@ -30,7 +30,7 @@ namespace  meshy {
     void HttpServer::Listen(const std::string &host, int port, int backlog) {
         _server.Listen(host, port, backlog);
 
-        _server.OnConnectIndication([this](IStream* stream) {
+        _server.OnConnect([this](IStream* stream) {
             TcpConnection* connection = dynamic_cast<TcpConnection*>(stream);
             HttpConnection* httpConnection = new HttpConnection(connection);
             if ( _connectionHandler ) {

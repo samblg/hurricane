@@ -1,0 +1,29 @@
+'use strict';
+
+module.exports = {
+    name: 'meshy',
+    version: '0.6.1',
+    type: 'cpp',
+    target: 'dynamic_library',
+    targetPath: '../../../target',
+    compiler: {
+        cxx: 'g++',
+        cxxflags: ['-std=c++11', '-fPIC'],
+        defines: ['OS_LINUX'],
+        src: [
+            '../../../src/PackageDataSink.cpp',
+            '../../../src/eventqueueloop.cpp',
+            '../../../src/net.cpp',
+            '../../../src/epoll/',
+            '../../../src/utils/',
+            '../../../src/http/'
+        ],
+        includePaths: [
+            '../../../include'
+        ]
+    },
+    linker: {
+        ld: 'g++',
+        ldflags: ['-lpthread']
+    }
+};

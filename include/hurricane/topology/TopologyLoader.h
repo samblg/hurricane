@@ -5,14 +5,17 @@
 #include <string>
 #include <memory>
 
+typedef void* LibraryHandle;
+
 namespace hurricane {
 	namespace topology {
 		class Topology;
 
 		class TopologyLoader {
 		public:
-			static TopologyLoader& GetInstance();
+            typedef Topology* (*TopologyGetter)();
 
+			static TopologyLoader& GetInstance();
 			std::shared_ptr<Topology> GetTopology(const std::string& name);
 
 		private:
@@ -21,6 +24,7 @@ namespace hurricane {
 			const TopologyLoader& operator = (const TopologyLoader& loader) = delete;
 
 			std::map<std::string, std::shared_ptr<Topology>> _topologies;
+            std::map<std::string, LibraryHandle> _libraryHandles;
 		};
 	}
 }

@@ -27,6 +27,8 @@ namespace hurricane {
     }
 
 	namespace service {
+        typedef std::pair<std::string, std::string> TaskPathName;
+
 		class Nimbus : public hurricane::message::CommandServer<SupervisorContext> {
 		public:
 			Nimbus(const hurricane::base::NetAddress& host);
@@ -35,6 +37,8 @@ namespace hurricane {
 			void OnConnect(SupervisorContext* context);
 			void OnJoin(SupervisorContext* context, const hurricane::message::Command& command,
 				hurricane::message::CommandServer<hurricane::message::BaseCommandServerContext>::Responser responser);
+            void OnAskField(SupervisorContext* context, const hurricane::message::Command& command,
+                hurricane::message::CommandServer<hurricane::message::BaseCommandServerContext>::Responser responser);
             void SubmitTopology(hurricane::topology::Topology* topology);
             
         private:
@@ -64,7 +68,14 @@ namespace hurricane {
 			hurricane::base::NetAddress _nimbusHost;
             std::vector<SupervisorContext> _supervisors;
             int _supervisorCount;
+<<<<<<< HEAD
             std::map<std::string, std::shared_ptr<hurricane::message::CommandClient>> _supervisorClients;
+=======
+            std::shared_ptr<hurricane::util::Configuration> _configuration;
+            std::map<std::string, std::shared_ptr<hurricane::message::CommandClient>> _supervisorClients;
+            std::map<TaskPathName, std::vector<task::ExecutorPosition>> _fieldsCandidates;
+            std::map<TaskPathName, std::map<std::string, task::ExecutorPosition>> _fieldsDestinations;
+>>>>>>> master
         };
 	}
 }
