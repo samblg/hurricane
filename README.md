@@ -1,5 +1,8 @@
 #Hurricane Real-time Processing
 
+- Current latest stable version: 0.6 (master)
+- Branch: 0.6.1
+
 ##Brief Introduction
 Hurricane is a C++ based distributed real-time processing system.
 Different from the batch processing system like Apache Hadoop, 
