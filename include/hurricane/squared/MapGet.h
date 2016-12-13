@@ -18,31 +18,31 @@
 
 #pragma once
 
-#include "TridentBolt.h"
-#include "TridentState.h"
-#include "TridentTuple.h"
+#include "SquaredBolt.h"
+#include "SquaredState.h"
+#include "SquaredTuple.h"
 
 namespace hurricane {
-    namespace trident {
-        class MapGet : public TridentBolt {
+    namespace squared {
+        class MapGet : public SquaredBolt {
         public:
             MapGet() 
             {
             }
 
-            void SetState(TridentState* state) {
+            void SetState(SquaredState* state) {
                 _state = state;
             }
 
-            virtual void Execute(const TridentTuple& tuple,
-                TridentCollector* collector) override {
+            virtual void Execute(const SquaredTuple& tuple,
+                SquaredCollector* collector) override {
                 base::Value key = tuple.GetValues()[0];
                 base::Value value = _state->Get(key);
                 collector->Emit(Values(value));
             }
         
         private:
-            TridentState* _state;
+            SquaredState* _state;
         };
     }
 }

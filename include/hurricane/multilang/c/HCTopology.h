@@ -28,11 +28,11 @@ typedef struct {
     CBolt* cBolts;
     char** boltNames;
     char** boltSources;
-    int boltCount;
+    int32_t boltCount;
 
     CSpout* cSpouts;
     char** spoutNames;
-    int spoutCount;
+    int32_t spoutCount;
 } CTopology;
 
 void StartTopology(CTopology* cTopology);

@@ -19,19 +19,19 @@
 #ifndef CPPSTORM_EPOLL_H
 #define CPPSTORM_EPOLL_H
 
+#include "linux/NetLinux.h"
+#include "Net.h"
+
+#include "epoll/EPollStream.h"
+
 #include <iostream>
 #include <string>
 #include <sys/types.h>
 #include <sys/socket.h>
-//#include <sys/event.h>
 #include <sys/time.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <errno.h>
-#include "linux/net_linux.h"
-#include "net.h"
-
-#include "epoll/EPollStream.h"
 
 namespace meshy {
     class EPollLoop;

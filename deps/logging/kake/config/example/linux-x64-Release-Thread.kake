@@ -1,0 +1,16 @@
+'use strict';
+
+module.exports = {
+    compiler: {
+        cxx: 'g++',
+        std: 'c++11',
+        cxxflags: ['-msse3', '-mavx'],
+        defines: ['NDEBUG'],
+    },
+    linker: {
+        ld: 'g++'
+    },
+    options: {
+        enableThread: true
+    }
+};

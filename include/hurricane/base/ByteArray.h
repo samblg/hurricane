@@ -28,7 +28,7 @@ namespace hurricane {
         public:
             ByteArray() = default;
 
-            ByteArray(int32_t size) :
+            ByteArray(size_t size) :
                 std::vector<char>(size) {
             }
 
@@ -36,13 +36,13 @@ namespace hurricane {
                 std::vector<char>(buffer, buffer + size) {
             }
 
-            std::string toStdString() const {
+            std::string ToStdString() const {
                 std::string result(this->cbegin(), this->cend());
 
                 return result;
             }
 
-            ByteArray& concat(const ByteArray& buffer2) {
+            ByteArray& Concat(const ByteArray& buffer2) {
                 size_t oldSize = size();
                 size_t newSize = oldSize + buffer2.size();
                 resize(newSize);
@@ -77,52 +77,52 @@ namespace hurricane {
                 _buffer(buffer), _pos(0) {}
 
             template <class T>
-            int32_t read(T* buffer, int32_t count) {
+            int32_t Read(T* buffer, int32_t count) {
                 if ( _pos >= static_cast<int32_t>(_buffer.size()) ) {
                     return 0;
                 }
 
-                int32_t sizeToRead = sizeof(T) * count;
-				if ( _pos + sizeToRead > static_cast<int32_t>(_buffer.size()) ) {
-                    sizeToRead = _buffer.size() - _pos;
-                }
-
-                memcpy(buffer, _pos + _buffer.data(), sizeToRead);
-                _pos += sizeToRead;
-
-                return sizeToRead;
-            }
-
-            template <class T>
-            T read() {
-                T t;
-                read(&t, 1);
-
-                return t;
-            }
-
-            ByteArray readData(int32_t size) {
-                if ( _pos >= static_cast<int32_t>(_buffer.size()) ) {
-                    return 0;
-                }
-
-                int32_t sizeToRead = size;
+                size_t sizeToRead = sizeof(T) * count;
                 if ( _pos + sizeToRead > static_cast<int32_t>(_buffer.size()) ) {
                     sizeToRead = _buffer.size() - _pos;
                 }
 
+                memcpy(buffer, _pos + _buffer.data(), sizeToRead);
+                _pos += static_cast<int32_t>(sizeToRead);
+
+                return static_cast<int32_t>(sizeToRead);
+            }
+
+            template <class T>
+            T Read() {
+                T t;
+                Read(&t, 1);
+
+                return t;
+            }
+
+            ByteArray ReadData(int32_t size) {
+                if ( _pos >= static_cast<int32_t>(_buffer.size()) ) {
+                    return 0;
+                }
+
+                size_t sizeToRead = size;
+                if ( _pos + sizeToRead > static_cast<int32_t>(_buffer.size()) ) {
+                    sizeToRead = _buffer.size() - static_cast<size_t>(_pos);
+                }
+
                 ByteArray result(sizeToRead);
                 memcpy(result.data(), _buffer.data() + _pos, sizeToRead);
-                _pos += sizeToRead;
+                _pos += static_cast<int32_t>(sizeToRead);
 
                 return result;
             }
 
-            int32_t tell() const {
+            int32_t Tell() const {
                 return _pos;
             }
 
-            void seek(SeekMode mode, int32_t size) {
+            void Seek(SeekMode mode, int32_t size) {
                 int32_t dest = _pos;
                 if ( mode == SeekMode::Set ) {
                     dest = size;
@@ -145,23 +145,23 @@ namespace hurricane {
             }
 
             template <class T>
-            int32_t write(const T* buffer, int32_t count) {
+            int32_t Write(const T* buffer, int32_t count) {
                 int32_t sizeToWrite = sizeof(T) * count;
                 ByteArray buffer2((const char*)(buffer), sizeToWrite);
-                _buffer.concat(buffer2);
+                _buffer.Concat(buffer2);
 
                 return sizeToWrite;
             }
 
             template <class T>
-            int32_t write(const T& value) {
-                return write(&value, 1);
+            int32_t Write(const T& value) {
+                return Write(&value, 1);
             }
 
-            int32_t write(const ByteArray& buffer) {
-                _buffer.concat(buffer);
+            int32_t Write(const ByteArray& buffer) {
+                _buffer.Concat(buffer);
 
-                return buffer.size();
+                return static_cast<int32_t>(buffer.size());
             }
 
             const ByteArray& ToByteArray() const {
@@ -169,8 +169,8 @@ namespace hurricane {
             }
 
 
-            int32_t tell() const {
-                return _buffer.size();
+            int32_t Tell() const {
+                return static_cast<int32_t>(_buffer.size());
             }
 
         private:

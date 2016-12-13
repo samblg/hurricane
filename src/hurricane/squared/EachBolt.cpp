@@ -20,16 +20,16 @@
 #include "Operation.h"
 
 namespace hurricane {
-    namespace trident {
+    namespace squared {
         EachBolt::EachBolt(const base::Fields & inputFields, 
             Operation * operation, const base::Fields & outputFields) :
-                TridentBolt(inputFields, outputFields),
+                SquaredBolt(inputFields, outputFields),
                 _operation(operation)
         {
         }
 
-        void EachBolt::Execute(const TridentTuple & tuple, 
-            TridentCollector * collector)
+        void EachBolt::Execute(const SquaredTuple & tuple, 
+            SquaredCollector * collector)
         {
             _operation->Execute(tuple, collector);
         }

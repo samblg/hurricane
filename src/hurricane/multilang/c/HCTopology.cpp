@@ -34,12 +34,12 @@ void StartTopology(CTopology * cTopology)
     LocalTopology localTopology;
     TopologyBuilder topologyBuilder;
 
-    for ( int spoutIndex = 0; spoutIndex < cTopology->spoutCount; spoutIndex ++  ) {
+    for ( int32_t spoutIndex = 0; spoutIndex < cTopology->spoutCount; spoutIndex ++  ) {
         topologyBuilder.SetSpout(cTopology->spoutNames[spoutIndex],
             new CSpoutWrapper(cTopology->cSpouts + spoutIndex));
     }
 
-    for ( int boltIndex = 0; boltIndex < cTopology->boltCount; boltIndex ++ ) {
+    for ( int32_t boltIndex = 0; boltIndex < cTopology->boltCount; boltIndex ++ ) {
         topologyBuilder.SetBolt(cTopology->boltNames[boltIndex],
             new CBoltWrapper(cTopology->cBolts + boltIndex),
             cTopology->boltSources[boltIndex]);

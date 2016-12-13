@@ -19,7 +19,7 @@
 #ifndef NET_FRAMEWORK_IOCPSERVER_H
 #define NET_FRAMEWORK_IOCPSERVER_H
 
-#include "net.h"
+#include "Net.h"
 #include "PackageDataSink.h"
 #include "iocp/IOCPConnection.h"
 #include "iocp/IOCPStream.h"
@@ -27,30 +27,39 @@
 
 namespace meshy {
 
-	class IOCPServer : public BasicServer<WSAConnectionPtr> {
-	public:
-		IOCPServer();
-		virtual ~IOCPServer();
+    class IOCPServer : public BasicServer<WSAConnectionPtr> {
+    public:
+        IOCPServer();
+        virtual ~IOCPServer();
 
-		int32_t Bind(const std::string host, int32_t port) override;
+        int32_t Bind(const std::string host, int32_t port);
+        int32_t Listen(const std::string& host, int32_t port, int32_t backlog);
 
-		int32_t Listen(DataSink* dataSink, int32_t backlog = 20) override;
+        WSAConnectionPtr Accept(int32_t listenfd) override;
 
-		WSAConnectionPtr Accept(int32_t listenfd) override;
+        void SetDataSink(DataSink* dataSink);
 
-		void SetDataSink(DataSink *dataSink);
+        DataSink* GetDataSink() const;
 
-		DataSink* GetDataSink() const;
+        void SetCompletionPort(HANDLE completionPort);
 
-		void SetCompletionPort(HANDLE completionPort);
+        HANDLE GetCompletionPort() const;
 
-		HANDLE GetCompletionPort() const;
+        virtual void OnConnect(ConnectHandler handler) {
+            _connectHandler = handler;
+        }
 
-	private:
-		HANDLE _completionPort;
-		NativeSocket _socket;
-		DataSink* _dataSink;
-		std::vector<IOCP::OperationDataPtr> _ioOperationDataGroup;
-	};
+        virtual void OnDisconnec(DisconnectHandler handler) {
+            _disconnectHandler = handler;
+        }
+
+    private:
+        HANDLE _completionPort;
+        NativeSocket _socket;
+        DataSink* _dataSink;
+        std::vector<IOCP::OperationDataPtr> _ioOperationDataGroup;
+        ConnectHandler _connectHandler;
+        DisconnectHandler _disconnectHandler;
+    };
 }
 #endif //NET_FRAMEWORK_IOCPSERVER_H

@@ -1,0 +1,12 @@
+'use strict';
+
+module.exports = {
+    name: 'logging',
+    version: '0.0.1',
+    type: 'solution',
+    basePath: '../',
+    projects: [
+        'projects/logging',
+        'projects/test-logging'
+    ]
+};

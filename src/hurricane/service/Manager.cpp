@@ -1,4 +1,22 @@
-#include "hurricane/service/Supervisor.h"
+/**
+ * licensed to the apache software foundation (asf) under one
+ * or more contributor license agreements.  see the notice file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  the asf licenses this file
+ * to you under the apache license, version 2.0 (the
+ * "license"); you may not use this file except in compliance
+ * with the license.  you may obtain a copy of the license at
+ *
+ * http://www.apache.org/licenses/license-2.0
+ *
+ * unless required by applicable law or agreed to in writing, software
+ * distributed under the license is distributed on an "as is" basis,
+ * without warranties or conditions of any kind, either express or implied.
+ * see the license for the specific language governing permissions and
+ * limitations under the license.
+ */
+
+#include "hurricane/service/Manager.h"
 #include "hurricane/message/CommandClient.h"
 #include "hurricane/util/NetConnector.h"
 #include "hurricane/util/Configuration.h"
@@ -11,40 +29,42 @@
 #include "hurricane/collector/OutputCollector.h"
 #include "hurricane/collector/OutputQueue.h"
 #include "hurricane/collector/TaskQueue.h"
+#include "hurricane/base/Constants.h"
+#include "logging/Logging.h"
 
 namespace hurricane {
     namespace service {
 
-    Supervisor::Supervisor(const hurricane::util::Configuration& configuration) :
+    Manager::Manager(const hurricane::util::Configuration& configuration) :
             CommandServer(new hurricane::util::NetListener(hurricane::base::NetAddress(
-                    configuration.GetProperty("supervisor.host"),
-                    configuration.GetIntegerProperty("supervisor.port")))),
-            _host(configuration.GetProperty("supervisor.host")),
-            _port(configuration.GetIntegerProperty("supervisor.port")) {
-        _supervisorConfiguration.reset(new hurricane::util::Configuration(configuration));
-        _name = configuration.GetProperty("supervisor.name");
+                    configuration.GetProperty(ConfigurationKey::ManagerHost),
+                    configuration.GetIntegerProperty(ConfigurationKey::ManagerPort)))),
+            _host(configuration.GetProperty(ConfigurationKey::ManagerHost)),
+            _port(configuration.GetIntegerProperty(ConfigurationKey::ManagerPort)) {
+        _managerConfiguration.reset(new hurricane::util::Configuration(configuration));
+        _name = configuration.GetProperty(ConfigurationKey::ManagerName);
 
-        InitNimbusConnector();
+        InitPresidentConnector();
         InitSelfContext();
         ReserveExecutors();
         InitEvents();
     }
 
-    void Supervisor::InitNimbusConnector()
+    void Manager::InitPresidentConnector()
     {
-        hurricane::base::NetAddress nimbusAddress(_supervisorConfiguration->GetProperty("nimbus.host"),
-            _supervisorConfiguration->GetIntegerProperty("nimbus.port"));
-        _nimbusConnector = new hurricane::util::NetConnector(nimbusAddress);
-        _nimbusClient = new hurricane::message::CommandClient(_nimbusConnector);
+        hurricane::base::NetAddress presidentAddress(_managerConfiguration->GetProperty(ConfigurationKey::PresidentPort),
+            _managerConfiguration->GetIntegerProperty(ConfigurationKey::PresidentPort));
+        _presidentConnector = new hurricane::util::NetConnector(presidentAddress);
+        _presidentClient = new hurricane::message::CommandClient(_presidentConnector);
     }
 
-    void Supervisor::ReserveExecutors()
+    void Manager::ReserveExecutors()
     {
-        _spoutExecutors.resize(_supervisorConfiguration->GetIntegerProperty("supervisor.spout.num"));
-        _boltExecutors.resize(_supervisorConfiguration->GetIntegerProperty("supervisor.bolt.num"));
-        _spoutCollectors.resize(_supervisorConfiguration->GetIntegerProperty("supervisor.spout.num"));
-        _boltCollectors.resize(_supervisorConfiguration->GetIntegerProperty("supervisor.bolt.num"));
-        _boltTaskQueues.resize(_supervisorConfiguration->GetIntegerProperty("supervisor.bolt.num"));
+        _spoutExecutors.resize(_managerConfiguration->GetIntegerProperty(ConfigurationKey::SpoutCount));
+        _boltExecutors.resize(_managerConfiguration->GetIntegerProperty(ConfigurationKey::BoltCount));
+        _spoutCollectors.resize(_managerConfiguration->GetIntegerProperty(ConfigurationKey::SpoutCount));
+        _boltCollectors.resize(_managerConfiguration->GetIntegerProperty(ConfigurationKey::BoltCount));
+        _boltTaskQueues.resize(_managerConfiguration->GetIntegerProperty(ConfigurationKey::BoltCount));
 
         for ( auto& boltTask : _boltTaskQueues ) {
             boltTask.reset(new collector::TaskQueue);
@@ -54,26 +74,26 @@ namespace hurricane {
             new collector::OutputQueue()));
         _outputDispatcher.SetSelfAddress(hurricane::base::NetAddress(_host, _port));
         _outputDispatcher.SetSelfTasks(_boltTaskQueues);
-        _outputDispatcher.SetSelfSpoutCount(_spoutExecutors.size());
+        _outputDispatcher.SetSelfSpoutCount(static_cast<int32_t>(_spoutExecutors.size()));
 
-        hurricane::base::NetAddress nimbusAddress(_supervisorConfiguration->GetProperty("nimbus.host"),
-            _supervisorConfiguration->GetIntegerProperty("nimbus.port"));
-        _nimbusConnector = new hurricane::util::NetConnector(nimbusAddress);
-        _nimbusClient = new hurricane::message::CommandClient(_nimbusConnector);
-        _outputDispatcher.SetNimbusClient(_nimbusClient);
+        hurricane::base::NetAddress presidentAddress(_managerConfiguration->GetProperty(ConfigurationKey::PresidentHost),
+            _managerConfiguration->GetIntegerProperty(ConfigurationKey::PresidentPort));
+        _presidentConnector = new hurricane::util::NetConnector(presidentAddress);
+        _presidentClient = new hurricane::message::CommandClient(_presidentConnector);
+        _outputDispatcher.SetPresidentClient(_presidentClient);
 
         _outputDispatcher.Start();
     }
 
-    void Supervisor::InitEvents()
+    void Manager::InitEvents()
     {
-        OnConnection(std::bind(&Supervisor::OnConnect, this, std::placeholders::_1));
-        OnCommand(hurricane::message::Command::Type::Heartbeat, this, &Supervisor::OnHeartbeat);
-        OnCommand(hurricane::message::Command::Type::SyncMetadata, this, &Supervisor::OnSyncMetadata);
-        OnCommand(hurricane::message::Command::Type::SendTuple, this, &Supervisor::OnSendTuple);
+        OnConnection(std::bind(&Manager::OnConnect, this, std::placeholders::_1));
+        OnCommand(hurricane::message::Command::Type::Heartbeat, this, &Manager::OnHeartbeat);
+        OnCommand(hurricane::message::Command::Type::SyncMetadata, this, &Manager::OnSyncMetadata);
+        OnCommand(hurricane::message::Command::Type::SendTuple, this, &Manager::OnSendTuple);
     }
 
-    void Supervisor::InitTaskFieldsMap()
+    void Manager::InitTaskFieldsMap()
     {
         const std::map<std::string, hurricane::spout::SpoutDeclarer>& spoutDeclarers =
                 _topology->GetSpoutDeclarers();
@@ -97,45 +117,51 @@ namespace hurricane {
         _outputDispatcher.SetTaskFieldsMap(_taskFieldsMap);
     }
 
-    void Supervisor::OnConnect(SupervisorContext* context) {
+    void Manager::OnConnect(ManagerContext* context) {
     }
 
-    void Supervisor::JoinNimbus(JoinNimbusCallback callback) {
-        hurricane::message::CommandClient* commandClient = _nimbusClient;
+    void Manager::JoinPresident(JoinPresidentCallback callback) {
+        hurricane::message::CommandClient* commandClient = _presidentClient;
 
-        _nimbusConnector->Connect([commandClient, callback, this]() {
+        _presidentConnector->Connect([commandClient, callback, this](const util::SocketError&) {
             hurricane::message::Command command(hurricane::message::Command::Type::Join);
-            command.AddArgument({ "supervisor" });
+            command.AddArgument({ NodeType::Manager });
             command.AddArgument({ this->_host });
             command.AddArgument({ this->_port });
             std::vector<hurricane::base::Variant> context;
             _selfContext->Serialize(context);
             command.AddArguments(context);
 
-            commandClient->SendCommand(command, [callback](const hurricane::message::Response& response) {
+            commandClient->SendCommand(command, [callback](const hurricane::message::Response& response,
+                    const message::CommandError& error) {
+                if ( error.GetType() != message::CommandError::Type::NoError ) {
+                    LOG(LOG_ERROR) << error.what();
+                    return;
+                }
+
                 callback(response);
             });
         });
     }
 
-    void Supervisor::OnHeartbeat(SupervisorContext* context, const message::Command& command,
-        hurricane::message::CommandServer<hurricane::message::BaseCommandServerContext>::Responser responser)
+    void Manager::OnHeartbeat(ManagerContext* context, const message::Command& command,
+        hurricane::message::CommandServer<hurricane::message::BaseCommandServerContext>::Responsor Responsor)
     {
         hurricane::message::Response response(hurricane::message::Response::Status::Successful);
         response.AddArgument({ _name });
 
-        responser(response);
+        Responsor(response);
     }
 
-    void Supervisor::OnSyncMetadata(SupervisorContext* context, const message::Command& command,
-        message::CommandServer<hurricane::message::BaseCommandServerContext>::Responser responser)
+    void Manager::OnSyncMetadata(ManagerContext* context, const message::Command& command,
+        message::CommandServer<hurricane::message::BaseCommandServerContext>::Responsor Responsor)
     {
         const std::vector<hurricane::base::Variant>& arguments = command.GetArguments();
 
-        int syncMethod = arguments[0].GetInt32Value();
+        int32_t syncMethod = arguments[0].GetInt32Value();
         if ( syncMethod != 1 ) {
             hurricane::message::Response response(hurricane::message::Response::Status::Failed);
-            responser(response);
+            Responsor(response);
 
             return;
         }
@@ -144,23 +170,23 @@ namespace hurricane {
         base::Variants::const_iterator currentIterator = arguments.cbegin() + 1;
         _selfContext->Deserialize(currentIterator);
 
-        OwnSupervisorTasks();
+        OwnManagerTasks();
         _outputDispatcher.SetTaskInfos(_selfContext->GetTaskInfos());
 
-        ShowSupervisorMetadata();
+        ShowManagerMetadata();
         ShowTaskInfos();
 
-        std::string topologyName = _supervisorConfiguration->GetProperty("topology.name");
+        std::string topologyName = _managerConfiguration->GetProperty(ConfigurationKey::TopologyName);
         _topology = hurricane::topology::TopologyLoader::GetInstance().GetTopology(topologyName);
 
         InitTaskFieldsMap();
         InitExecutors();
 
-        responser(response);
+        Responsor(response);
     }
 
-    void Supervisor::OnSendTuple(SupervisorContext* context, const message::Command& command,
-                                 message::CommandServer<hurricane::message::BaseCommandServerContext>::Responser responser)
+    void Manager::OnSendTuple(ManagerContext* context, const message::Command& command,
+                                 message::CommandServer<hurricane::message::BaseCommandServerContext>::Responsor Responsor)
     {
         const base::Variants& arguments = command.GetArguments();
         base::Variants::const_iterator it = arguments.cbegin();
@@ -176,8 +202,8 @@ namespace hurricane {
         tuple.SetFields(_taskFields[tuple.GetSourceTask()]);
         tuple.SetFieldsMap(_taskFieldsMap[tuple.GetSourceTask()]);
 
-        int executorIndex = destination.GetExecutorIndex();
-        int boltIndex = executorIndex - _selfContext->GetSpoutCount();
+        int32_t executorIndex = destination.GetExecutorIndex();
+        int32_t boltIndex = executorIndex - _selfContext->GetSpoutCount();
 
         std::shared_ptr<hurricane::collector::TaskQueue> taskQueue = _boltTaskQueues[boltIndex];
         collector::TaskItem* taskItem =
@@ -185,36 +211,38 @@ namespace hurricane {
         taskQueue->Push(taskItem);
 
         hurricane::message::Response response(hurricane::message::Response::Status::Successful);
-        responser(response);
+        Responsor(response);
     }
 
-    void Supervisor::InitSelfContext() {
-        this->_selfContext.reset(new SupervisorContext);
+    void Manager::InitSelfContext() {
+        this->_selfContext.reset(new ManagerContext);
         _selfContext->SetId(_name);
-        _selfContext->SetSpoutCount(_supervisorConfiguration->GetIntegerProperty("supervisor.spout.num"));
-        _selfContext->SetBoltCount(_supervisorConfiguration->GetIntegerProperty("supervisor.bolt.num"));
+        _selfContext->SetSpoutCount(_managerConfiguration->GetIntegerProperty(ConfigurationKey::SpoutCount));
+        _selfContext->SetBoltCount(_managerConfiguration->GetIntegerProperty(ConfigurationKey::BoltCount));
         _selfContext->SetTaskInfos(std::vector<hurricane::task::TaskInfo>(_selfContext->GetSpoutCount() + _selfContext->GetBoltCount()));
 
-        std::set<int> freeSpouts;
-        for ( int spoutIndex = 0; spoutIndex != _selfContext->GetSpoutCount(); ++ spoutIndex ) {
+        std::set<int32_t> freeSpouts;
+        int spoutCount = _selfContext->GetSpoutCount();
+        for ( int32_t spoutIndex = 0; spoutIndex != spoutCount; ++ spoutIndex ) {
             freeSpouts.insert(spoutIndex);
         }
         _selfContext->SetFreeSpouts(freeSpouts);
 
-        std::set<int> freeBolts;
-        for ( int boltIndex = 0; boltIndex != _selfContext->GetBoltCount(); ++ boltIndex ) {
+        std::set<int32_t> freeBolts;
+        int boltCount = _selfContext->GetBoltCount();
+        for ( int32_t boltIndex = 0; boltIndex != boltCount; ++ boltIndex ) {
             freeBolts.insert(boltIndex);
         }
         _selfContext->SetFreeBolts(freeBolts);
     }
 
-    void Supervisor::InitSpoutExecutors()
+    void Manager::InitSpoutExecutors()
     {
-        std::cout << "Init spout executors" << std::endl;
+        LOG(LOG_DEBUG) << "Init spout executors";
         const std::map<std::string, hurricane::spout::SpoutDeclarer>& spoutDeclarers =
                 _topology->GetSpoutDeclarers();
-        std::set<int> busySpouts = _selfContext->GetBusySpouts();
-        for ( int spoutIndex : busySpouts ) {
+        std::set<int32_t> busySpouts = _selfContext->GetBusySpouts();
+        for ( int32_t spoutIndex : busySpouts ) {
             hurricane::task::TaskInfo& spoutTask = _selfContext->GetSpoutTaskInfo(spoutIndex);
             std::string taskName = spoutTask.GetTaskName();
             const hurricane::spout::SpoutDeclarer& spoutDeclarer = spoutDeclarers.at(taskName);
@@ -229,21 +257,21 @@ namespace hurricane {
 
             std::shared_ptr<task::SpoutExecutor> spoutExecutor(new task::SpoutExecutor);
             spoutExecutor->SetSpout(spout);
-            int flowParam = _supervisorConfiguration->GetIntegerProperty("spout.flow.param");
+            int32_t flowParam = _managerConfiguration->GetIntegerProperty(ConfigurationKey::SpoutFlowParam);
             spoutExecutor->SetFlowParam(flowParam);
             _spoutExecutors[spoutIndex] = spoutExecutor;
         }
     }
 
-    void Supervisor::InitBoltExecutors()
+    void Manager::InitBoltExecutors()
     {
-        std::cout << "Init bolt executors" << std::endl;
+        LOG(LOG_DEBUG) << "Init bolt executors";
         const std::map<std::string, hurricane::bolt::BoltDeclarer>& boltDeclarers =
                 _topology->GetBoltDeclarers();
-        std::set<int> busyBolts = _selfContext->GetBusyBolts();
-        int spoutCount = _selfContext->GetSpoutCount();
-        for ( int boltIndex : busyBolts ) {
-            std::cout << boltIndex << std::endl;
+        std::set<int32_t> busyBolts = _selfContext->GetBusyBolts();
+        int32_t spoutCount = _selfContext->GetSpoutCount();
+        for ( int32_t boltIndex : busyBolts ) {
+            LOG(LOG_DEBUG) << boltIndex;
 
             hurricane::task::TaskInfo& boltTask = _selfContext->GetBoltTaskInfo(boltIndex);
             std::string taskName = boltTask.GetTaskName();
@@ -264,69 +292,69 @@ namespace hurricane {
         }
     }
 
-    void Supervisor::InitExecutors()
+    void Manager::InitExecutors()
     {
         InitSpoutExecutors();
         InitBoltExecutors();
 
-        std::set<int> busyBolts = _selfContext->GetBusyBolts();
-        std::set<int> busySpouts = _selfContext->GetBusySpouts();
+        std::set<int32_t> busyBolts = _selfContext->GetBusyBolts();
+        std::set<int32_t> busySpouts = _selfContext->GetBusySpouts();
 
-        for ( int boltIndex : busyBolts ) {
+        for ( int32_t boltIndex : busyBolts ) {
             _boltExecutors[boltIndex]->Start();
         }
 
-        for ( int spoutIndex : busySpouts ) {
+        for ( int32_t spoutIndex : busySpouts ) {
             _spoutExecutors[spoutIndex]->Start();
         }
     }
 
-    void Supervisor::OwnSupervisorTasks()
+    void Manager::OwnManagerTasks()
     {
         std::vector<hurricane::task::TaskInfo>& taskInfos = _selfContext->GetTaskInfos();
         for ( hurricane::task::TaskInfo& taskInfo : taskInfos ) {
-            taskInfo.SetSupervisorContext(_selfContext.get());
+            taskInfo.SetManagerContext(_selfContext.get());
         }
     }
 
-    void Supervisor::ShowSupervisorMetadata()
+    void Manager::ShowManagerMetadata()
     {
-        std::cout << "Supervisor name: " << _selfContext->GetId() << std::endl;
-        std::cout << "  Spout count: " << _selfContext->GetSpoutCount() << std::endl;
-        std::cout << "  Bolt count: " << _selfContext->GetBoltCount() << std::endl;
-        std::cout << "  Task info count: " << _selfContext->GetTaskInfos().size() << std::endl;
-        std::cout << "  Free spout count: " << _selfContext->GetFreeSpouts().size() << std::endl;
-        std::cout << "  Free bolt count: " << _selfContext->GetFreeBolts().size() << std::endl;
-        std::cout << "  Busy spout count: " << _selfContext->GetBusySpouts().size() << std::endl;
-        std::cout << "  Busy bolt count: " << _selfContext->GetBusyBolts().size() << std::endl;
+        LOG(LOG_DEBUG) << "Manager name: " << _selfContext->GetId();
+        LOG(LOG_DEBUG) << "  Spout count: " << _selfContext->GetSpoutCount();
+        LOG(LOG_DEBUG) << "  Bolt count: " << _selfContext->GetBoltCount();
+        LOG(LOG_DEBUG) << "  Task info count: " << _selfContext->GetTaskInfos().size();
+        LOG(LOG_DEBUG) << "  Free spout count: " << _selfContext->GetFreeSpouts().size();
+        LOG(LOG_DEBUG) << "  Free bolt count: " << _selfContext->GetFreeBolts().size();
+        LOG(LOG_DEBUG) << "  Busy spout count: " << _selfContext->GetBusySpouts().size();
+        LOG(LOG_DEBUG) << "  Busy bolt count: " << _selfContext->GetBusyBolts().size();
     }
 
-    void Supervisor::ShowTaskInfos()
+    void Manager::ShowTaskInfos()
     {
         const std::vector<hurricane::task::TaskInfo>& taskInfos = _selfContext->GetTaskInfos();
         for ( const hurricane::task::TaskInfo& taskInfo : taskInfos ) {
-            if ( !taskInfo.GetSupervisorContext() ) {
+            if ( !taskInfo.GetManagerContext() ) {
                 continue;
             }
 
-            std::cout << "    Supervisor: " << taskInfo.GetSupervisorContext()->GetId() << std::endl;
-            std::cout << "    Exectuor index: " << taskInfo.GetExecutorIndex() << std::endl;
-            std::cout << "    Task name: " << taskInfo.GetTaskName() << std::endl;
-            std::cout << "    Paths: " << std::endl;
+            LOG(LOG_DEBUG) << "    Manager: " << taskInfo.GetManagerContext()->GetId();
+            LOG(LOG_DEBUG) << "    Exectuor index: " << taskInfo.GetExecutorIndex();
+            LOG(LOG_DEBUG) << "    Task name: " << taskInfo.GetTaskName();
+            LOG(LOG_DEBUG) << "    Paths: ";
             const std::list<hurricane::task::PathInfo>& paths = taskInfo.GetPaths();
 
             for ( const hurricane::task::PathInfo& path : paths ) {
-                std::cout << "      Path: " << std::endl;
-                int groupMethod = path.GetGroupMethod();
-                std::cout << "        Group method: " << groupMethod << std::endl;
+                LOG(LOG_DEBUG) << "      Path: ";
+                int32_t groupMethod = path.GetGroupMethod();
+                LOG(LOG_DEBUG) << "        Group method: " << groupMethod;
 
                 if ( path.GetGroupMethod() == hurricane::task::PathInfo::GroupMethod::Global) {
-                    std::cout << "        Destination host: " <<
-                                 path.GetDestinationExecutors()[0].GetSupervisor().GetHost() << std::endl;
-                    std::cout << "        Destination port: " <<
-                                 path.GetDestinationExecutors()[0].GetSupervisor().GetPort() << std::endl;
-                    std::cout << "        Destination executor index: " <<
-                                 path.GetDestinationExecutors()[0].GetExecutorIndex() << std::endl;
+                    LOG(LOG_DEBUG) << "        Destination host: " <<
+                                 path.GetDestinationExecutors()[0].GetManager().GetHost();
+                    LOG(LOG_DEBUG) << "        Destination port: " <<
+                                 path.GetDestinationExecutors()[0].GetManager().GetPort();
+                    LOG(LOG_DEBUG) << "        Destination executor index: " <<
+                                 path.GetDestinationExecutors()[0].GetExecutorIndex();
                 }
             }
         }

@@ -22,21 +22,21 @@
 #include "hurricane/bolt/IBolt.h"
 
 namespace hurricane {
-    namespace trident {
+    namespace squared {
         class Operation;
-        class TridentTuple;
-        class TridentCollector;
+        class SquaredTuple;
+        class SquaredCollector;
 
-        class TridentBolt : public IBolt {
+        class SquaredBolt : public IBolt {
         public:
-            TridentBolt(const base::Fields& inputFields,
+            SquaredBolt(const base::Fields& inputFields,
                 const base::Fields& outputFields);
 
             virtual void Prepare(base::OutputCollector& outputCollector) override;
             virtual void Cleanup() override;
             virtual void Execute(const base::Values& values) override;
-            virtual void Execute(const TridentTuple& tuple,
-                TridentCollector* collector) = 0;
+            virtual void Execute(const SquaredTuple& tuple,
+                SquaredCollector* collector) = 0;
 
             virtual IBolt* Clone() const override;
 
@@ -45,7 +45,7 @@ namespace hurricane {
         private:
             base::Fields _inputFields;
             base::Fields _outputFields;
-            TridentCollector* _collector;
+            SquaredCollector* _collector;
         };
     }
 }

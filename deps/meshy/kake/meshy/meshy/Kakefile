@@ -5,25 +5,26 @@ module.exports = {
     version: '0.6.1',
     type: 'cpp',
     target: 'dynamic_library',
-    targetPath: '../../../target',
-    compiler: {
-        cxx: 'g++',
-        cxxflags: ['-std=c++11', '-fPIC'],
-        defines: ['OS_LINUX'],
-        src: [
-            '../../../src/PackageDataSink.cpp',
-            '../../../src/eventqueueloop.cpp',
-            '../../../src/net.cpp',
-            '../../../src/epoll/',
-            '../../../src/utils/',
-            '../../../src/http/'
-        ],
-        includePaths: [
-            '../../../include'
-        ]
-    },
-    linker: {
-        ld: 'g++',
-        ldflags: ['-lpthread']
+    common: {
+        compiler: {
+            defines: ['$(Inherit)', 'OS_LINUX', 'USE_KLOG'],
+            src: [
+                'src/PackageDataSink.cpp',
+                'src/EventQueueLoop.cpp',
+                'src/Net.cpp',
+                'src/epoll/',
+                'src/utils/',
+                'src/http/'
+            ],
+            includePaths: [
+                'include'
+            ]
+        },
+        linker: {
+            ldflags: ['-lpthread']
+        },
+        dependencies: {
+            logging: 'latest'
+        }
     }
 };

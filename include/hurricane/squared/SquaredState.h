@@ -21,8 +21,8 @@
 #include "hurricane/base/Values.h"
 
 namespace hurricane {
-    namespace trident {
-        class TridentState {
+    namespace squared {
+        class SquaredState {
             virtual void Init() = 0;
             virtual void Set(const base::Value& key, const base::Value& value) = 0;
             virtual const base::Value& value Get(const base::Value& key) = 0;

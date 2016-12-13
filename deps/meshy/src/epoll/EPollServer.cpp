@@ -18,8 +18,9 @@
 
 #include "epoll/EPollServer.h"
 #include "epoll/EPollLoop.h"
-#include "utils/common_utils.h"
-#include "utils/logger.h"
+#include "utils/CommonUtils.h"
+#include "logging/Logging.h"
+
 #include <cstdint>
 #include <cassert>
 #include <epoll/EPollLoop.h>
@@ -36,7 +37,7 @@ namespace meshy {
     int32_t EPollServer::_Bind(const std::string& host, int32_t port) {
         int32_t listenfd;
         if ((listenfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-            TRACE_ERROR("Create socket failed!");
+            LOG(LOG_ERROR) << "Create socket failed!";
             exit(1);
         }
 
@@ -53,14 +54,14 @@ namespace meshy {
         addr.sin_port = htons(port);
         addr.sin_addr.s_addr = inet_addr(host.c_str());
 
-        int32_t errorCode = bind(listenfd, (struct sockaddr *) &addr, sizeof(addr));
+        int32_t errorCode = bind(listenfd, (struct sockaddr*)&addr, sizeof(addr));
         if (errorCode < 0) {
-            TRACE_ERROR("Bind socket failed!");
+            LOG(LOG_ERROR) << "Bind socket failed!";
             assert(0);
             return errorCode;
         }
-		
-		return 0;
+        
+        return 0;
     }
 
     int32_t EPollServer::Listen(const std::string& host, int32_t port, int32_t backlog) {
@@ -70,7 +71,7 @@ namespace meshy {
 
         int32_t errorCode = listen(listenfd, backlog);
         if (-1 == errorCode) {
-            TRACE_ERROR("Listen socket failed!");
+            LOG(LOG_ERROR) << "Listen socket failed!";
             assert(0);
             return errorCode;
         }
@@ -78,7 +79,7 @@ namespace meshy {
         errorCode = EPollLoop::Get()->AddEpollEvents(EPOLLIN, listenfd);
 
         if (errorCode == -1) {
-            TRACE_ERROR("FATAL epoll_ctl: listen_sock!");
+            LOG(LOG_ERROR) << "FATAL epoll_ctl: listen_sock!";
             assert(0);
             return errorCode;
         }
@@ -92,8 +93,8 @@ namespace meshy {
         int32_t remote = 0;
 
         int32_t listenfd = GetNativeSocket();
-        while ((conn_sock = accept(listenfd, (struct sockaddr *) &remote,
-                                   (socklen_t * ) & addrlen)) > 0) {
+        while ((conn_sock = accept(listenfd, (struct sockaddr*)&remote,
+                                   (socklen_t*)& addrlen)) > 0) {
             meshy::SetNonBlocking(conn_sock);
 
             NativeSocketEvent ev;

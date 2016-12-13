@@ -17,17 +17,17 @@
  */
 
 #include "PackageDataSink.h"
-#include "eventqueue.h"
-#include "utils/logger.h"
-#include "net.h"
+#include "EventQueue.h"
+#include "logging/Logging.h"
+#include "Net.h"
 #include "rest/HttpContext.h"
 #include "rest/HttpRequest.h"
 #include "rest/HttpResponse.h"
 
 namespace meshy {
-    PackageDataSink::PackageDataSink(EventQueue *eventQueue) : _eventQueue(eventQueue), _totalSize(0) {
-        _threadPool = new ThreadPool<BaseEvent>(10, [&](BaseEvent &event) {
-            TRACE_DEBUG("Thread onEvent sink!");
+    PackageDataSink::PackageDataSink(EventQueue* eventQueue) : _eventQueue(eventQueue), _totalSize(0) {
+        _threadPool = new ThreadPool<BaseEvent>(10, [&](BaseEvent& event) {
+            LOG(LOG_DEBUG) << "Thread onEvent sink!";
 
             std::string requestText = event.GetData().ToStdString();
 
@@ -42,7 +42,7 @@ namespace meshy {
 
             event.GetStream()->Send(ByteArray(response.ToStdString())); // Send to peer
 
-            TRACE_DEBUG("Thread onEvent sink end.");
+            LOG(LOG_DEBUG) << "Thread onEvent sink end.";
         });
     }
 
@@ -53,8 +53,8 @@ namespace meshy {
         }
     }
 
-    int32_t PackageDataSink::Write(IStream *stream, const char *buf, int64_t bytes) {
-        _data.Concat(ByteArray(buf, bytes));
+    int32_t PackageDataSink::Write(IStream* stream, const char* buf, int64_t bytes) {
+        _data.Concat(ByteArray(buf, static_cast<int32_t>(bytes)));
         // The package is Complete
         if (_data.size() >= _totalSize) {
             //_eventQueue->PostEvent(new BaseEvent("data", _data, connection));
@@ -64,6 +64,6 @@ namespace meshy {
             _totalSize = 0;
         }
 
-        return bytes;
+        return static_cast<int32_t>(bytes);
     }
 }

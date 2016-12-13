@@ -26,9 +26,9 @@ BEGIN_C_DECALRE
 #include <stdint.h>
 
 typedef int32_t(*CBoltClone)();
-typedef int32_t(*CBoltPrepare)(int boltIndex);
-typedef int32_t(*CBoltCleanup)(int boltIndex);
-typedef int32_t(*CBoltExecute)(int boltIndex,
+typedef int32_t(*CBoltPrepare)(int32_t boltIndex);
+typedef int32_t(*CBoltCleanup)(int32_t boltIndex);
+typedef int32_t(*CBoltExecute)(int32_t boltIndex,
     void* wrapper, void* emitter, CValues* cValues);
 
 typedef struct {
@@ -67,7 +67,7 @@ namespace hurricane {
 
         private:
             CBolt _cBolt;
-            int _boltIndex;
+            int32_t _boltIndex;
             base::OutputCollector* _collector;
         };
     }

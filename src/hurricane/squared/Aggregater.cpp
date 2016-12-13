@@ -24,7 +24,7 @@ namespace hurricane {
     namespace trident {
         void BaseAggregater::Execute(const TridentTuple & tuple, TridentCollector * collector)
         {
-            int batchId = tuple.GetBatchId();
+            int32_t batchId = tuple.GetBatchId();
             collector->SetBatchId(batchId);
 
             if ( _batches.find(batchId) == _batches.end ) {

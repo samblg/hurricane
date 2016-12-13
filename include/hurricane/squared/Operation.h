@@ -19,14 +19,14 @@
 #pragma once
 
 namespace hurricane {
-    namespace trident {
-        class TridentTuple;
-        class TridentCollector;
+    namespace squared {
+        class SquaredTuple;
+        class SquaredCollector;
 
         class Operation {
         public:
-            virtual void Execute(const TridentTuple& tuple,
-                TridentCollector* collector) = 0;
+            virtual void Execute(const SquaredTuple& tuple,
+                SquaredCollector* collector) = 0;
         };
     }
 }

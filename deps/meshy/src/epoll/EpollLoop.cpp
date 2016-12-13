@@ -17,7 +17,8 @@
  */
 
 #include "epoll/EPollLoop.h"
-#include "utils/logger.h"
+#include "logging/Logging.h"
+
 #include <signal.h>
 #include <cassert>
 
@@ -25,14 +26,14 @@ namespace meshy {
     using namespace std::placeholders;
 
     EPollLoop* EPollLoop::Get()
-	{
+    {
         static EPollLoop epollLoop;
         return &epollLoop;
     }
 
     EPollLoop::EPollLoop()
-	{
-        TRACE_DEBUG("EPollLoop::EPollLoop");
+    {
+        LOG(LOG_DEBUG) << "EPollLoop::EPollLoop";
 
         // TODO: temproray approach to avoid crash
         sigset_t set;
@@ -44,12 +45,12 @@ namespace meshy {
     }
 
     EPollLoop::~EPollLoop()
-	{
+    {
         _shutdown = true;
     }
-	
-	void EPollLoop::AddServer(NativeSocket socket, EPollServer* server)
-	{
+    
+    void EPollLoop::AddServer(NativeSocket socket, EPollServer* server)
+    {
         _servers.insert({socket, server});
     }
 
@@ -59,7 +60,7 @@ namespace meshy {
     }
 
     int32_t EPollLoop::AddEpollEvents(int32_t events, int32_t fd)
-	{
+    {
         NativeSocketEvent ev;
         ev.events = events;
         ev.data.fd = fd;
@@ -77,31 +78,31 @@ namespace meshy {
     }
 
     void EPollLoop::_Initialize()
-	{
+    {
         _eventfd = epoll_create(MAX_EVENT_COUNT);
         if (_eventfd == -1) {
-            TRACE_ERROR("FATAL epoll_create failed!");
+            LOG(LOG_ERROR) << "FATAL epoll_create failed!" ;
             assert(0);
         }
     }
 
     void EPollLoop::_Run()
-	{
+    {
         auto func = std::bind(&EPollLoop::_EPollThread, this);
         std::thread listenThread(func);
         listenThread.detach();
     }
 
     void EPollLoop::_EPollThread()
-	{
-        TRACE_DEBUG("_EPollThread");
+    {
+        LOG(LOG_DEBUG) << "_EPollThread" ;
         NativeSocketEvent events[MAX_EVENT_COUNT];
 
         while (!_shutdown) {
             int32_t nfds;
             nfds = epoll_wait(_eventfd, events, MAX_EVENT_COUNT, -1);
             if (-1 == nfds) {
-                TRACE_ERROR("FATAL epoll_wait failed!");
+                LOG(LOG_ERROR) << "FATAL epoll_wait failed!" ;
                 exit(EXIT_FAILURE);
             }
 
@@ -110,8 +111,8 @@ namespace meshy {
     }
 
     void EPollLoop::_HandleEvent(int32_t eventfd, NativeSocketEvent* events, int32_t nfds)
-	{
-        for (int i = 0; i < nfds; ++i) {
+    {
+        for (int32_t i = 0; i < nfds; ++i) {
             int32_t fd;
             fd = events[i].data.fd;
 
@@ -131,8 +132,8 @@ namespace meshy {
     }
 
     int32_t EPollLoop::_Accept(int32_t eventfd, int32_t listenfd)
-	{
-        TRACE_DEBUG("_Accept");
+    {
+        LOG(LOG_DEBUG) << "_Accept" ;
         EPollServer* server = _servers.find(listenfd)->second;
         EPollConnectionPtr connection = server->Accept(eventfd);
 
@@ -142,8 +143,8 @@ namespace meshy {
     }
 
     void EPollLoop::_Read(int32_t eventfd, int32_t fd, uint32_t events)
-	{
-        TRACE_DEBUG("_Read");
+    {
+        LOG(LOG_DEBUG) << "_Read" ;
 
         EPollStreamPtr stream = _streams[fd];
 
@@ -157,9 +158,8 @@ namespace meshy {
             _streams.erase(fd);
 
             // Print error message
-            char message[50];
-            sprintf(message, "errno: %d: %s, nread: %d, n: %d", errno, strerror(errno), nread, readSize);
-            TRACE_WARNING(message);
+            LOG(LOG_WARNING) << "errno: " << errno << ": " << strerror(errno) <<
+                    ", nread: " << nread << ", n" << readSize ;
             return;
         }
 
@@ -168,8 +168,8 @@ namespace meshy {
     }
 
     void EPollLoop::_Enqueue(EPollStreamPtr stream, const char* buf, int64_t nread)
-	{
-        TRACE_DEBUG("_Enqueue");
+    {
+        LOG(LOG_DEBUG) << "_Enqueue" ;
 
         if ( stream->GetDataHandler() ) {
             stream->GetDataHandler()(buf, nread);

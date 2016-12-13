@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="源文件\logging">
+      <UniqueIdentifier>{222b571a-1196-4e4c-ae5d-95d80b8963f1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\deps\logging\include\logging\BlockingQueue.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\logging\include\logging\Check.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\logging\include\logging\CheckLogger.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\logging\include\logging\DirectLoggerStream.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\logging\include\logging\ExpressionLogger.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\logging\include\logging\Interface.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\logging\include\logging\IOStreamManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\logging\include\logging\Logger.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\logging\include\logging\LoggerStream.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\logging\include\logging\Logging.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\logging\include\logging\LogItem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\logging\include\logging\LogItemQueue.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\logging\include\logging\LogOutputThread.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\logging\include\logging\Severity.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\logging\include\logging\ThreadLoggerStream.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\logging\include\logging\System.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\deps\logging\src\logging\CheckLogger.cpp">
+      <Filter>源文件\logging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\deps\logging\src\logging\DirectLoggerStream.cpp">
+      <Filter>源文件\logging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\deps\logging\src\logging\ExpressionLogger.cpp">
+      <Filter>源文件\logging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\deps\logging\src\logging\IOStreamManager.cpp">
+      <Filter>源文件\logging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\deps\logging\src\logging\Logger.cpp">
+      <Filter>源文件\logging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\deps\logging\src\logging\LogItemQueue.cpp">
+      <Filter>源文件\logging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\deps\logging\src\logging\LogOutputThread.cpp">
+      <Filter>源文件\logging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\deps\logging\src\logging\ThreadLoggerStream.cpp">
+      <Filter>源文件\logging</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

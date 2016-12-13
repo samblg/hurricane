@@ -18,20 +18,22 @@
 
 #include "Meshy.h"
 #include "rest/HttpConnection.h"
-#include "bytearray.h"
+#include "ByteArray.h"
+#include "logging/Logging.h"
+
 #include <iostream>
 
 namespace meshy {
     HttpConnection::HttpConnection(TcpConnection* connection) :
             _connection(connection) {
-        std::cout << _connection << std::endl;
+        LOG(LOG_DEBUG) << _connection ;
         auto tcpDataHandler = std::bind(&HttpConnection::HandleData, this, std::placeholders::_1, std::placeholders::_2);
         _connection->OnData(tcpDataHandler);
     }
 
-    int HttpConnection::HandleData(const char *buffer, int64_t size) {
-        std::cout << buffer << std::endl;
-        std::cout << size << std::endl;
+    int32_t HttpConnection::HandleData(const char* buffer, int64_t size) {
+        LOG(LOG_DEBUG) << buffer ;
+        LOG(LOG_DEBUG) << size ;
         std::string requestText(buffer, size);
 
         _request.ParseStdString(requestText);
@@ -43,9 +45,11 @@ namespace meshy {
         if ( _dataHandler && _request.GetContent().size() > 0 ) {
             _dataHandler(_request.GetContent());
         }
+
+        return 0;
     }
 
-    void HttpConnection::SendResponse(const HttpResponse &response) {
+    void HttpConnection::SendResponse(const HttpResponse& response) {
         _response = response;
 
         _connection->Send(ByteArray(_response.ToStdString()));

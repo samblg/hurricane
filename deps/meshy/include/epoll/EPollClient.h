@@ -20,7 +20,7 @@
 #define NET_FRAMEWORK_EPOLLCLIENT_H
 
 #include "epoll/EPollStream.h"
-#include "net.h"
+#include "Net.h"
 #include "DataSink.h"
 
 #include <memory>

@@ -16,11 +16,11 @@
  * limitations under the license.
  */
 
-#include "TridentCollector.h"
+#include "SquaredCollector.h"
 
 namespace hurricane {
-    namespace trident {
-        bool TridentCollector::IsFinished()
+    namespace squared {
+        bool SquaredCollector::IsFinished()
         {
             return false;
         }

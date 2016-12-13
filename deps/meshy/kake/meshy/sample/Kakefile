@@ -5,22 +5,19 @@ module.exports = {
     version: '0.6.1',
     type: 'cpp',
     target: 'executable',
-    targetPath: '../../../target',
-    compiler: {
-        cxx: 'g++',
-        cxxflags: ['-std=c++11', '-fPIC'],
-        defines: ['OS_LINUX'],
-        src: [
-            '../../../src/sample.cpp'
-        ],
-        includePaths: [
-            '../../../include'
-        ]
-    },
-    linker: {
-        ld: 'g++',
-    },
-    dependencies: {
-        meshy: 'latest'
+    common: {
+        compiler: {
+            defines: ['$(Inherit)', 'OS_LINUX', 'USE_KLOG'],
+            src: [
+                'src/Sample.cpp'
+            ],
+            includePaths: [
+                'include'
+            ]
+        },
+        dependencies: {
+            meshy: 'latest',
+            logging: 'latest'
+        }
     }
 };

@@ -19,7 +19,7 @@
 #ifndef NET_FRAMEWORK_EPOLLSERVER_H
 #define NET_FRAMEWORK_EPOLLSERVER_H
 
-#include "net.h"
+#include "Net.h"
 #include "PackageDataSink.h"
 #include "epoll/EPollConnection.h"
 

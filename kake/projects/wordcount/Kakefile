@@ -1,0 +1,30 @@
+'use strict';
+
+module.exports = {
+    name: 'wordcount',
+    version: '0.0.1',
+    type: 'cpp',
+    target: 'dynamic_library',
+    common: {
+        compiler: {
+            src: [
+                'src/hurricane/base',
+                'src/hurricane/bolt',
+                'src/hurricane/collector/OutputCollector.cpp',
+                'src/hurricane/message',
+                'src/hurricane/spout',
+                'src/hurricane/task/TaskDeclarer.cpp',
+                'src/hurricane/topology/Topology.cpp',
+                'src/hurricane/util',
+                'src/sample'
+            ],
+            includePaths: [
+                'include'
+            ]
+        },
+        dependencies: {
+            logging: 'latest',
+            dl: 'latest'
+        }
+    }
+};

@@ -21,27 +21,27 @@
 
 namespace hurricane {
     namespace base {
-		class AllWritables {
-		public:
-			AllWritables() {
-				_writables.insert({ 0, std::shared_ptr<Writable>(new Int32Writable) });
+        class AllWritables {
+        public:
+            AllWritables() {
+                _writables.insert({ 0, std::shared_ptr<Writable>(new Int32Writable) });
                 _writables.insert({ 1, std::shared_ptr<Writable>(new Int64Writable) });
                 _writables.insert({ 2, std::shared_ptr<Writable>(new UInt32Writable) });
                 _writables.insert({ 3, std::shared_ptr<Writable>(new UInt64Writable) });
                 _writables.insert({ 4, std::shared_ptr<Writable>(new BooleanWritable) });
                 _writables.insert({ 5, std::shared_ptr<Writable>(new FloatWritable) });
                 _writables.insert({ 6, std::shared_ptr<Writable>(new StringWritable) });
-			}
+            }
 
-			std::map<int8_t, std::shared_ptr<Writable>> _writables;
-		};
+            std::map<int8_t, std::shared_ptr<Writable>> _writables;
+        };
 
 
-		std::map<int8_t, std::shared_ptr<Writable>>& GetWritables() {
-			static AllWritables allWritables;
+        std::map<int8_t, std::shared_ptr<Writable>>& GetWritables() {
+            static AllWritables allWritables;
 
-			return allWritables._writables;
-		}
+            return allWritables._writables;
+        }
 
         std::map<Variant::Type, int8_t> Variant::TypeCodes = {
             { Variant::Type::Int32, 0 },

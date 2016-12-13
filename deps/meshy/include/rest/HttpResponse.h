@@ -27,11 +27,11 @@ namespace meshy {
         HttpResponse() {}
         virtual std::string ToStdString() const override;
 
-        int GetStatusCode() const {
+        int32_t GetStatusCode() const {
             return _statusCode;
         }
 
-        void SetStatusCode(int statusCode) {
+        void SetStatusCode(int32_t statusCode) {
             _statusCode = statusCode;
         }
 
@@ -46,7 +46,7 @@ namespace meshy {
     private:
         std::string GetResponseLine() const;
 
-        int _statusCode;
+        int32_t _statusCode;
         std::string _statusMessage;
     };
 }

@@ -21,76 +21,76 @@
 #include "TransactionalSpout.h"
 
 namespace hurricane {
-	namespace spout {
-		class MemoryCoordinator : public Coordinator {
-		public:
-			MemoryCoordinator() {}
+    namespace spout {
+        class MemoryCoordinator : public Coordinator {
+        public:
+            MemoryCoordinator() {}
 
-			virtual void Open(base::OutputCollector& outputCollector) {
-				Coordinator::Open(outputCollector);
-			}
+            virtual void Open(base::OutputCollector& outputCollector) {
+                Coordinator::Open(outputCollector);
+            }
 
-			virtual void Close() {
+            virtual void Close() {
 
-			}
+            }
 
-			virtual void Execute() {
+            virtual void Execute() {
 
-			}
+            }
 
-			virtual ISpout* Clone() const override {
-				return new MemoryCoordinator(*this);
-			}
+            virtual ISpout* Clone() const override {
+                return new MemoryCoordinator(*this);
+            }
 
-			virtual base::Fields DeclareFields() const override {
-				return {};
-			}
-		};
+            virtual base::Fields DeclareFields() const override {
+                return {};
+            }
+        };
 
-		class MemoryEmitter : public bolt::Emitter {
-		public:
-			MemoryEmitter() {}
+        class MemoryEmitter : public bolt::Emitter {
+        public:
+            MemoryEmitter() {}
 
-			virtual void Prepare(base::OutputCollector& outputCollector) {
-				bolt::Emitter::Prepare(outputCollector);
+            virtual void Prepare(base::OutputCollector& outputCollector) {
+                bolt::Emitter::Prepare(outputCollector);
 
-			}
+            }
 
-			virtual void Cleanup() {
+            virtual void Cleanup() {
 
-			}
+            }
 
-			virtual void Execute(const base::Values& values) {
+            virtual void Execute(const base::Values& values) {
 
-			}
+            }
 
-			virtual IBolt* Clone() const {
-				return new MemoryEmitter(*this);
-			}
+            virtual IBolt* Clone() const {
+                return new MemoryEmitter(*this);
+            }
 
-			virtual base::Fields DeclareFields() const {
-				return {};
-			}
-		};
+            virtual base::Fields DeclareFields() const {
+                return {};
+            }
+        };
 
-		class MemoryTransactionalSpout : public TransactionalSpout {
-		public:
-			MemoryTransactionalSpout() :
-				_coordinator(new MemoryCoordinator), _emitter(new MemoryEmitter) {
+        class MemoryTransactionalSpout : public TransactionalSpout {
+        public:
+            MemoryTransactionalSpout() :
+                _coordinator(new MemoryCoordinator), _emitter(new MemoryEmitter) {
 
-			}
+            }
 
-			virtual hurricane::spout::Coordinator* GetCoordinator() {
-				return _coordinator;
-			}
+            virtual hurricane::spout::Coordinator* GetCoordinator() {
+                return _coordinator;
+            }
 
-			virtual hurricane::bolt::Emitter* GetEmitter() {
-				return _emitter;
-			}
+            virtual hurricane::bolt::Emitter* GetEmitter() {
+                return _emitter;
+            }
 
-		private:
-			MemoryCoordinator* _coordinator;
-			MemoryEmitter* _emitter;
-		};
-	}
+        private:
+            MemoryCoordinator* _coordinator;
+            MemoryEmitter* _emitter;
+        };
+    }
 }

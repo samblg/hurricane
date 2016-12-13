@@ -1,9 +1,0 @@
-'use strict';
-
-module.exports = {
-    name: 'SampleSolution',
-    version: '0.0.1',
-    type: 'solution',
-    projects: [
-    ]
-};

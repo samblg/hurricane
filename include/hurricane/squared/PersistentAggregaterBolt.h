@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "AggregaterBolt.h"
+#include "AggregatorBolt.h"
 #include <memory>
 
 namespace hurricane {
@@ -26,23 +26,23 @@ namespace hurricane {
         class Fields;
     }
 
-    namespace trident {
-        class TridentStateFactory;
-        class BaseAggregater;
-        class TridentState;
+    namespace squared {
+        class SquaredStateFactory;
+        class BaseAggregator;
+        class SquaredState;
 
-        class PersistAggregaterBolt : public AggregaterBolt {
+        class PersistAggregatorBolt : public AggregatorBolt {
         public:
-            PersistAggregaterBolt(const TridentStateFactory * factory,
-                BaseAggregater* aggregater,
+            PersistAggregatorBolt(const SquaredStateFactory * factory,
+                BaseAggregator* aggregator,
                 const base::Fields& outputFields);
 
-            TridentState* GetState() {
+            SquaredState* GetState() {
                 return _state;
             }
 
         private:
-            std::shared_ptr<TridentState> _state;
+            std::shared_ptr<SquaredState> _state;
         };
     }
 }

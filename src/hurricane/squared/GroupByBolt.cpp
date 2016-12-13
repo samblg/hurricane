@@ -17,17 +17,17 @@
  */
 
 #include "GroupByBolt.h"
-#include "TridentCollector.h"
-#include "TridentTuple.h"
+#include "SquaredCollector.h"
+#include "SquaredTuple.h"
 
 namespace hurricane {
-    namespace trident {
+    namespace squared {
         GroupByBolt::GroupByBolt(const base::Fields & fields) :
-            TridentBolt(Fields(), fields)
+            SquaredBolt(Fields(), fields)
         {
         }
 
-        void GroupByBolt::Execute(const TridentTuple & tuple, TridentCollector * collector)
+        void GroupByBolt::Execute(const SquaredTuple & tuple, SquaredCollector * collector)
         {
             collector->Emit(tuple.GetValues());
         }

@@ -21,6 +21,8 @@
 #include "hurricane/base/Fields.h"
 #include "hurricane/base/OutputCollector.h"
 #include "hurricane/bolt/IBolt.h"
+#include "logging/Logging.h"
+
 #include <iostream>
 
 using hurricane::base::Fields;
@@ -62,15 +64,15 @@ namespace hurricane {
 
         IBolt * CBoltWrapper::Clone() const
         {
-            int boltIndex = _cBolt.onClone();
+            int32_t boltIndex = _cBolt.onClone();
             CBoltWrapper* bolt = new CBoltWrapper(&_cBolt);
             bolt->_boltIndex = boltIndex;
 
             return bolt;
         }
 
-        void CBoltWrapper::Emit(CBoltWrapper* bolt, CValues* cValues) {
-            std::cout << "Emit" << std::endl;
+        voistd::coutapper::Emit(CBoltWrapper* bolt, CValues* cValues) {
+            LOG(LOG_DEBUG) << "Emit";
             Values values;
             CValues2Values(*cValues, &values);
             bolt->_collector->Emit(values);
@@ -80,9 +82,9 @@ namespace hurricane {
     
 using hurricane::bolt::CBoltWrapper;
 
-void TestCBolt(CBolt* cBolt) {
-    int boltIndex = cBolt->onClone();
-    std::cout << "Bolt index: " << boltIndex << std::endl;
+voidstd::coutt(CBolt* cBolt) {
+    int32_t boltIndex = cBolt->onClone();
+    LOG(LOG_DEBUG) << "Bolt index: " << boltIndex;
 
     CBoltWrapper* boltWrapper = new CBoltWrapper(cBolt);
     IBolt* bolt = boltWrapper->Clone();

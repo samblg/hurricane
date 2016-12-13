@@ -17,9 +17,10 @@
  */
 
 #include "epoll/EPollLoop.h"
-#include "utils/logger.h"
+#include "logging/Logging.h"
+#include "ByteArray.h"
+
 #include <unistd.h>
-#include "bytearray.h"
 
 namespace meshy {
 }

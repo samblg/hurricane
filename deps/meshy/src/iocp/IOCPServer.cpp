@@ -18,8 +18,8 @@
 
 #include "iocp/IOCPServer.h"
 #include "iocp/IOCPLoop.h"
-#include "utils/common_utils.h"
-#include "utils/logger.h"
+#include "utils/CommonUtils.h"
+#include "logging/Logging.h"
 #include <cstdint>
 #include <cassert>
 #include <memory>
@@ -34,75 +34,75 @@
 #endif
 
 namespace meshy {
-	IOCPServer::IOCPServer() : _completionPort(nullptr), _socket(0), _dataSink(nullptr), _ioOperationDataGroup()
-	{
-		WindowsSocketInitializer::Initialize();
-	}
+    IOCPServer::IOCPServer() : _completionPort(nullptr), _socket(0), _dataSink(nullptr), _ioOperationDataGroup()
+    {
+        WindowsSocketInitializer::Initialize();
+    }
 
-	IOCPServer::~IOCPServer()
-	{}
+    IOCPServer::~IOCPServer()
+    {}
 
-	int32_t IOCPServer::Bind(const std::string host, int32_t port) {
-		_completionPort = CreateIoCompletionPort(INVALID_HANDLE_VALUE, nullptr, 0, 0);
-		if (nullptr == _completionPort) {
-			TRACE_ERROR("CreateIoCompletionPort failed. Error: " + GetLastError());
-			assert(false);
-			return -1;
-		}
+    int32_t IOCPServer::Bind(const std::string host, int32_t port) {
+        _completionPort = CreateIoCompletionPort(INVALID_HANDLE_VALUE, nullptr, 0, 0);
+        if (nullptr == _completionPort) {
+            LOG(LOG_ERROR) << "CreateIoCompletionPort failed. Error: " << GetLastError() ;
+            assert(false);
+            return -1;
+        }
 
-		SOCKET listenfd = socket(AF_INET, SOCK_STREAM, 0);
-		SetNativeSocket(listenfd);
+        SOCKET listenfd = socket(AF_INET, SOCK_STREAM, 0);
+        SetNativeSocket(listenfd);
 
-		int32_t option = 1;
-		setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, (char*)option, sizeof(option));
+        int32_t option = 1;
+        setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, (char*)option, sizeof(option));
 
-		SOCKADDR_IN srvAddr;
-		inet_pton(AF_INET, host.c_str(), &(srvAddr.sin_addr));
-		srvAddr.sin_family = AF_INET;
-		srvAddr.sin_port = htons(port);
-		int32_t errorCode = ::bind(listenfd, (SOCKADDR*)&srvAddr, sizeof(SOCKADDR));
-		if (SOCKET_ERROR == errorCode) {
-			TRACE_ERROR("Bind failed. Error: " + GetLastError());
-			assert(false);
-			return errorCode;
-		}
+        SOCKADDR_IN srvAddr;
+        inet_pton(AF_INET, host.c_str(), &(srvAddr.sin_addr));
+        srvAddr.sin_family = AF_INET;
+        srvAddr.sin_port = htons(port);
+        int32_t errorCode = ::bind(listenfd, (SOCKADDR*)&srvAddr, sizeof(SOCKADDR));
+        if (SOCKET_ERROR == errorCode) {
+            LOG(LOG_ERROR) << "Bind failed. Error: " + GetLastError() ;
+            assert(false);
+            return errorCode;
+        }
 
-		return 0;
-	}
+        return 0;
+    }
 
-	int32_t IOCPServer::Listen(DataSink* dataSink, int32_t backlog) {
-		int32_t listenfd = GetNativeSocket();
-		int32_t errorCode = listen(listenfd, backlog);
-		if (-1 == errorCode) {
-			TRACE_ERROR("Listen socket failed!");
-			assert(0);
-			return errorCode;
-		}
 
-		this->SetDataSink(dataSink);
-		IOCPLoop::Get()->AddServer(this);
-	}
+    int32_t IOCPServer::Listen(const std::string& host, int32_t port, int32_t backlog) {
+        int32_t listenfd = 0;
+        int32_t errorCode = listen(listenfd, backlog);
+        if (-1 == errorCode) {
+            LOG(LOG_ERROR) << "Listen socket failed!" ;
+            assert(0);
+            return errorCode;
+        }
 
-	WSAConnectionPtr IOCPServer::Accept(int32_t listenfd)
-	{
-		SOCKADDR_IN saRemote;
-		int RemoteLen;
-		SOCKET acceptSocket;
+        return 0;
+    }
 
-		RemoteLen = sizeof(saRemote);
-		acceptSocket = accept(GetNativeSocket(), (SOCKADDR*)&saRemote, &RemoteLen); // blocked
-		if (SOCKET_ERROR == acceptSocket)
-		{
-			std::cerr << "Accept Socket Error: " << GetLastError() << std::endl;
-			throw std::exception("Accept Socket Error: ");
-		}
-		
-		WSAConnectionPtr connection = std::make_shared<WSAConnection>(acceptSocket, saRemote);
+    WSAConnectionPtr IOCPServer::Accept(int32_t listenfd)
+    {
+        SOCKADDR_IN saRemote;
+        int32_t RemoteLen;
+        SOCKET acceptSocket;
+
+        RemoteLen = sizeof(saRemote);
+        acceptSocket = accept(GetNativeSocket(), (SOCKADDR*)&saRemote, &RemoteLen); // blocked
+        if (SOCKET_ERROR == acceptSocket)
+        {
+            LOG(LOG_ERROR) << "Accept Socket Error: " << GetLastError() ;
+            throw std::exception("Accept Socket Error: ");
+        }
+        
+        WSAConnectionPtr connection = std::make_shared<WSAConnection>(acceptSocket, saRemote);
         connection->SetDataSink(GetDataSink());
 
         IOCP::OperationDataPtr perIOData = IOCP::CreateOperationData(connection, this->GetCompletionPort());
-		_ioOperationDataGroup.push_back(perIOData);
-		connection->SetOperationData(perIOData);
+        _ioOperationDataGroup.push_back(perIOData);
+        connection->SetOperationData(perIOData);
 
         DWORD flags = 0;
         DWORD RecvBytes = 0;
@@ -110,27 +110,27 @@ namespace meshy {
             &(connection->GetOperationData()->databuff), 1, &RecvBytes, &flags,
             &(connection->GetOperationData()->overlapped), NULL);
 
-		return connection;
-	}
+        return connection;
+    }
 
 
-	void IOCPServer::SetDataSink(DataSink *dataSink)
-	{
-		_dataSink = dataSink;
-	}
+    void IOCPServer::SetDataSink(DataSink *dataSink)
+    {
+        _dataSink = dataSink;
+    }
 
-	DataSink* IOCPServer::GetDataSink() const
-	{
-		return _dataSink;
-	}
+    DataSink* IOCPServer::GetDataSink() const
+    {
+        return _dataSink;
+    }
 
-	void IOCPServer::SetCompletionPort(HANDLE completionPort)
-	{
-		_completionPort = completionPort;
-	}
+    void IOCPServer::SetCompletionPort(HANDLE completionPort)
+    {
+        _completionPort = completionPort;
+    }
 
-	HANDLE IOCPServer::GetCompletionPort() const
-	{
-		return _completionPort;
-	}
+    HANDLE IOCPServer::GetCompletionPort() const
+    {
+        return _completionPort;
+    }
 }

@@ -1,0 +1,2 @@
+LOGGING_INCLUDE := -I"../../../../../../deps/logging/include"
+LOGGING_LIB := ../../../../../../deps/logging/target/linux/x64/Release/lib

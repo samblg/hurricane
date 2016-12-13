@@ -1,0 +1,38 @@
+'use strict';
+
+module.exports = {
+    name: 'logging',
+    type: 'cpp',
+    target: 'dynamic_library',
+    common: {
+        compiler: {
+            defines: ['$(Inherit)', 'USE_KLOG'],
+            src: [
+                'src/logging/CheckLogger.cpp',
+                'src/logging/ExpressionLogger.cpp',
+                'src/logging/Logger.cpp',
+                'src/logging/IOStreamManager.cpp',
+                'src/logging/DirectLoggerStream.cpp',
+                'src/logging/Logging.cpp'
+            ],
+            includePaths: [
+                'include'
+            ]
+        },
+    },
+    options: {
+        enableThread: {
+            value: true,
+            compiler: {
+                src: [
+                    '$(Inherit)',
+                    'src/logging/LogItemQueue.cpp',
+                    'src/logging/LogOutputThread.cpp',
+                    'src/logging/ThreadLoggerStream.cpp'
+                ],
+                defines: ['$(Inherit)', 'KLOG_ENABLE_THREAD'],
+                cxxflags: ['$(Inherit)', '-pthread'],
+            }
+        }
+    }
+};

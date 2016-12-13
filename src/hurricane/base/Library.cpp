@@ -1,43 +1,31 @@
+/**
+ * licensed to the apache software foundation (asf) under one
+ * or more contributor license agreements.  see the notice file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  the asf licenses this file
+ * to you under the apache license, version 2.0 (the
+ * "license"); you may not use this file except in compliance
+ * with the license.  you may obtain a copy of the license at
+ *
+ * http://www.apache.org/licenses/license-2.0
+ *
+ * unless required by applicable law or agreed to in writing, software
+ * distributed under the license is distributed on an "as is" basis,
+ * without warranties or conditions of any kind, either express or implied.
+ * see the license for the specific language governing permissions and
+ * limitations under the license.
+ */
+
 #include "hurricane/base/Library.h"
+#include "logging/Logging.h"
 
 #ifndef WIN32
 #include <dlfcn.h>
 #else
 #include <Windows.h>
-
-extern HMODULE LibrarayHandle;
 #endif
 
 #include <string>
 #include <iostream>
 
 using namespace std;
-
-std::string GetLibraryPath() {
-#ifndef WIN32
-    Dl_info dllInfo;
-
-    int ret = dladdr((void*)(GetLibraryPath), &dllInfo);
-    if ( !ret ) {
-        std::cout << "[ERROR] Get Library Path failed" << std::endl;
-        exit(EXIT_FAILURE);
-    }
-
-    std::string libraryFilePath = dllInfo.dli_fname;
-    std::string::size_type pos = libraryFilePath.rfind('/');
-#else
-    const int MAX_FILE_NAME = 1000;
-
-    char moduleFileName[MAX_FILE_NAME];
-    GetModuleFileName(LibrarayHandle, moduleFileName, MAX_FILE_NAME);
-
-    std::string libraryFilePath = moduleFileName;
-    std::string::size_type pos = libraryFilePath.rfind('\\');
-#endif
-
-    if ( pos == std::string::npos ) {
-        return ".";
-    }
-
-    return libraryFilePath.substr(0, pos);
-}

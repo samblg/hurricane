@@ -25,12 +25,12 @@
 #include <map>
 
 namespace hurricane {
-    namespace trident {
-        class TridentTuple {
+    namespace squared {
+        class SquaredTuple {
         public:
-            TridentTuple(const base::Fields& fields, const base::Values& values) :
+            SquaredTuple(const base::Fields& fields, const base::Values& values) :
                     _fields(fields), _values(values){
-                int fieldIndex = 0;
+                int32_t fieldIndex = 0;
                 for ( const std::string& field : fields ) {
                     _fieldMaps[field] = fieldIndex;
 
@@ -38,22 +38,22 @@ namespace hurricane {
                 }
             }
 
-            int32_t GetInteger(int index) {
+            int32_t GetInteger(int32_t index) {
                 return _values[index].ToInt32();
             }
 
             int32_t GetInteger(const std::string& fieldName) {
-                int index = _fieldMaps[fieldName];
+                int32_t index = _fieldMaps[fieldName];
 
                 return GetInteger(index);
             }
 
-            std::string GetString(int index) {
+            std::string GetString(int32_t index) {
                 return _values[index].ToString();
             }
 
             std::string GetString(const std::string& fieldName) {
-                int index = _fieldMaps[fieldName];
+                int32_t index = _fieldMaps[fieldName];
 
                 return GetString(index);
             }
@@ -62,19 +62,19 @@ namespace hurricane {
                 return _values;
             }
 
-            void SetBatchId(int batchId) {
+            void SetBatchId(int32_t batchId) {
                 _batchId = batchId;
             }
 
-            int GetBatchId() const {
+            int32_t GetBatchId() const {
                 return _batchId;
             }
 
         private:
             base::Fields _fields;
-            std::map<std::string, int> _fieldMaps;
+            std::map<std::string, int32_t> _fieldMaps;
             base::Values _values;
-            int _batchId;
+            int32_t _batchId;
         };
     }
 }

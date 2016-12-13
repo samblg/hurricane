@@ -19,7 +19,7 @@
 #ifndef NET_FRAMEWORK_HTTPCONTEXT_H_H
 #define NET_FRAMEWORK_HTTPCONTEXT_H_H
 
-#include "bytearray.h"
+#include "ByteArray.h"
 #include <map>
 #include <string>
 #include <vector>

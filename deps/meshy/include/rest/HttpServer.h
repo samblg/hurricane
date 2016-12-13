@@ -34,7 +34,7 @@ namespace  meshy {
         HttpServer();
         virtual ~HttpServer();
 
-        void Listen(const std::string& host, int port, int backlog = 20);
+        void Listen(const std::string& host, int32_t port, int32_t backlog = 20);
         void OnConnection(ConnectionHandler handler) {
             _connectionHandler = handler;
         }

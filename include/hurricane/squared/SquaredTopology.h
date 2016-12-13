@@ -23,27 +23,27 @@
 #include <map>
 
 namespace hurricane {
-    namespace trident {
-        class TridentSpout;
-        class TridentStream;
+    namespace squared {
+        class SquaredSpout;
+        class SquaredStream;
         class DRPCStream;
 
-        class TridentToplogy : public SimpleTopology {
+        class SquaredToplogy : public SimpleTopology {
         public:
-            TridentToplogy TridentToplogy();
-            TridentStream* NewStream(const std::string& spoutName,
-                TridentSpout* tridentSpout);
+            SquaredToplogy SquaredToplogy();
+            SquaredStream* NewStream(const std::string& spoutName,
+                SquaredSpout* squaredSpout);
 
             DRPCStream* NewDRPCStream(const std::string& serviceName);
 
             void Deploy();
             
         private:
-            void _Deploy(TridentStream* stream);
+            void _Deploy(SquaredStream* stream);
             void _Deploy(DRPCStream* stream);
 
         private:
-            std::vector<std::shared_ptr<TridentStream>> _tridentStreams;
+            std::vector<std::shared_ptr<SquaredStream>> _squaredStreams;
             std::map<std::string, std::shared_ptr<DRPCStream>> _drpcStreams;
         };
     }

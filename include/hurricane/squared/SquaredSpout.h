@@ -21,10 +21,10 @@
 #include "hurricane/spout/ISpout.h"
 
 namespace hurricane {
-    namespace trident {
-        class TridentSpout : public ISpout {
+    namespace squared {
+        class SquaredSpout : public ISpout {
         public:
-            TridentSpout() {}
+            SquaredSpout() {}
 
             virtual void Open(base::OutputCollector& outputCollector) = 0;
             virtual void Close() = 0;

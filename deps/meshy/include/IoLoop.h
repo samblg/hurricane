@@ -18,8 +18,10 @@
 
 #pragma once
 
-const int MAX_EVENT_COUNT = 5000;
-const int MAX_RECV_BUFF = 65535;
+#include <cstdint>
+
+const int32_t MAX_EVENT_COUNT = 5000;
+const int32_t MAX_RECV_BUFF = 65535;
 
 #ifdef OS_WIN32
 #include "iocp/iocploop.h"

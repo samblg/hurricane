@@ -26,7 +26,7 @@
 #include "hurricane/base/DataPackage.h"
 #include "temp/NetListener.h"
 #include "hurricane/message/CommandDispatcher.h"
-#include "hurricane/message/NimbusCommander.h"
+#include "hurricane/message/PresidentCommander.h"
 #include "hurricane/base/Node.h"
 #include "temp/WordCountTopology.h"
 #include "DRPCStream.h"
@@ -36,12 +36,12 @@ using hurricane::base::ByteArray;
 using hurricane::base::DataPackage;
 using hurricane::message::Command;
 using hurricane::message::CommandDispatcher;
-using hurricane::message::NimbusCommander;
+using hurricane::message::PresidentCommander;
 using hurricane::base::Node;
 using hurricane::topology::ITopology;
 using hurricane::spout::ISpout;
 using hurricane::bolt::IBolt;
-using hurricane::trident::DRPCStream;
+using hurricane::squared::DRPCStream;
 
 const NetAddress SERVER_ADDRESS{ "127.0.0.1", 3772 };
 

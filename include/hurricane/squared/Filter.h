@@ -19,20 +19,20 @@
 #pragma once
 
 #include "Operation.h"
-#include "TridentCollector.h"
-#include "TridentTuple.h"
+#include "SquaredCollector.h"
+#include "SquaredTuple.h"
 
 namespace hurricane {
-    namespace trident {
+    namespace squared {
         class Function : public Operation {
-            virtual void Execute(const TridentTuple& tuple,
-                TridentCollector* collector) override {
+            virtual void Execute(const SquaredTuple& tuple,
+                SquaredCollector* collector) override {
                 if ( Filter(tuple) ) {
                     collector->Emit(tuple.GetValues())
                 }
             }
 
-            virtual bool Filter(const TridentTuple& tuple) = 0;
+            virtual bool Filter(const SquaredTuple& tuple) = 0;
         };
     }
 }

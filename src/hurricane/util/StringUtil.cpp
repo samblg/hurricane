@@ -26,22 +26,21 @@ using std::vector;
 using std::string;
 
 vector<string> SplitString(const string& value, char seperator) {
-	vector<string> splitedStrings;
+    vector<string> splitedStrings;
 
     size_t currentPos = 0;
-    while ( 1 ) {
+    while ( true ) {
         size_t nextPos = value.find(seperator, currentPos);
         if ( nextPos == string::npos ) {
             string currentString = value.substr(currentPos);
-            if ( currentString != "" ) {
+            if ( !currentString.empty() ) {
                 splitedStrings.push_back(currentString);
             }
 
             break;
         }
 
-        string currentString = value.substr(currentPos, nextPos - currentPos);
-        splitedStrings.push_back(currentString);
+        splitedStrings.push_back(value.substr(currentPos, nextPos - currentPos));
         currentPos = nextPos + 1;
     }
 
@@ -49,33 +48,33 @@ vector<string> SplitString(const string& value, char seperator) {
 }
 
 std::string TrimString(const std::string& value) {
-	std::string trimmed = value;
+    std::string trimmed = value;
 
-	while ( !trimmed.empty() && isblank(trimmed.front()) ) {
-		trimmed.erase(trimmed.begin());
-	}
+    while ( !trimmed.empty() && isblank(trimmed.front()) ) {
+        trimmed.erase(trimmed.begin());
+    }
 
-	while ( !trimmed.empty() && isblank(trimmed.back()) ) {
-		trimmed.erase(trimmed.end() - 1);
-	}
+    while ( !trimmed.empty() && isblank(trimmed.back()) ) {
+        trimmed.erase(trimmed.end() - 1);
+    }
 
-	return trimmed;
+    return trimmed;
 }
 
-std::string RandomString(const std::string & candidate, int length)
+std::string RandomString(const std::string& candidate, int32_t length)
 {
-    srand(time(0));
+    srand(static_cast<uint32_t>(time(0)));
 
     std::string result;
-    for ( int index = 0; index != length; ++ index ) {
-        int charIndex = rand() % candidate.size();
+    for ( int32_t index = 0; index != length; ++ index ) {
+        int32_t charIndex = rand() % candidate.size();
         result.push_back(candidate[charIndex]);
     }
 
     return result;
 }
 
-std::string Int2String(int value)
+std::string Int2String(int32_t value)
 {
     std::ostringstream os;
     os << value;
@@ -83,11 +82,11 @@ std::string Int2String(int value)
     return os.str();
 }
 
-std::string JoinStrings(const std::vector<std::string>& words)
+std::string JoinString(const std::vector<std::string>& words, char splitter)
 {
     std::string sentence;
     for ( const std::string& word : words ) {
-        sentence += word + ' ';
+        sentence += word + splitter;
     }
 
     sentence.pop_back();

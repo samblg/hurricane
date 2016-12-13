@@ -1,0 +1,17 @@
+'use strict';
+
+module.exports = {
+    compiler: {
+        cxx: 'g++',
+        std: 'c++11',
+        cxxflags: ['-O2'],
+        defines: ['NDEBUG'],
+        exts: ['cpp', 'cxx', 'cc'],
+        nvcc: 'nvcc',
+        nvccflags: ['--gpu-architecture=sm_30', '-O2'],
+        nvccExts: ['cu'],
+    },
+    linker: {
+        ld: 'g++'
+    }
+};

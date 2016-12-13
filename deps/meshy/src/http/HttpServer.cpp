@@ -27,7 +27,7 @@ namespace  meshy {
     HttpServer::~HttpServer() {
     }
 
-    void HttpServer::Listen(const std::string &host, int port, int backlog) {
+    void HttpServer::Listen(const std::string& host, int32_t port, int32_t backlog) {
         _server.Listen(host, port, backlog);
 
         _server.OnConnect([this](IStream* stream) {

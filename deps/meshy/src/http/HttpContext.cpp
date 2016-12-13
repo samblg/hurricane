@@ -37,7 +37,7 @@ HttpContext HttpContext::FromStdStringList(const StdStringList& stringList) {
     return context;
 }
 
-void HttpContext::ParseStdStringList(const StdStringList &stringList) {
+void HttpContext::ParseStdStringList(const StdStringList& stringList) {
     for ( const std::string& line : stringList ) {
         StdStringList words = SplitString(line, ':');
 
@@ -48,7 +48,7 @@ void HttpContext::ParseStdStringList(const StdStringList &stringList) {
         std::string headerName = words[0];
         std::string headerValue = words[1];
         if ( words.size() > 2 ) {
-            for ( int wordIndex = 2; wordIndex < words.size(); ++ wordIndex ) {
+            for ( int32_t wordIndex = 2; wordIndex < words.size(); ++ wordIndex ) {
                 headerValue += ':';
                 headerValue += words[wordIndex];
             }
@@ -76,10 +76,10 @@ std::string HttpContext::ToStdString() const {
     return headersString;
 }
 
-void HttpContext::SetContent(const std::string &content) {
+void HttpContext::SetContent(const std::string& content) {
     _content = content;
 
-    int contentLength = _content.size();
+    int32_t contentLength = static_cast<int32_t>(_content.size());
     if ( contentLength > 0 ) {
         SetHeader("Content-Length", itos(contentLength));
     }

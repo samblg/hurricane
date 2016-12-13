@@ -19,8 +19,8 @@
 #pragma once
 
 #include "DataSink.h"
-#include "bytearray.h"
-#include "utils/thread_pool.h"
+#include "ByteArray.h"
+#include "utils/ThreadPool.h"
 
 namespace meshy {
     class EventQueue;
@@ -29,15 +29,15 @@ namespace meshy {
 
     class PackageDataSink : public DataSink {
     public:
-        PackageDataSink(EventQueue *eventQueue);
+        PackageDataSink(EventQueue* eventQueue);
 
         ~PackageDataSink();
 
-        int32_t Write(IStream *stream, const char *buf, int64_t bytes) override;
+        int32_t Write(IStream* stream, const char* buf, int64_t bytes) override;
 
     private:
-        EventQueue *_eventQueue;
-        ThreadPool<BaseEvent> *_threadPool;
+        EventQueue* _eventQueue;
+        ThreadPool<BaseEvent>* _threadPool;
         ByteArray _data;
         int32_t _totalSize;
     };

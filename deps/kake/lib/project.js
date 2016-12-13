@@ -1,14 +1,35 @@
 'use strict';
 
-let utils = {
+const path = require('path');
+const utils = {
     fs: require('./util/fs'),
     string: require('./util/string'),
-    child_process: require('./util/child_process')
+    config: require('./util/config'),
+    child_process: require('./util/child_process'),
+    loggers: require('./util/loggers')
 };
 
-let template = require('./template');
-let fs = require('fs');
-let child_process = require('child_process');
+const template = require('./template');
+const fs = require('fs');
+const child_process = require('child_process');
+const logger = utils.loggers.kake;
+
+function PushIfNotExist(container, key, element) {
+    if ( container[key] ) {
+        if ( container[key].indexOf(element) == -1 ) {
+            container[key].push(element);
+        }
+    }
+    else {
+        container[key] = [ element ];
+    }
+}
+
+function AssignIfNotExist(container, key, value) {
+    if ( !container[key] ) {
+        container[key] = value;
+    }
+}
 
 class Project {
     constructor(projectDir, options, solution) {
@@ -17,9 +38,8 @@ class Project {
         this._solution = solution;
         this._solutionPath = options.solutionPath;
         this._deps = options.deps;
-        this._basePath = projectDir;
-        this._completePath = fs.realpathSync(projectDir);
-        this._kakefile = this._completePath + '/Kakefile';
+        this._projectDir = utils.fs.absolutePath(projectDir);
+        this._kakefile = path.join(this._projectDir, '/Kakefile');
         let projectConfig = require(this._kakefile);
         this._projectConfig = projectConfig;
 
@@ -27,10 +47,69 @@ class Project {
         this._version = projectConfig.version;
         this._type = projectConfig.type;
         this._target = projectConfig.target;
-        this._targetPath = fs.realpathSync(projectDir + '/' + projectConfig.targetPath);
-        this._buildPath = this._targetPath + `/build/linux/x64/Release/${this._name}`;
-        this._binPath = fs.realpathSync(`${this._targetPath}/bin/linux/x64/Release`);
-        this._libPath = fs.realpathSync(`${this._targetPath}/lib/linux/x64/Release`);
+        this._targetPath = utils.fs.absolutePath('.');
+        this._options = projectConfig.options;
+        if ( !this._options ) {
+            this._options = {};
+        }
+    }
+
+    readConfig(config) {
+        const configFileName = `${config.os}-${config.arch}-${config.configurationName}.kake`;
+        const configFilePath = path.join(this._projectDir, 'config', configFileName);
+        this._solutionConfiguration = config.configuration;
+        AssignIfNotExist(this._solutionConfiguration, 'options', {});
+
+        if ( utils.fs.exists(configFilePath) ) {
+            logger.info(`Read project config: ${configFileName}`);
+            this._configuration = require(configFilePath);
+        }
+        else {
+            logger.warn(`Use default configuration because can not find project config: ${configFileName}`);
+            this._configuration = {};
+        }
+
+        // Combine configurations
+        let finalConfiguration = Object.create(null);
+        this._finalConfiguration = finalConfiguration;
+
+        finalConfiguration.compiler = utils.config.combineConfig(
+                this._solutionConfiguration.compiler, this._projectConfig.common.compiler);
+        finalConfiguration.linker = utils.config.combineConfig(
+                this._solutionConfiguration.linker, this._projectConfig.common.linker);
+        finalConfiguration.dependencies = utils.config.combineConfig(
+                this._solutionConfiguration.dependencies, this._projectConfig.common.dependencies);
+
+        let conditions = this._solutionConfiguration.options;
+        Object.keys(conditions).forEach(condition => {
+            let conditionValue = this._solutionConfiguration.options[condition];
+            if ( conditionValue ) {
+                let solutionOptionConf = this._solution._options[condition];
+                if ( solutionOptionConf && solutionOptionConf.value === conditionValue ) {
+                    finalConfiguration.compiler = utils.config.combineConfig(
+                            finalConfiguration.compiler, solutionOptionConf.compiler);
+                    finalConfiguration.linker = utils.config.combineConfig(
+                            finalConfiguration.linker, solutionOptionConf.linker);
+                    finalConfiguration.dependencies = utils.config.combineConfig(
+                            finalConfiguration.dependencies, solutionOptionConf.dependencies);
+                }
+
+                let projectOptionConf = this._options[condition];
+                if ( projectOptionConf && projectOptionConf.value === conditionValue ) {
+                    finalConfiguration.compiler = utils.config.combineConfig(
+                            finalConfiguration.compiler, projectOptionConf.compiler);
+                    finalConfiguration.linker = utils.config.combineConfig(
+                            finalConfiguration.linker, projectOptionConf.linker);
+                    finalConfiguration.dependencies = utils.config.combineConfig(
+                            finalConfiguration.dependencies, projectOptionConf.dependencies);
+                }
+            }
+        });
+
+        this._buildPath = path.join(this._solution._buildPath, this._name);
+        this._binPath = this._solution._binPath;
+        this._libPath = this._solution._libPath;
+
         if ( this._target == 'executable' ) {
             this._installPath = this._binPath;
         }
@@ -38,67 +117,61 @@ class Project {
             this._installPath = this._libPath;
         }
 
-        // Ignore when the directory exists.
-        try {
-            fs.mkdirSync(this._buildPath);
-        }
-        catch (e) {
-        }
-        this._buildPath = fs.realpathSync(this._buildPath);
+        utils.fs.mkdir(this._buildPath);
+        utils.fs.mkdir(this._binPath);
+        utils.fs.mkdir(this._libPath);
+        utils.fs.mkdir(this._installPath);
 
-        this._compiler = projectConfig.compiler;
-        this._linker = projectConfig.linker;
-        this._dependencies = projectConfig.dependencies;
+        logger.debug(`Use build path: ${this._buildPath}`);
+        logger.debug(`Use bin path: ${this._binPath}`);
+        logger.debug(`Use lib path: ${this._libPath}`);
+        logger.debug(`Use install path: ${this._installPath}`);
 
-        if ( !this._compiler.exts ) {
-            this._compiler.exts = ['cpp'];
-        }
+        this._buildPath = utils.fs.absolutePath(this._buildPath);
+        this._binPath = utils.fs.absolutePath(this._binPath);
+        this._libPath = utils.fs.absolutePath(this._libPath);
+        this._installPath = utils.fs.absolutePath(this._installPath);
+
+        AssignIfNotExist(finalConfiguration.compiler, 'exts', ['cpp']);
         if ( this._target == 'dynamic_library' ) {
-            if ( this._compiler.cxxflags ) {
-                this._compiler.cxxflags.push('-fPIC');
-            }
-            else {
-                this._compiler.cxxflags = ['-fPIC'];
-            }
+            PushIfNotExist(finalConfiguration.compiler, 'cxxflags', '-fPIC');
         }
-        
-        this._compiler.src = this._compiler.src.map(srcPath => {
-            return fs.realpathSync(projectDir + '/' + srcPath);
+
+        finalConfiguration.compiler.src = finalConfiguration.compiler.src.map(srcPath => {
+            return fs.realpathSync(path.join(this._solution._basePath, srcPath));
         });
 
-        let srcDirs = this._compiler.src.filter(srcPath => fs.statSync(srcPath).isDirectory());
-        this._compiler.src = this._compiler.src.filter(srcPath => fs.statSync(srcPath).isFile());
+        let srcDirs = finalConfiguration.compiler.src.filter(srcPath => fs.statSync(srcPath).isDirectory());
+        finalConfiguration.compiler.src = finalConfiguration.compiler.src.filter(srcPath => fs.statSync(srcPath).isFile());
         srcDirs.forEach(srcDir => {
             let srcFiles = utils.fs.findFiles({
                 path: srcDir,
-                exts: self._compiler.exts
+                exts: finalConfiguration.compiler.exts
             });
 
             srcFiles.forEach(srcFile => {
-                this._compiler.src.push(srcFile);
+                finalConfiguration.compiler.src.push(srcFile);
             });
         });
 
-        if ( this._compiler.useCuda ) {
-            if ( !this._compiler.nvccExts ) {
-                this._compiler.nvccExts = ['cu'];
-            }
+        if ( finalConfiguration.compiler.useCuda ) {
+            AssignIfNotExist(finalConfiguration.compiler, 'nvccExts', ['cu']);
 
-            this._compiler.nvccSrc = [];
+            finalConfiguration.compiler.nvccSrc = [];
             srcDirs.forEach(srcDir => {
                 let srcFiles = utils.fs.findFiles({
                     path: srcDir,
-                    exts: self._compiler.nvccExts
+                    exts: finalConfiguration.compiler.nvccExts
                 });
 
                 srcFiles.forEach(srcFile => {
-                    this._compiler.nvccSrc.push(srcFile);
+                    finalConfiguration.compiler.nvccSrc.push(srcFile);
                 });
             });
         }
 
-        this._compiler.includePaths = this._compiler.includePaths.map(includePath => {
-            return fs.realpathSync(projectDir + '/' + includePath);
+        finalConfiguration.compiler.includePaths = finalConfiguration.compiler.includePaths.map(includePath => {
+            return fs.realpathSync(path.join(this._solution._basePath, includePath));
         });
     }
 
@@ -106,6 +179,10 @@ class Project {
         let configs = this.generateConfig();
         let configLines = Object.keys(configs).map(configKey => {
             let configValue = configs[configKey];
+
+            if ( !configValue ) {
+                configValue = '';
+            }
 
             if ( configValue instanceof Array ) {
                 configValue = configValue.join(' ');
@@ -140,7 +217,8 @@ class Project {
         let objectFiles = [];
         let dependencyLines = [];
 
-        this._compiler.src.forEach(srcPath => {
+        let finalConfiguration = this._finalConfiguration;
+        finalConfiguration.compiler.src.forEach(srcPath => {
             let {objectFileName, dependencyLine} = this.generateDependency(srcPath);
 
             let compilerCommand = this.generateCompilerCommand(srcPath);
@@ -150,8 +228,8 @@ class Project {
             objectFiles.push(objectFileName);
         });
 
-        if ( this._compiler.useCuda ) {
-            this._compiler.nvccSrc.forEach(srcPath => {
+        if ( finalConfiguration.compiler.useCuda ) {
+            finalConfiguration.compiler.nvccSrc.forEach(srcPath => {
                 let {objectFileName, dependencyLine} = this.generateNvccDependency(srcPath);
 
                 let compilerCommand = this.generateNvccCompilerCommand(srcPath);
@@ -173,18 +251,58 @@ class Project {
         makefileLines.push(this.generateLinkLine(targetName) + '\n');
 
         let binPath = utils.fs.relativePath(this._installPath, this._buildPath);
-        makefileLines.push(`install: ${binPath}/${targetName}\n`);
-        makefileLines.push(`${binPath}/${targetName}: ${targetName}`);
-        makefileLines.push(`\tcp ${targetName} ${binPath}\n`);
+        this.generateInstallLines(makefileLines, targetName, binPath);
+        this.generateCleanLines(makefileLines, targetName);
 
-        makefileLines.push(`clean:`);
-        makefileLines.push(`\trm -f ${targetName}`);
-        makefileLines.push(`\trm -f *.o\n`);
-        
         let makefileContent = `${makefileLines.join('\n')}\n${dependencyLines.join('')}`;
         let makefilePath = `${this._buildPath}/Makefile`;
 
         fs.writeFileSync(makefilePath, makefileContent);
+    }
+
+    generateInstallLines(makefileLines, targetName, binPath) {
+        let installTargetHint = this.generateMakefileHint({
+            type: 'INSTALL',
+            message: `${targetName} -> ${binPath}`
+        });
+
+        makefileLines.push(`install: ${binPath}/${targetName}\n`);
+        makefileLines.push(`${binPath}/${targetName}: ${targetName}`);
+        makefileLines.push(`\t@${installTargetHint}`);
+        makefileLines.push(`\t@cp ${targetName} ${binPath}\n`);
+    }
+
+    generateCleanLines(makefileLines, targetName) {
+        let cleanTargetHint = this.generateMakefileHint({
+            type: 'CLEAN',
+            message: targetName
+        });
+
+        makefileLines.push(`clean:`);
+        makefileLines.push(`\t@${cleanTargetHint}`);
+        makefileLines.push(`\t@rm -f ${targetName}`);
+        makefileLines.push(`\t@rm -f *.o\n`);
+    }
+
+    build(parallism) {
+        child_process.execSync(`make -j ${parallism}`, {
+            cwd: this._buildPath,
+            stdio: ['inherit', 'inherit', 'inherit' ]
+        });
+    }
+
+    install(parallism) {
+        child_process.execSync(`make install -j ${parallism}`, {
+            cwd: this._buildPath,
+            stdio: ['inherit', 'inherit', 'inherit' ]
+        });
+    }
+
+    clean() {
+        child_process.execSync('make clean', {
+            cwd: this._buildPath,
+            stdio: ['inherit', 'inherit', 'inherit' ]
+        });
     }
 
     generateLinkLine(targetName) {
@@ -196,8 +314,14 @@ class Project {
         return linkLines.join('\n');
     }
 
+    generateMakefileHint(options) {
+        return `echo -e "\\e[32m[${options.type}] \\033[0m${options.message}"`;
+    }
+
     generateLinkerCommand(targetName) {
-        let command = `\t$(LD) $(OBJS)`;
+        let finalConfiguration = this._finalConfiguration;
+
+        let command = `\t@$(LD) $(OBJS)`;
         if ( this._target == 'dynamic_library' ) {
             command += ' -shared';
         }
@@ -205,8 +329,8 @@ class Project {
         let libraryPaths = [];
         let inputs = [];
 
-        if ( this._dependencies ) {
-            Object.keys(this._dependencies).forEach(depName => {
+        if ( finalConfiguration.dependencies ) {
+            Object.keys(finalConfiguration.dependencies).forEach(depName => {
                 let dep = this._deps[depName];
 
                 if ( !dep ) {
@@ -227,22 +351,27 @@ class Project {
         }
 
         let ldflags = '';
-        if ( this._linker.ldflags ) {
-            ldflags = this._linker.ldflags.join(' ');
+        if ( finalConfiguration.linker.ldflags ) {
+            ldflags = finalConfiguration.linker.ldflags.join(' ');
         }
 
-        return `${command} -o ${targetName} ${libraryPaths.join(' ')} ${inputs.join(' ')} ${ldflags}`;
+        let makefileHint = this.generateMakefileHint({
+            type: 'LINK',
+            message: targetName
+        });
+
+        return `\t@${makefileHint}\n${command} -o ${targetName} ${libraryPaths.join(' ')} ${inputs.join(' ')} ${ldflags}`;
     }
 
     generateConfig() {
         let config = {
-            CXX: this._compiler.cxx,
-            NVCC: this._compiler.nvcc,
-            LD: this._linker.ld,
-            LDFLAGS: this._linker.ldflags,
-            OS: 'linux',
-            BITS: '64',
-            CPU: 'x64',
+            SHELL: '/bin/bash',
+            CXX: this._finalConfiguration.compiler.cxx,
+            NVCC: this._finalConfiguration.compiler.nvcc,
+            LD: this._finalConfiguration.linker.ld,
+            LDFLAGS: this._finalConfiguration.linker.ldflags,
+            OS: this._solution._os,
+            CPU: this._solution._arch,
             PLATFORM: '$(OS)/$(CPU)'
         };
 
@@ -285,7 +414,9 @@ class Project {
     }
 
     generateDependency(srcPath) {
-        console.log(`Resolve dependency: ${srcPath}`);
+        let finalConfiguration = this._finalConfiguration;
+
+        logger.info(`Resolve dependency: ${srcPath}`);
         let cwd = this._buildPath;
         let srcRelativePath = utils.fs.relativePath(srcPath, this._buildPath);
         let commandArguments = [srcRelativePath, '-c','-MM'];
@@ -293,7 +424,7 @@ class Project {
             useIncludeVariable: false
         });
 
-        let resolveResult = child_process.execFileSync('g++', commandArguments, {
+        let resolveResult = child_process.execFileSync(finalConfiguration.compiler.cxx, commandArguments, {
             cwd: cwd,
             encoding: 'utf8'
         });
@@ -325,7 +456,9 @@ class Project {
     }
 
     generateNvccDependency(srcPath) {
-        console.log(`Resolve dependency: ${srcPath}`);
+        let finalConfiguration = this._finalConfiguration;
+
+        logger.info(`Resolve dependency: ${srcPath}`);
         let cwd = this._buildPath;
         let srcRelativePath = utils.fs.relativePath(srcPath, this._buildPath);
         let commandArguments = [srcRelativePath, '-c', '--verbose', '--dryrun'];
@@ -333,13 +466,20 @@ class Project {
             useIncludeVariable: false
         });
 
-        let nvccResult = utils.child_process.execFile('nvcc', commandArguments, {
+        let nvccResult = utils.child_process.execFile(finalConfiguration.compiler.nvcc, commandArguments, {
             cwd: cwd,
             encoding: 'utf8'
         });
 
+        let cxxDirName = path.dirname(finalConfiguration.compiler.cxx);
+        let cxxBaseName = path.basename(finalConfiguration.compiler.cxx);
+        let lineStart = `#$ ${finalConfiguration.compiler.cxx}`;
+        if ( cxxDirName.startsWith('/') ) {
+            lineStart = `#$ "${cxxDirName}"/${cxxBaseName}`
+        }
+
         let cbinCommand = nvccResult.stderr.split('\n').find(line => {
-            return line.startsWith('#$ gcc');
+            return line.startsWith(lineStart);
         });
 
         let redirectIndex = cbinCommand.indexOf('>');
@@ -383,7 +523,12 @@ class Project {
             useIncludeVariable: true
         });
 
-        return '\t' + commandArguments.join(' ');
+        let compileHint = this.generateMakefileHint({
+            type: 'CXX',
+            message: `${srcRelativePath} -> $@`
+        });
+
+        return `\t@${compileHint}\n` + '\t@' + commandArguments.join(' ');
     }
 
     generateNvccCompilerCommand(srcPath) {
@@ -393,22 +538,29 @@ class Project {
             useIncludeVariable: true
         });
 
-        return '\t' + commandArguments.join(' ');
+        let compileHint = this.generateMakefileHint({
+            type: 'NVCC',
+            message: `${srcRelativePath} -> $@`
+        });
+
+        return `\t@${compileHint}\n` + '\t@' + commandArguments.join(' ');
     }
 
     fillCompilerCommandArgs(commandArguments, options) {
-        this._compiler.includePaths.forEach(includePath => {
+        let finalConfiguration = this._finalConfiguration;
+
+        finalConfiguration.compiler.includePaths.forEach(includePath => {
             let incRelPath = utils.fs.relativePath(includePath, this._buildPath);
             commandArguments.push(`-I${incRelPath}`);
         });
 
-        if ( this._dependencies ) {
-            Object.keys(this._dependencies).forEach(depName => {
+        if ( finalConfiguration.dependencies ) {
+            Object.keys(finalConfiguration.dependencies).forEach(depName => {
                 let dep = this._deps[depName];
 
                 if ( !dep ) {
                     let depProject = this._solution.getProject(depName);
-                    depProject._compiler.includePaths.forEach(includePath => {
+                    depProject._finalConfiguration.compiler.includePaths.forEach(includePath => {
                         let incRelPath = utils.fs.relativePath(includePath, this._buildPath);
                         commandArguments.push(`-I${incRelPath}`);
                     });
@@ -437,21 +589,23 @@ class Project {
             });
         }
 
-        if ( this._compiler.std ) {
-            commandArguments.push(`-std=${this._compiler.std}`);
+        if ( finalConfiguration.compiler.std ) {
+            commandArguments.push(`-std=${finalConfiguration.compiler.std}`);
         }
 
-        if ( this._compiler.optimize ) {
-            commandArguments.push(`-O${this._compiler.optimize}`);
+        if ( finalConfiguration.compiler.optimize ) {
+            commandArguments.push(`-O${finalConfiguration.compiler.optimize}`);
         }
         else {
             commandArguments.push(`-O2`);
         }
 
-        commandArguments = commandArguments.concat(this._compiler.cxxflags);
+        if ( finalConfiguration.compiler.cxxflags ) {
+            commandArguments = commandArguments.concat(finalConfiguration.compiler.cxxflags);
+        }
 
-        if ( this._compiler.defines ) {
-            commandArguments = commandArguments.concat(this._compiler.defines.map(definition => {
+        if ( finalConfiguration.compiler.defines ) {
+            commandArguments = commandArguments.concat(finalConfiguration.compiler.defines.map(definition => {
                 return `-D${definition}`;
             }));
         }
@@ -460,18 +614,23 @@ class Project {
     }
 
     fillNvidiaCompilerCommandArgs(commandArguments, options) {
-        this._compiler.includePaths.forEach(includePath => {
+        let finalConfiguration = this._finalConfiguration;
+
+        commandArguments.push('-ccbin');
+        commandArguments.push(finalConfiguration.compiler.cxx);
+
+        finalConfiguration.compiler.includePaths.forEach(includePath => {
             let incRelPath = utils.fs.relativePath(includePath, this._buildPath);
             commandArguments.push(`-I${incRelPath}`);
         });
 
-        if ( this._dependencies ) {
-            Object.keys(this._dependencies).forEach(depName => {
+        if ( finalConfiguration.dependencies ) {
+            Object.keys(finalConfiguration.dependencies).forEach(depName => {
                 let dep = this._deps[depName];
 
                 if ( !dep ) {
                     let depProject = this._solution.getProject(depName);
-                    depProject._compiler.includePaths.forEach(includePath => {
+                    depProject.finalConfiguration.compiler.includePaths.forEach(includePath => {
                         let incRelPath = utils.fs.relativePath(includePath, this._buildPath);
                         commandArguments.push(`-I${incRelPath}`);
                     });
@@ -500,22 +659,25 @@ class Project {
             });
         }
 
-        if ( this._compiler.std ) {
-            commandArguments.push(`-std=${this._compiler.std}`);
+        if ( finalConfiguration.compiler.std ) {
+            commandArguments.push(`-std=${finalConfiguration.compiler.std}`);
         }
-        this._compiler.cxxflags.forEach(cxxflag => {
-            commandArguments.push('-Xcompiler');
-            commandArguments.push(cxxflag);
-        });
 
-        if ( this._compiler.nvccflags ) {
-            this._compiler.nvccflags.forEach(nvccflag => {
+        if ( finalConfiguration.compiler.cxxflags ) {
+            finalConfiguration.compiler.cxxflags.forEach(cxxflag => {
+                commandArguments.push('-Xcompiler');
+                commandArguments.push(cxxflag);
+            });
+        }
+
+        if ( finalConfiguration.compiler.nvccflags ) {
+            finalConfiguration.compiler.nvccflags.forEach(nvccflag => {
                 commandArguments.push(nvccflag);
             });
         }
 
-        if ( this._compiler.defines ) {
-            commandArguments = commandArguments.concat(this._compiler.defines.map(definition => {
+        if ( finalConfiguration.compiler.defines ) {
+            commandArguments = commandArguments.concat(finalConfiguration.compiler.defines.map(definition => {
                 return `-D${definition}`;
             }));
         }
@@ -527,22 +689,18 @@ class Project {
 
 Project.CreateNewProject = function(options) {
     let projectName = options.name;
+    let targetType = options.target;
 
     let projectTemplateContent = template.readTemplateFile('project/CppProject.kake');
-    let kakefileContent = projectTemplateContent.replace('CppProject', projectName);
+    let kakefileContent = projectTemplateContent.replace('$(ProjectName)', projectName);
+    kakefileContent = kakefileContent.replace('$(TargetType)', targetType);
 
-    try {
-        fs.mkdirSync(projectName);
-        console.log(`Created directory ${projectName}`);
-    }
-    catch (e) {
-        console.log(`The project dir ${projectName} has been existed. Skip create directory.`);
-    }
+    utils.fs.mkdir(projectName);
 
-    let kakefilePath = projectName + '/Kakefile';
+    let kakefilePath = path.join(projectName, 'Kakefile');
     fs.writeFileSync(kakefilePath, kakefileContent);
-    console.log(`Generating ${kakefilePath} ...`);
-    console.log('Bootstrap finished.');
+    logger.info(`Generating ${kakefilePath} ...`);
+    logger.info('Bootstrap finished.');
 }
 
 module.exports = Project;
