@@ -19,7 +19,9 @@ msvc/**/Release
 *.opensdf
 *.sdf
 target/linux/x64/Release/bin/*
+!target/linux/x64/Release/bin/README.md
 target/linux/x64/Release/lib/*
+!target/linux/x64/Release/lib/README.md
 target/linux/x64/Release/build/president/president
 target/linux/x64/Release/build/manager/manager
 target/linux/x64/Release/run/president
