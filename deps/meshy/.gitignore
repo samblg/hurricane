@@ -6,3 +6,5 @@ target/linux/x64/Release/build/meshy-sample/meshy-sample
 target/linux/x64/Release/run/meshy-client-sample
 target/linux/x64/Release/run/meshy-sample
 target/linux/x64/Release/run/*.log
+
+Meshy.config

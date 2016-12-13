@@ -4,3 +4,5 @@ target/linux/x64/Release/build/test-logging/test-logging
 target/linux/x64/Release/run/test-klog/test-klog
 target/linux/x64/Release/run/test-klog/*.log
 kake/config/*.kake
+
+logging.config
