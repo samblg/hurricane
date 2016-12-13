@@ -18,16 +18,17 @@ msvc/**/Debug
 msvc/**/Release
 *.opensdf
 *.sdf
-target/bin/linux/x64/Release/*
-target/lib/linux/x64/Release/*
-target/build/linux/x64/Release/nimbus/nimbus
-target/build/linux/x64/Release/supervisor/supervisor
-target/run/supervisor
-target/run/nimbus
-target/build/linux/x64/Release/*
+target/linux/x64/Release/bin/*
+target/linux/x64/Release/lib/*
+target/linux/x64/Release/build/president/president
+target/linux/x64/Release/build/manager/manager
+target/linux/x64/Release/run/president
+target/linux/x64/Release/run/manager
+target/linux/x64/Release/run/*.so
 
 *.config
 *.creator
 *.creator.user
 *.files
 *.includes
+*.so
