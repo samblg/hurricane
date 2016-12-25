@@ -46,18 +46,18 @@ namespace hurricane {
         };
 
         class Tuple : public base::Serializable {
-		public:
-			Tuple() = default;
-			Tuple(std::initializer_list<Value> values) : _values(values) {
-			}
+        public:
+            Tuple() = default;
+            Tuple(std::initializer_list<Value> values) : _values(values) {
+            }
 
-			Value& operator[](size_t index) {
-				return _values[index];
-			}
+            Value& operator[](size_t index) {
+                return _values[index];
+            }
 
-			const Value& operator[](size_t index) const {
-				return _values[index];
-			}
+            const Value& operator[](size_t index) const {
+                return _values[index];
+            }
 
             Value& operator[](const std::string& fieldName) {
                 return _values[_fieldsMap->at(fieldName)];
@@ -67,13 +67,17 @@ namespace hurricane {
                 return _values[_fieldsMap->at(fieldName)];
             }
 
-			int GetSize() const {
-				return _values.size();
-			}
+            size_t GetSize() const {
+                return _values.size();
+            }
 
-			void Add(const Value& value) {
-				_values.push_back(value);
-			}
+            void Add(const Value& value) {
+                _values.push_back(value);
+            }
+
+            void Pop() {
+                _values.pop_back();
+            }
 
             void SetSourceTask(const std::string& sourceTask) {
                 _sourceTask = sourceTask;
@@ -103,19 +107,19 @@ namespace hurricane {
                 return _fields;
             }
 
-            void SetFieldsMap(const std::map<std::string, int>* fieldsMap) {
+            void SetFieldsMap(const std::map<std::string, int32_t>* fieldsMap) {
                 _fieldsMap = fieldsMap;
             }
 
             void Serialize(Variants& variants) const override;
             void Deserialize(Variants::const_iterator& it) override;
 
-		private:
+        private:
             std::string _sourceTask;
             std::string _destTask;
             Values _values;
             const std::vector<std::string>* _fields;
-            const std::map<std::string, int>* _fieldsMap;
+            const std::map<std::string, int32_t>* _fieldsMap;
         };
     }
 }

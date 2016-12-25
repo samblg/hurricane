@@ -1,0 +1,10 @@
+target/linux/x64/Release/bin/*
+!target/linux/x64/Release/bin/README.md
+target/linux/x64/Release/lib/*
+!target/linux/x64/Release/lib/README.md
+target/linux/x64/Release/build/test-logging/test-logging
+target/linux/x64/Release/run/test-klog/test-klog
+target/linux/x64/Release/run/test-klog/*.log
+kake/config/*.kake
+
+logging.config

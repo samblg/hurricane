@@ -19,6 +19,9 @@
 #ifndef NET_FRAMEWORK_EPOLLSTREAM_H_H
 #define NET_FRAMEWORK_EPOLLSTREAM_H_H
 
+#include "linux/NetLinux.h"
+#include "Net.h"
+
 #include <iostream>
 #include <string>
 #include <sys/types.h>
@@ -27,9 +30,6 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <errno.h>
-#include "linux/net_linux.h"
-#include "net.h"
-
 
 namespace meshy {
     class EPollLoop;
@@ -41,10 +41,10 @@ namespace meshy {
 
         virtual ~EPollStream() { }
 
-        EPollStream(const EPollStream &stream) = delete;
+        EPollStream(const EPollStream& stream) = delete;
 
-        virtual int32_t Receive(char *buffer, int32_t bufferSize, int32_t &readSize) override;
-        virtual int32_t Send(const ByteArray &byteArray) override;
+        virtual int32_t Receive(char* buffer, int32_t bufferSize, int32_t& readSize) override;
+        virtual int32_t Send(const ByteArray& byteArray) override;
 
         uint32_t GetEvents() const {
             return _events;

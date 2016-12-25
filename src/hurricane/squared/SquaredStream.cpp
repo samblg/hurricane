@@ -16,26 +16,26 @@
  * limitations under the license.
  */
 
-#include "TridentStream.h"
+#include "SquaredStream.h"
 #include "EachBolt.h"
 #include "GroupByBolt.h"
-#include "AggregaterBolt.h"
-#include "PersistentAggregaterBolt.h"
-#include "TridentTopology.h"
+#include "AggregatorBolt.h"
+#include "PersistentAggregatorBolt.h"
+#include "SquaredTopology.h"
 #include "String.h"
 
 namespace hurricane {
-    namespace trident {
-        TridentStream::TridentStream()
+    namespace squared {
+        SquaredStream::SquaredStream()
         {
         }
 
-        TridentStream::TridentStream(const std::string & spoutName, TridentSpout * spout)
+        SquaredStream::SquaredStream(const std::string & spoutName, SquaredSpout * spout)
             :_spoutName(spoutName), _spout(spout)
         {
         }
 
-        TridentStream * TridentStream::Each(const base::Fields & inputFields, Operation * operation, const base::Fields & outputFields)
+        SquaredStream * SquaredStream::Each(const base::Fields & inputFields, Operation * operation, const base::Fields & outputFields)
         {
             std::shared_ptr<bolt::IBolt> bolt =
                 std::make_shared<EachBolt>(inputFields, operation, outputFields);
@@ -43,7 +43,7 @@ namespace hurricane {
             _bolts.push_back(bolt);
         }
 
-        TridentStream * TridentStream::GroupBy(const base::Fields & fields)
+        SquaredStream * SquaredStream::GroupBy(const base::Fields & fields)
         {
             std::shared_ptr<bolt::IBolt> bolt =
                 std::make_shared<GroupByBolt>(fields);
@@ -53,7 +53,7 @@ namespace hurricane {
             return nullptr;
         }
 
-        TridentState * TridentStream::PersistentAggregate(const TridentStateFactory * factory, BaseAggregater * operation, const base::Fields & fields)
+        SquaredState * SquaredStream::PersistentAggregate(const SquaredStateFactory * factory, BaseAggregator * operation, const base::Fields & fields)
         {
             std::shared_ptr<PersistentAggregateBolt> bolt =
                 std::make_shared<PersistentAggregateBolt>(factory, operation, fields);
@@ -63,11 +63,11 @@ namespace hurricane {
             return bolt->GetState();
         }
 
-        void TridentStream::Deploy(TridentToplogy * topology)
+        void SquaredStream::Deploy(SquaredToplogy * topology)
         {
             topology->GetSpouts()[_spoutName] = spout;
 
-            int boltIndex - 0;
+            int32_t boltIndex - 0;
             for ( auto bolt : _bolts ) {
                 topology->GetBolts()[_boltNames[boltIndex]] = bolt;
                 boltIndex ++;

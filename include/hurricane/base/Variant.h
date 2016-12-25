@@ -27,11 +27,12 @@
 #include <algorithm>
 #include <list>
 
+#include "logging/Logging.h"
 
 #define VARIANT_GETTER(TypeName, CType, valueName) \
     CType Get##TypeName##Value() const { \
         if ( _type == Type::Invalid ) { \
-            std::cerr << "Invalid"; \
+            LOG(KLOG_ERROR) << "Invalid"; \
         } \
     \
         if ( _type == Type::##TypeName ) { \
@@ -143,16 +144,16 @@ namespace hurricane {
 
             int32_t GetInt32Value() const {
                 if ( _type == Type::Invalid ) {
-                    std::cerr << "Invalid";
+                    LOG(LOG_ERROR) << "Invalid";
                 }
 
                 if ( _type == Type::Int32 ) {
                     return _int32Value;
                 }
 
-                std::cout << "Type mismatched. " <<
+                LOG(LOG_ERROR) << "Type mismatched. " <<
                              "Expected: " << TypeNames[Type::Int32] <<
-                             ". Actually: " << TypeNames[_type] << std::endl;
+                             ". Actually: " << TypeNames[_type];
                 throw "Type mismatched";
             }
 
@@ -163,16 +164,16 @@ namespace hurricane {
 
             int64_t GetInt64Value() const {
                 if ( _type == Type::Invalid ) {
-                    std::cerr << "Invalid";
+                    LOG(LOG_ERROR) << "Invalid";
                 }
 
                 if ( _type == Type::Int64 ) {
                     return _int64Value;
                 }
 
-                std::cout << "Type mismatched. " <<
+                LOG(LOG_ERROR) << "Type mismatched. " <<
                              "Expected: " << TypeNames[Type::Int64] <<
-                             ". Actually: " << TypeNames[_type] << std::endl;
+                             ". Actually: " << TypeNames[_type];
                 throw "Type mismatched";
             }
 
@@ -183,16 +184,16 @@ namespace hurricane {
 
             uint32_t GetUInt32Value() const {
                 if ( _type == Type::Invalid ) {
-                    std::cerr << "Invalid";
+                    LOG(LOG_ERROR) << "Invalid";
                 }
 
                 if ( _type == Type::UInt32 ) {
                     return _uint32Value;
                 }
 
-                std::cout << "Type mismatched. " <<
+                LOG(LOG_ERROR) << "Type mismatched. " <<
                              "Expected: " << TypeNames[Type::UInt32] <<
-                             ". Actually: " << TypeNames[_type] << std::endl;
+                             ". Actually: " << TypeNames[_type];
                 throw "Type mismatched";
             }
 
@@ -203,16 +204,16 @@ namespace hurricane {
 
             uint64_t GetUInt64Value() const {
                 if ( _type == Type::Invalid ) {
-                    std::cerr << "Invalid";
+                    LOG(LOG_ERROR) << "Invalid";
                 }
 
                 if ( _type == Type::UInt64 ) {
                     return _uint64Value;
                 }
 
-                std::cout << "Type mismatched. " <<
+                LOG(LOG_ERROR) << "Type mismatched. " <<
                              "Expected: " << TypeNames[Type::UInt64] <<
-                             ". Actually: " << TypeNames[_type] << std::endl;
+                             ". Actually: " << TypeNames[_type];
                 throw "Type mismatched";
             }
 
@@ -223,16 +224,16 @@ namespace hurricane {
 
             bool GetBooleanValue() const {
                 if ( _type == Type::Invalid ) {
-                    std::cerr << "Invalid";
+                    LOG(LOG_ERROR) << "Invalid";
                 }
 
                 if ( _type == Type::Boolean ) {
                     return _boolValue;
                 }
 
-                std::cout << "Type mismatched. " <<
+                LOG(LOG_ERROR) << "Type mismatched. " <<
                              "Expected: " << TypeNames[Type::Boolean] <<
-                             ". Actually: " << TypeNames[_type] << std::endl;
+                             ". Actually: " << TypeNames[_type];
                 throw "Type mismatched";
             }
 
@@ -243,16 +244,16 @@ namespace hurricane {
 
             float GetFloatValue() const {
                 if ( _type == Type::Invalid ) {
-                    std::cerr << "Invalid";
+                    LOG(LOG_ERROR) << "Invalid";
                 }
 
                 if ( _type == Type::Float ) {
                     return _floatValue;
                 }
 
-                std::cout << "Type mismatched. " <<
+                LOG(LOG_ERROR) << "Type mismatched. " <<
                              "Expected: " << TypeNames[Type::Float] <<
-                             ". Actually: " << TypeNames[_type] << std::endl;
+                             ". Actually: " << TypeNames[_type];
                 throw "Type mismatched";
             }
 
@@ -263,16 +264,16 @@ namespace hurricane {
 
             std::string GetStringValue() const {
                 if ( _type == Type::Invalid ) {
-                    std::cerr << "Invalid";
+                    LOG(LOG_ERROR) << "Invalid";
                 }
 
                 if ( _type == Type::String ) {
                     return _stringValue;
                 }
 
-                std::cout << "Type mismatched. " <<
+                LOG(LOG_ERROR) << "Type mismatched. " <<
                              "Expected: " << TypeNames[Type::String] <<
-                             ". Actually: " << TypeNames[_type] << std::endl;
+                             ". Actually: " << TypeNames[_type];
                 throw "Type mismatched";
             }
 
@@ -343,7 +344,7 @@ namespace hurricane {
                 Deserialize(it, size);
 
                 values.clear();
-                for ( int i = 0; i != size; ++ i ) {
+                for ( size_t i = 0; i != size; ++ i ) {
                     Element value;
                     Deserialize(it, value);
 
@@ -356,7 +357,7 @@ namespace hurricane {
                 size_t size = 0;
                 Deserialize(it, size);
 
-                for ( int i = 0; i != size; ++ i ) {
+                for ( size_t i = 0; i != size; ++ i ) {
                     Key key;
                     Deserialize(it, key);
 

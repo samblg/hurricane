@@ -28,23 +28,23 @@
 #include <memory>
 
 namespace hurricane {
-	namespace message {
-		class Message {
-		public:
-			Message(int32_t type) : _type(type) {
-			}
+    namespace message {
+        class Message {
+        public:
+            Message(int32_t type) : _type(type) {
+            }
 
             Message(int32_t type, const base::Variants& arguments) :
                     _type(type), _arguments(arguments) {
             }
 
-			int32_t GetType() const {
-				return _type;
-			}
+            int32_t GetType() const {
+                return _type;
+            }
 
-			void SetType(int32_t type) {
-				_type = type;
-			}
+            void SetType(int32_t type) {
+                _type = type;
+            }
 
             const base::Variants& GetArguments() const {
                 return _arguments;
@@ -54,34 +54,34 @@ namespace hurricane {
                 _arguments = arguments;
             }
 
-		private:
-			int32_t _type;
+        private:
+            int32_t _type;
             base::Variants _arguments;
-		};
+        };
 
         class MessageQueue: public base::BlockingQueue<Message*> {
         };
 
-		class MessageLoop {
-		public:
+        class MessageLoop {
+        public:
             typedef std::function<void(Message&)> MessageHandler;
 
             MessageLoop() {
-			}
+            }
 
-			MessageLoop(const MessageLoop&) = delete;
-			const MessageLoop& operator=(const MessageLoop&) = delete;
+            MessageLoop(const MessageLoop&) = delete;
+            const MessageLoop& operator=(const MessageLoop&) = delete;
 
-			template <class ObjectType, class MethodType>
-            void MessageMap(int messageType, ObjectType* self, MethodType method) {
-				MessageMap(messageType, std::bind(method, self, std::placeholders::_1));
-			}
+            template <class ObjectType, class MethodType>
+            void MessageMap(int32_t messageType, ObjectType* self, MethodType method) {
+                MessageMap(messageType, std::bind(method, self, std::placeholders::_1));
+            }
 
-			void MessageMap(int messageType, MessageHandler handler) {
-				_messageHandlers.insert({ messageType, handler });
-			}
+            void MessageMap(int32_t messageType, MessageHandler handler) {
+                _messageHandlers.insert({ messageType, handler });
+            }
 
-			void Run() {
+            void Run() {
                 Message* msg = nullptr;
 
                 while ( true ) {
@@ -96,44 +96,44 @@ namespace hurricane {
                         delete msg;
                     }
                 }
-			}
+            }
 
             void PostMessage(Message* message) {
                 _messageQueue.Push(message);
-			}
+            }
 
-		private:
-            std::map<int, MessageHandler> _messageHandlers;
+        private:
+            std::map<int32_t, MessageHandler> _messageHandlers;
             MessageQueue _messageQueue;
-		};
+        };
 
-		class MessageLoopManager {
-		public:
-			static MessageLoopManager& GetInstance() {
-				static MessageLoopManager manager;
+        class MessageLoopManager {
+        public:
+            static MessageLoopManager& GetInstance() {
+                static MessageLoopManager manager;
 
-				return manager;
-			}
+                return manager;
+            }
 
-			MessageLoopManager(const MessageLoopManager&) = delete;
-			const MessageLoopManager& operator=(const MessageLoopManager&) = delete;
+            MessageLoopManager(const MessageLoopManager&) = delete;
+            const MessageLoopManager& operator=(const MessageLoopManager&) = delete;
 
-			void Register(const std::string& name, MessageLoop* loop) {
-				_messageLoops.insert({ name, std::shared_ptr<MessageLoop>(loop) });
-			}
+            void Register(const std::string& name, MessageLoop* loop) {
+                _messageLoops.insert({ name, std::shared_ptr<MessageLoop>(loop) });
+            }
 
-			void PostMessage(const std::string& name, Message* message) {
-				auto messageLoopPair = _messageLoops.find(name);
-				if ( messageLoopPair != _messageLoops.end() ) {
-					messageLoopPair->second->PostMessage(message);
-				}
-			}
+            void PostMessage(const std::string& name, Message* message) {
+                auto messageLoopPair = _messageLoops.find(name);
+                if ( messageLoopPair != _messageLoops.end() ) {
+                    messageLoopPair->second->PostMessage(message);
+                }
+            }
 
-		private:
-			MessageLoopManager() {}
+        private:
+            MessageLoopManager() {}
 
-			std::map<std::string, std::shared_ptr<MessageLoop>> _messageLoops;
-		};
-	}
+            std::map<std::string, std::shared_ptr<MessageLoop>> _messageLoops;
+        };
+    }
 }
 

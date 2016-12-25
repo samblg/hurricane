@@ -1,0 +1,14 @@
+'use strict';
+
+module.exports = {
+    name: '$(SolutionName)',
+    version: '0.0.1',
+    type: 'solution',
+    basePath: '$(BasePath)',
+    // Please add the directory of project to projects
+    projects: [
+    ],
+    // Add options definition here
+    options: {
+    }
+};

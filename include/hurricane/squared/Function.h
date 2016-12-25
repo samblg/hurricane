@@ -21,10 +21,10 @@
 #include "Operation.h"
 
 namespace hurricane {
-    namespace trident {
+    namespace squared {
         class Function : public Operation {
-            virtual void Execute(const TridentTuple& tuple,
-                TridentCollector* collector) = 0;
+            virtual void Execute(const SquaredTuple& tuple,
+                SquaredCollector* collector) = 0;
         };
     }
 }

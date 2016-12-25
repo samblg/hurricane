@@ -27,33 +27,33 @@ namespace hurricane {
         class IBolt;
     }
 
-    namespace trident {
-        class TridentToplogy;
-        class TridentSpout;
+    namespace squared {
+        class SquaredToplogy;
+        class SquaredSpout;
         class Operation;
         class BaseFunction;
         class BaseFilter;
-        class BaseAggregater;
-        class TridentState;
-        class TridentStateFactory;
+        class BaseAggregator;
+        class SquaredState;
+        class SquaredStateFactory;
 
-        class TridentStream {
+        class SquaredStream {
         public:
-            TridentStream();
-            TridentStream(const std::string& spoutName,
-                TridentSpout* spout);
+            SquaredStream();
+            SquaredStream(const std::string& spoutName,
+                SquaredSpout* spout);
 
-            TridentStream* Each(const base::Fields& inputFields,
+            SquaredStream* Each(const base::Fields& inputFields,
                 Operation* operation, const base::Fields& outputFields);
-            TridentStream* GroupBy(const base::Fields& fields);
-            TridentState* PersistentAggregate(const TridentStateFactory* factory,
-                BaseAggregater* operation, const base::Fields& fields);
+            SquaredStream* GroupBy(const base::Fields& fields);
+            SquaredState* PersistentAggregate(const SquaredStateFactory* factory,
+                BaseAggregator* operation, const base::Fields& fields);
 
-            void Deploy(TridentToplogy* topology);
+            void Deploy(SquaredToplogy* topology);
 
         private:
             std::string _spoutName;
-            std::shared_ptr<TridentSpout> _spout;
+            std::shared_ptr<SquaredSpout> _spout;
             std::list<std::shared_ptr<bolt::IBolt>> _bolts;
             std::list<std::string> _boltNames;
         };

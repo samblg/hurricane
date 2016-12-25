@@ -20,7 +20,7 @@
 #include "utils/String.h"
 
 namespace  meshy {
-    void HttpRequest::ParseStdString(const std::string &text) {
+    void HttpRequest::ParseStdString(const std::string& text) {
         StdStringList stringList = SplitString(text, '\n');
         for ( std::string& line: stringList ) {
             line.pop_back();
@@ -29,7 +29,7 @@ namespace  meshy {
         ParseStdStringList(stringList);
     }
 
-    void HttpRequest::ParseStdStringList(const StdStringList &stringList) {
+    void HttpRequest::ParseStdStringList(const StdStringList& stringList) {
         std::string requestLine = stringList.front();
         ParseRequestLine(requestLine);
 
@@ -38,7 +38,7 @@ namespace  meshy {
         HttpContext::ParseStdStringList(contextLines);
     }
 
-    void HttpRequest::ParseRequestLine(const std::string &requestLine) {
+    void HttpRequest::ParseRequestLine(const std::string& requestLine) {
         StdStringList words = SplitString(requestLine, ' ');
 
         SetMethod(words[0]);
@@ -46,14 +46,14 @@ namespace  meshy {
         SetVersion(words[2]);
     }
 
-    HttpRequest HttpRequest::FromStdString(const std::string &text) {
+    HttpRequest HttpRequest::FromStdString(const std::string& text) {
         HttpRequest request;
         request.ParseStdString(text);
 
         return request;
     }
 
-    HttpRequest HttpRequest::FromStdStringList(const StdStringList &stringList) {
+    HttpRequest HttpRequest::FromStdStringList(const StdStringList& stringList) {
         HttpRequest request;
         request.ParseStdStringList(stringList);
 

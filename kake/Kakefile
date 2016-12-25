@@ -1,0 +1,13 @@
+'use strict';
+
+module.exports = {
+    name: 'Hurricane',
+    version: '0.0.1',
+    type: 'solution',
+    basePath: '..',
+    projects: [
+        'projects/president',
+        'projects/manager',
+        'projects/wordcount'
+    ]
+};

@@ -18,14 +18,14 @@
 
 #pragma once
 namespace hurricane {
-	namespace base {
-		class BatchOutputCollector;
-	}
+    namespace base {
+        class BatchOutputCollector;
+    }
 
-	namespace bolt {
-		
-		class ICommiter {
-		};
+    namespace bolt {
+        
+        class ICommiter {
+        };
 
-	}
+    }
 }

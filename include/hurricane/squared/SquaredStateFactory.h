@@ -19,11 +19,11 @@
 #pragma once
 
 namespace hurricane {
-    namespace trident {
-        class TridentState;
+    namespace squared {
+        class SquaredState;
 
-        class TridentStateFactory {
-            virtual TridentState<KeyType, ValueType>* CreateState() = 0;
+        class SquaredStateFactory {
+            virtual SquaredState<KeyType, ValueType>* CreateState() = 0;
         };
     }
 }

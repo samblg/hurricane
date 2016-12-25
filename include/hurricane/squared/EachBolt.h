@@ -18,19 +18,19 @@
 
 #pragma once
 
-#include "TridentBolt.h"
+#include "SquaredBolt.h"
 
 namespace hurricane {
-    namespace trident {
+    namespace squared {
         class Operation;
 
-        class EachBolt : public TridentBolt {
+        class EachBolt : public SquaredBolt {
         public:
             EachBolt(const base::Fields& inputFields,
                 Operation* operation, const base::Fields& outputFields);
 
-            virtual void Execute(const TridentTuple& tuple,
-                TridentCollector* collector) override;
+            virtual void Execute(const SquaredTuple& tuple,
+                SquaredCollector* collector) override;
 
         private:
             Operation* _operation;

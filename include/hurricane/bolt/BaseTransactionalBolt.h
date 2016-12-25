@@ -22,16 +22,16 @@
 #include "TransactionAttempt.h"
 
 namespace hurricane {
-	namespace base {
-		class BatchOutputCollector;
-	}
+    namespace base {
+        class BatchOutputCollector;
+    }
 
-	namespace bolt {
-		class BaseTransactionalBolt : public BaseBatchBolt {
-		public:
-			virtual void Prepare(base::BatchOutputCollector& collector, TransactionAttempt* attempt) = 0;
-			void Prepare(base::BatchOutputCollector& collector, void* id) {
-			}
-		};
-	}
+    namespace bolt {
+        class BaseTransactionalBolt : public BaseBatchBolt {
+        public:
+            virtual void Prepare(base::BatchOutputCollector& collector, TransactionAttempt* attempt) = 0;
+            void Prepare(base::BatchOutputCollector& collector, void* id) {
+            }
+        };
+    }
 }

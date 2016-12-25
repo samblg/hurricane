@@ -16,29 +16,29 @@
  * limitations under the license.
  */
 
-#include "TridentTopology.h"
-#include "TridentSpout.h"
-#include "TridentStream.h"
+#include "SquaredTopology.h"
+#include "SquaredSpout.h"
+#include "SquaredStream.h"
 #include "DRPCStream.h"
 
 namespace hurricane {
-    namespace trident {
-        TridentToplogy::TridentToplogy()
+    namespace squared {
+        SquaredToplogy::SquaredToplogy()
         {
         }
 
-        TridentStream * TridentToplogy::NewStream(const std::string & spoutName,
-            TridentSpout * tridentSpout)
+        SquaredStream * SquaredToplogy::NewStream(const std::string & spoutName,
+            SquaredSpout * squaredSpout)
         {
-            std::shared_ptr<TridentStream> stream = 
-                std::make_shared<TridentStream>(spoutName, tridentSpout);
+            std::shared_ptr<SquaredStream> stream = 
+                std::make_shared<SquaredStream>(spoutName, squaredSpout);
 
-            _tridentStreams.push_back(stream);
+            _squaredStreams.push_back(stream);
 
             return stream.get();
         }
 
-        DRPCStream * TridentToplogy::NewDRPCStream(const std::string & serviceName)
+        DRPCStream * SquaredToplogy::NewDRPCStream(const std::string & serviceName)
         {
             std::shared_ptr<DRPCStream> stream = std::make_shared<DRPCStream>();
             _drpcStreams[serviceName] = stream;
@@ -46,9 +46,9 @@ namespace hurricane {
             return stream.get();
         }
 
-        void TridentToplogy::Deploy()
+        void SquaredToplogy::Deploy()
         {
-            for ( auto stream : _tridentStreams ) {
+            for ( auto stream : _squaredStreams ) {
                 _Deploy(stream);
             }
 
@@ -57,12 +57,12 @@ namespace hurricane {
             }
         }
 
-        void TridentToplogy::_Deploy(TridentStream * stream)
+        void SquaredToplogy::_Deploy(SquaredStream * stream)
         {
             stream->Deploy(this);
         }
 
-        void TridentToplogy::_Deploy(DRPCStream * stream)
+        void SquaredToplogy::_Deploy(DRPCStream * stream)
         {
             stream->Deploy(this);
         }

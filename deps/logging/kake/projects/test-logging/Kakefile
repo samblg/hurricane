@@ -1,0 +1,33 @@
+'use strict';
+
+module.exports = {
+    name: 'test-logging',
+    version: '0.6.1',
+    type: 'cpp',
+    target: 'executable',
+    common: {
+        compiler: {
+            defines: ['$(Inherit)', 'USE_KLOG'],
+            src: [
+                'test/test-logging/main.cpp'
+            ],
+            includePaths: [
+                'include'
+            ]
+        },
+        dependencies: {
+            logging: 'latest',
+        }
+    },
+    options: {
+        enableThread: {
+            value: true,
+            compiler: {
+                cxxflags: ['$(Inherit)', '-pthread']
+            },
+            linker: {
+                ldflags: ['$(Inherit)', '-pthread']
+            }
+        }
+    }
+};

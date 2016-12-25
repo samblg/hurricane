@@ -19,32 +19,33 @@
 #ifdef WIN32
 #pragma comment(lib, "ws2_32.lib")
 
-#include <Winsock2.h>  
 #include "hurricane/util/Socket.h"
+
+#include <Winsock2.h>  
 #include <cstdio>
 
 namespace hurricane {
-	namespace util {
-		WSAInitializer::WSAInitializer() {
-			if ( WSAStartup(MAKEWORD(2, 2), &_wsaData) != 0 )
-			{
-				printf("Failed to load Winsock.\n");
-				exit(-1);
-			}
-		}
+    namespace util {
+        WSAInitializer::WSAInitializer() {
+            if ( WSAStartup(MAKEWORD(2, 2), &_wsaData) != 0 )
+            {
+                LOG(LOG_FATAL) << "Failed to load Winsock.";
+                exit(-1);
+            }
+        }
 
-		WSAInitializer & WSAInitializer::InitInstance()
-		{
-			static WSAInitializer instance;
+        WSAInitializer& WSAInitializer::InitInstance()
+        {
+            static WSAInitializer instance;
 
-			return instance;
-		}
+            return instance;
+        }
 
-		WSAInitializer::~WSAInitializer()
-		{
-			WSACleanup();
-		}
+        WSAInitializer::~WSAInitializer()
+        {
+            WSACleanup();
+        }
 
-	}
+    }
 }
 #endif

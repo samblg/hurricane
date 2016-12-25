@@ -20,17 +20,18 @@
 #include "hurricane/base/ByteArray.h"
 #include "hurricane/base/DataPackage.h"
 #include "hurricane/message/Command.h"
-#include "hurricane/message/NimbusCommander.h"
+#include "hurricane/message/PresidentCommander.h"
+#include "logging/Logging.h"
 
 using hurricane::base::NetAddress;
 using hurricane::base::ByteArray;
 using hurricane::base::DataPackage;
 using hurricane::message::Command;
 
-const int DATA_BUFFER_SIZE = 65535;
+const int32_t DATA_BUFFER_SIZE = 65535;
 
 namespace hurricane {
-    namespace trident {
+    namespace squared {
         std::string DRPCClient::Execute(const std::string & serviceName, hurricane::base::Values & values)
         {
             Connect();
@@ -51,8 +52,8 @@ namespace hurricane {
             resultPackage.Deserialize(result);
             command = Command(resultPackage);
 
-            std::cout << command.GetType() << std::endl;
-            std::cout << command.GetArg(0).GetStringValue() << std::endl;
+           sstd::coutDEBUG) << command.GetType() << std::endl;
+            LOG(LOG_DEBUG) << command.GetArg(0).GetStringValue() << std::endl;
 
             return command.GetArg(0).GetStringValue();
         }

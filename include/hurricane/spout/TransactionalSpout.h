@@ -22,11 +22,11 @@
 #include "Emitter.h"
 
 namespace hurricane {
-	namespace spout {
-		class TransactionalSpout {
-		public:
-			virtual hurricane::spout::Coordinator* GetCoordinator() = 0;
-			virtual hurricane::bolt::Emitter* GetEmitter() = 0;
-		};
-	}
+    namespace spout {
+        class TransactionalSpout {
+        public:
+            virtual hurricane::spout::Coordinator* GetCoordinator() = 0;
+            virtual hurricane::bolt::Emitter* GetEmitter() = 0;
+        };
+    }
 }

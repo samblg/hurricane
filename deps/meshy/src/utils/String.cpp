@@ -28,7 +28,7 @@ vector<string> SplitString(const string& value, char seperator) {
     vector<string> splitedStrings;
 
     size_t currentPos = 0;
-    while ( 1 ) {
+    while ( true ) {
         size_t nextPos = value.find(seperator, currentPos);
         if ( nextPos == string::npos ) {
             string currentString = value.substr(currentPos);
@@ -47,20 +47,20 @@ vector<string> SplitString(const string& value, char seperator) {
     return splitedStrings;
 }
 
-std::string RandomString(const std::string & candidate, int length)
+std::string RandomString(const std::string& candidate, int32_t length)
 {
-    srand(time(0));
+    srand(static_cast<uint32_t>(time(0)));
 
     std::string result;
-    for ( int index = 0; index != length; ++ index ) {
-        int charIndex = rand() % candidate.size();
+    for ( int32_t index = 0; index != length; ++ index ) {
+        int32_t charIndex = rand() % candidate.size();
         result.push_back(candidate[charIndex]);
     }
 
     return result;
 }
 
-std::string itos(int number) {
+std::string itos(int32_t number) {
     std::ostringstream numberConverter;
     numberConverter << number;
 

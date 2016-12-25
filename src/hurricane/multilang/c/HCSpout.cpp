@@ -21,6 +21,8 @@
 #include "hurricane/base/Fields.h"
 #include "hurricane/base/OutputCollector.h"
 #include "hurricane/spout/ISpout.h"
+#include "logging/Logging.h"
+
 #include <iostream>
 
 using hurricane::base::Fields;
@@ -57,15 +59,15 @@ namespace hurricane {
 
         ISpout * CSpoutWrapper::Clone() const
         {
-            int spoutIndex = _cSpout.onClone();
+            int32_t spoutIndex = _cSpout.onClone();
             CSpoutWrapper* spout = new CSpoutWrapper(&_cSpout);
             spout->_spoutIndex = spoutIndex;
 
             return spout;
         }
 
-        void CSpoutWrapper::Emit(CSpoutWrapper* spout, CValues* cValues) {
-            std::cout << "Emit" << std::endl;
+        voistd::coutrapper::Emit(CSpoutWrapper* spout, CValues* cValues) {
+            LOG(LOG_DEBUG) << "Emit";
             Values values;
             CValues2Values(*cValues, &values);
             spout->_collector->Emit(values);
@@ -75,9 +77,9 @@ namespace hurricane {
     
 using hurricane::spout::CSpoutWrapper;
 
-void TestCSpout(CSpout* cSpout) {
-    int spoutIndex = cSpout->onClone();
-    std::cout << "Spout index: " << spoutIndex << std::endl;
+voidstd::coutut(CSpout* cSpout) {
+    int32_t spoutIndex = cSpout->onClone();
+    LOG(LOG_DEBUG) << "Spout index: " << spoutIndex;
     
     CSpoutWrapper* spoutWrapper = new CSpoutWrapper(cSpout);
     ISpout* spout = spoutWrapper->Clone();

@@ -1,0 +1,11 @@
+kake/config/*.kake
+target/linux/x64/Release/bin/*
+!target/linux/x64/Release/bin/README.md
+!target/linux/x64/Release/lib/README.md
+target/linux/x64/Release/build/meshy-client-sample/meshy-client-sample
+target/linux/x64/Release/build/meshy-sample/meshy-sample
+target/linux/x64/Release/run/meshy-client-sample
+target/linux/x64/Release/run/meshy-sample
+target/linux/x64/Release/run/*.log
+
+Meshy.config

@@ -1,0 +1,33 @@
+'use strict';
+
+module.exports = {
+    name: 'manager',
+    version: '0.0.1',
+    type: 'cpp',
+    target: 'executable',
+    common: {
+        compiler: {
+            defines: [ '$(Inherit)', 'USE_KLOG' ],
+            src: [
+                'src/hurricane/base',
+                'src/hurricane/bolt',
+                'src/hurricane/collector',
+                'src/hurricane/message',
+                'src/hurricane/service',
+                'src/hurricane/spout',
+                'src/hurricane/task',
+                'src/hurricane/topology',
+                'src/hurricane/util',
+                'src/hurricane/tool/StartManager.cpp'
+            ],
+            includePaths: [
+                'include'
+            ]
+        },
+        dependencies: {
+            logging: 'latest',
+            pthread: 'latest',
+            dl: 'latest'
+        }
+    }
+};

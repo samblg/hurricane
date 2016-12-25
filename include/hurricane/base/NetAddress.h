@@ -28,7 +28,7 @@ namespace base {
         NetAddress() : _port(0) {
         }
 
-        NetAddress(const std::string& host, int port) : _host(host), _port(port) {
+        NetAddress(const std::string& host, int32_t port) : _host(host), _port(port) {
         }
 
         const std::string& GetHost() const {
@@ -39,11 +39,11 @@ namespace base {
             _host = host;
         }
 
-        int GetPort() const {
+        int32_t GetPort() const {
             return _port;
         }
 
-        void SetPort(int port) {
+        void SetPort(int32_t port) {
             _port = port;
         }
 
@@ -59,7 +59,7 @@ namespace base {
 
     private:
         std::string _host;
-        int _port;
+        int32_t _port;
     };
 
 }

@@ -19,20 +19,21 @@
 #ifndef NET_FRAME_EPOLLLOOP_H
 #define NET_FRAME_EPOLLLOOP_H
 
-#include "loop.h"
+#include "Loop.h"
 #include "epoll/EPollConnection.h"
 #include "epoll/EPollStream.h"
 #include "epoll/EPollServer.h"
 #include "epoll/EPollClient.h"
-#include "net.h"
+#include "Net.h"
 #include "DataSink.h"
+#include "linux/NetLinux.h"
+#include "linux/Common.h"
+
 #include <map>
 #include <memory>
 #include <thread>
 #include <string>
 
-#include "linux/net_linux.h"
-#include "linux/common.h"
 #include <sys/epoll.h>
 
 

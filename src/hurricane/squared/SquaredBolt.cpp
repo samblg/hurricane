@@ -16,38 +16,38 @@
  * limitations under the license.
  */
 
-#include "TridentBolt.h"
-#include "TridentTuple.h"
+#include "SquaredBolt.h"
+#include "SquaredTuple.h"
 
 namespace hurricane {
-    namespace trident {
-        TridentBolt::TridentBolt(const base::Fields & inputFields,
+    namespace squared {
+        SquaredBolt::SquaredBolt(const base::Fields & inputFields,
             const base::Fields & outputFields) :
                 _inputFields(inputFields),
                 _outputFields(outputFields)
         {
         }
 
-        void TridentBolt::Prepare(base::OutputCollector & outputCollector)
+        void SquaredBolt::Prepare(base::OutputCollector & outputCollector)
         {
             this->_collector = &outputCollector;
         }
 
-        void TridentBolt::Cleanup()
+        void SquaredBolt::Cleanup()
         {
         }
 
-        void TridentBolt::Execute(const base::Values & values)
+        void SquaredBolt::Execute(const base::Values & values)
         {
-            Execute(TridentTuple(_inputFields, values), _collector)
+            Execute(SquaredTuple(_inputFields, values), _collector)
         }
 
-        IBolt* TridentBolt::Clone() const
+        IBolt* SquaredBolt::Clone() const
         {
-            return new TridentBolt(this);
+            return new SquaredBolt(this);
         }
         
-        Fields TridentBolt::DeclareFields() const
+        Fields SquaredBolt::DeclareFields() const
         {
             return _outputFields;
         }

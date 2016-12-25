@@ -1,0 +1,18 @@
+'use strict';
+
+module.exports = {
+    logging: {
+        scope: 'custom',
+        basePath: '$(SolutionDir)/../deps/logging',
+        lib: 'target/$(Platform)/Release/lib',
+        inputs: ['logging']
+    },
+    dl: {
+        scope: 'system',
+        inputs: ['dl']
+    },
+    pthread: {
+        scope: 'system',
+        inputs: ['pthread']
+    }
+};

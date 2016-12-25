@@ -25,17 +25,17 @@
 #include "hurricane/base/Values.h"
 
 namespace hurricane {
-    namespace trident {
+    namespace squared {
         class DRPCClient {
         public:
-            DRPCClient(const std::string& serverName, int serverPort) 
+            DRPCClient(const std::string& serverName, int32_t serverPort) 
                 : _serverAddress(serverName, port) {
 
             }
             
             void Connect() {
                 if ( !_connector.get() ) {
-                    _connector = std::make_shared<NetConnector>(_supervisorAddress);
+                    _connector = std::make_shared<NetConnector>(_managerAddress);
                     _connector->Connect();
                 }
             }

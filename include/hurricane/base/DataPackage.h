@@ -32,19 +32,19 @@ namespace hurricane {
     namespace base {
         class Writable {
         public:
-			virtual std::string GetType() const = 0;
+            virtual std::string GetType() const = 0;
             virtual int32_t Read(ByteArrayReader& reader, Variant& variant) = 0;
             virtual int32_t Write(ByteArrayWriter& writer, const Variant& variant) = 0;
         };
 
         class Int32Writable : public Writable {
         public:
-			std::string GetType() const {
+            std::string GetType() const {
                 return "int32";
-			}
+            }
 
             int32_t Read(ByteArrayReader& reader, Variant& variant) override {
-                int32_t intValue = reader.read<int32_t>();
+                int32_t intValue = reader.Read<int32_t>();
                 variant.SetInt32Value(intValue);
 
                 return sizeof(int32_t);
@@ -52,7 +52,7 @@ namespace hurricane {
 
             int32_t Write(ByteArrayWriter& writer, const Variant& variant) override {
                 int32_t value = variant.GetInt32Value();
-                writer.write(value);
+                writer.Write(value);
 
                 return sizeof(int32_t);
             }
@@ -65,7 +65,7 @@ namespace hurricane {
             }
 
             int32_t Read(ByteArrayReader& reader, Variant& variant) override {
-                int64_t intValue = reader.read<int64_t>();
+                int64_t intValue = reader.Read<int64_t>();
                 variant.SetInt64Value(intValue);
 
                 return sizeof(int64_t);
@@ -73,7 +73,7 @@ namespace hurricane {
 
             int32_t Write(ByteArrayWriter& writer, const Variant& variant) override {
                 int64_t value = variant.GetInt64Value();
-                writer.write(value);
+                writer.Write(value);
 
                 return sizeof(int64_t);
             }
@@ -86,7 +86,7 @@ namespace hurricane {
             }
 
             int32_t Read(ByteArrayReader& reader, Variant& variant) override {
-                uint32_t intValue = reader.read<uint32_t>();
+                uint32_t intValue = reader.Read<uint32_t>();
                 variant.SetUInt32Value(intValue);
 
                 return sizeof(uint32_t);
@@ -94,7 +94,7 @@ namespace hurricane {
 
             int32_t Write(ByteArrayWriter& writer, const Variant& variant) override {
                 uint32_t value = variant.GetUInt32Value();
-                writer.write(value);
+                writer.Write(value);
 
                 return sizeof(uint32_t);
             }
@@ -107,7 +107,7 @@ namespace hurricane {
             }
 
             int32_t Read(ByteArrayReader& reader, Variant& variant) override {
-                uint64_t intValue = reader.read<uint64_t>();
+                uint64_t intValue = reader.Read<uint64_t>();
                 variant.SetUInt64Value(intValue);
 
                 return sizeof(uint64_t);
@@ -115,7 +115,7 @@ namespace hurricane {
 
             int32_t Write(ByteArrayWriter& writer, const Variant& variant) override {
                 uint64_t value = variant.GetUInt64Value();
-                writer.write(value);
+                writer.Write(value);
 
                 return sizeof(uint64_t);
             }
@@ -128,7 +128,7 @@ namespace hurricane {
             }
 
             int32_t Read(ByteArrayReader& reader, Variant& variant) override {
-                bool boolValue = reader.read<bool>();
+                bool boolValue = reader.Read<bool>();
                 variant.SetBooleanValue(boolValue);
 
                 return sizeof(bool);
@@ -136,7 +136,7 @@ namespace hurricane {
 
             int32_t Write(ByteArrayWriter& writer, const Variant& variant) override {
                 bool value = variant.GetBooleanValue();
-                writer.write(value);
+                writer.Write(value);
 
                 return sizeof(bool);
             }
@@ -149,7 +149,7 @@ namespace hurricane {
             }
 
             int32_t Read(ByteArrayReader& reader, Variant& variant) override {
-                float floatValue = reader.read<float>();
+                float floatValue = reader.Read<float>();
                 variant.SetFloatValue(floatValue);
 
                 return sizeof(float);
@@ -157,39 +157,39 @@ namespace hurricane {
 
             int32_t Write(ByteArrayWriter& writer, const Variant& variant) override {
                 float value = variant.GetFloatValue();
-                writer.write(value);
+                writer.Write(value);
 
                 return sizeof(float);
             }
         };
 
         class StringWritable : public Writable {
-		public:
-			std::string GetType() const {
-				return "string";
-			}
+        public:
+            std::string GetType() const {
+                return "string";
+            }
 
             int32_t Read(ByteArrayReader& reader, Variant& variant) override {
-                int32_t size = reader.read<int32_t>();
+                int32_t size = reader.Read<int32_t>();
 
-                ByteArray bytes = reader.readData(size);
+                ByteArray bytes = reader.ReadData(size);
 
-                variant.SetStringValue(bytes.toStdString());
+                variant.SetStringValue(bytes.ToStdString());
 
-                return sizeof(int32_t) + bytes.size();
+                return static_cast<int32_t>(sizeof(int32_t) + bytes.size());
             }
 
             int32_t Write(ByteArrayWriter& writer, const Variant& variant) override {
                 std::string value = variant.GetStringValue();
 
-                writer.write(int32_t(value.size()));
-                writer.write(value.c_str(), value.size());
-                return sizeof(int32_t) + value.size();
+                writer.Write(int32_t(value.size()));
+                writer.Write(value.c_str(), static_cast<int32_t>(value.size()));
+                return static_cast<int32_t>(sizeof(int32_t) + value.size());
             }
         };
 
         //extern std::map<int8_t, std::shared_ptr<Writable>> Writables;
-		std::map<int8_t, std::shared_ptr<Writable>>& GetWritables();
+        std::map<int8_t, std::shared_ptr<Writable>>& GetWritables();
 
         class DataPackage {
         public:
@@ -205,7 +205,7 @@ namespace hurricane {
 
             ByteArray Serialize() {
                 ByteArray body = SerializeBody();
-                ByteArray head = SerializeHead(body.size());
+                ByteArray head = SerializeHead(static_cast<int32_t>(body.size()));
 
                 return head + body;
             }
@@ -229,20 +229,20 @@ namespace hurricane {
             ByteArray SerializeHead(int32_t bodySize) {
                 ByteArrayWriter headWriter;
                 _length = sizeof(int32_t) + sizeof(_version) + bodySize;
-                headWriter.write(_length);
-                headWriter.write(_version);
+                headWriter.Write(_length);
+                headWriter.Write(_version);
                 ByteArray head = headWriter.ToByteArray();
 
                 return head;
             }
 
             void DeserializeHead(ByteArrayReader& reader) {
-                _length = reader.read<int32_t>();
-                _version = reader.read<int8_t>();
+                _length = reader.Read<int32_t>();
+                _version = reader.Read<int8_t>();
             }
 
             void DeserializeBody(ByteArrayReader& reader) {
-                while ( reader.tell() < _length ) {
+                while ( reader.Tell() < _length ) {
                     Variant variant = DeserializeVariant(reader);
                     _variants.push_back(variant);
                 }
@@ -251,13 +251,13 @@ namespace hurricane {
             Variant DeserializeVariant(ByteArrayReader& reader) {
                 Variant variant;
 
-                if ( reader.tell() >= _length ) {
+                if ( reader.Tell() >= _length ) {
                     return variant;
                 }
 
-				int8_t typeCode = reader.read<int8_t>();
-				std::map<int8_t, std::shared_ptr<Writable>>& writables = GetWritables();
-				std::shared_ptr<Writable> writable = writables[typeCode];
+                int8_t typeCode = reader.Read<int8_t>();
+                std::map<int8_t, std::shared_ptr<Writable>>& writables = GetWritables();
+                std::shared_ptr<Writable> writable = writables[typeCode];
                 writable->Read(reader, variant);
 
                 return variant;
@@ -266,10 +266,10 @@ namespace hurricane {
             void SerializeVariant(ByteArrayWriter& writer, const Variant& variant) {
                 Variant::Type type = variant.GetType();
                 int8_t typeCode = Variant::TypeCodes[type];
-				std::map<int8_t, std::shared_ptr<Writable>>& writables = GetWritables();
-				std::shared_ptr<Writable> writable = writables[typeCode];
+                std::map<int8_t, std::shared_ptr<Writable>>& writables = GetWritables();
+                std::shared_ptr<Writable> writable = writables[typeCode];
 
-                writer.write<int8_t>(typeCode);
+                writer.Write<int8_t>(typeCode);
                 writable->Write(writer, variant);
             }
 

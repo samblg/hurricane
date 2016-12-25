@@ -23,7 +23,7 @@
 #ifndef NET_FRAMEWORK_HTTPDATASINK_H
 #define NET_FRAMEWORK_HTTPDATASINK_H
 
-#include "net.h"
+#include "Net.h"
 #include "HttpRequest.h"
 
 namespace meshy {

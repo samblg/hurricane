@@ -19,7 +19,7 @@
 #pragma once
 
 #include "IoLoop.h"
-#include "net.h"
+#include "Net.h"
 
 #ifdef OS_LINUX
 #include "epoll/EPollClient.h"
@@ -27,10 +27,10 @@
 #include "epoll/EPollServer.h"
 #include "epoll/EPollStream.h"
 #elif defined(OS_WIN32)
-#include "epoll/IOCPClient.h"
-#include "epoll/IOCPConnection.h"
-#include "epoll/IOCPServer.h"
-#include "epoll/IOCPStream.h"
+#include "iocp/IOCPClient.h"
+#include "iocp/IOCPConnection.h"
+#include "iocp/IOCPServer.h"
+#include "iocp/IOCPStream.h"
 #endif
 
 namespace meshy {
@@ -42,7 +42,6 @@ namespace meshy {
 #elif defined(OS_WIN32)
     typedef IOCPServer TcpServer;
     typedef WSAConnection TcpConnection;
-    typedef IOCPClient TcpClient;
     typedef IOCPStream TcpStream;
 #endif
 

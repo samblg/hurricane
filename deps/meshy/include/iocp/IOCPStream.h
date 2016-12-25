@@ -18,41 +18,41 @@
 
 #pragma once
 
-#include "net.h"
+#include "Net.h"
 
 namespace meshy {
-	class IOCPStream;
-	typedef std::shared_ptr<IOCPStream> IOCPStreamPtr;
+    class IOCPStream;
+    typedef std::shared_ptr<IOCPStream> IOCPStreamPtr;
 
-	// TODO: move utility to other places
-	class IOCP {
-	public:
-		enum {
-			DataBuffSize = BUFSIZ
-		};
+    // TODO: move utility to other places
+    class IOCP {
+    public:
+        enum {
+            DataBuffSize = BUFSIZ
+        };
 
-		class OperationType {
-		public:
-			enum {
-				Read,
-				Write
-			};
-		};
+        class OperationType {
+        public:
+            enum {
+                Read,
+                Write
+            };
+        };
 
-		struct OperationData
-		{
-			OVERLAPPED overlapped;
-			WSABUF databuff;
-			char buffer[DataBuffSize];
-			int32_t operationType;
-			IOCPStream* stream;
-		};
-		typedef std::shared_ptr<OperationData> OperationDataPtr;
+        struct OperationData
+        {
+            OVERLAPPED overlapped;
+            WSABUF databuff;
+            char buffer[DataBuffSize];
+            int32_t operationType;
+            IOCPStream* stream;
+        };
+        typedef std::shared_ptr<OperationData> OperationDataPtr;
 
-		static HANDLE GetCompletionPort();
-		static OperationDataPtr CreateOperationData(IOCPStreamPtr stream, HANDLE completionPort);
-		static void ResetOperationData(OperationData* perIOData);
-	};
+        static HANDLE GetCompletionPort();
+        static OperationDataPtr CreateOperationData(IOCPStreamPtr stream, HANDLE completionPort);
+        static void ResetOperationData(OperationData* perIOData);
+    };
     class IOCPStream : public BasicStream {
     public:
         IOCPStream(NativeSocket clientSocket, NativeSocketAddress clientAddress) :

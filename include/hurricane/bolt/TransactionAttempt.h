@@ -19,24 +19,24 @@
 #pragma once
 
 namespace hurricane {
-	namespace bolt {
-		class TransactionAttempt {
-		public:
-			TransactionAttempt(int transactionId, int attemptId) :
-				_transactionId(transactionId), _attemptId(attemptId) {}
+    namespace bolt {
+        class TransactionAttempt {
+        public:
+            TransactionAttempt(int32_t transactionId, int32_t attemptId) :
+                _transactionId(transactionId), _attemptId(attemptId) {}
 
-			int GetTransactionId() const {
-				return _transactionId;
-			}
+            int32_t GetTransactionId() const {
+                return _transactionId;
+            }
 
-			int GetAttemptId() const {
-				return _attemptId;
-			}
+            int32_t GetAttemptId() const {
+                return _attemptId;
+            }
 
-		private:
-			int _transactionId;
-			int _attemptId;
-		};
+        private:
+            int32_t _transactionId;
+            int32_t _attemptId;
+        };
 
-	}
+    }
 }

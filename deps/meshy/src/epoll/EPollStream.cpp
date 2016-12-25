@@ -21,14 +21,14 @@
 //
 
 #include "epoll/EPollStream.h"
-
 #include "epoll/EPollLoop.h"
-#include "utils/logger.h"
+#include "logging/Logging.h"
+#include "ByteArray.h"
+
 #include <unistd.h>
-#include "bytearray.h"
 
 namespace meshy {
-    int32_t EPollStream::Receive(char *buffer, int32_t bufferSize, int32_t &readSize) {
+    int32_t EPollStream::Receive(char* buffer, int32_t bufferSize, int32_t& readSize) {
         readSize = 0;
         int32_t nread = 0;
         NativeSocketEvent ev;
@@ -41,17 +41,17 @@ namespace meshy {
     }
 
     int32_t EPollStream::Send(const meshy::ByteArray& byteArray) {
-        TRACE_DEBUG("EPollConnection::Send");
+        LOG(LOG_DEBUG) << "EPollConnection::Send";
 
         struct epoll_event ev;
         NativeSocket clientSocket = GetNativeSocket();
 
         if ( EPollLoop::Get()->ModifyEpollEvents(_events | EPOLLOUT, clientSocket) ) {
             // TODO: MARK ERASE
-            TRACE_ERROR("FATAL epoll_ctl: mod failed!");
+            LOG(LOG_ERROR) << "FATAL epoll_ctl: mod failed!";
         }
 
-        const char *buf = byteArray.data();
+        const char* buf = byteArray.data();
         int32_t size = byteArray.size();
         int32_t n = size;
 
@@ -60,7 +60,7 @@ namespace meshy {
             nwrite = write(clientSocket, buf + size - n, n);
             if (nwrite < n) {
                 if (nwrite == -1 && errno != EAGAIN) {
-                    TRACE_ERROR("FATAL write data to peer failed!");
+                    LOG(LOG_ERROR) << "FATAL write data to peer failed!";
                 }
                 break;
             }

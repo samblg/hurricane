@@ -21,22 +21,22 @@
 #include "hurricane/spout/ISpout.h"
 
 namespace hurricane {
-	namespace spout {
-		class Coordinator : public ISpout {
-		public:
-			virtual void Open(base::OutputCollector& outputCollector) {
-				_outputCollector = &outputCollector;
-			}
+    namespace spout {
+        class Coordinator : public ISpout {
+        public:
+            virtual void Open(base::OutputCollector& outputCollector) {
+                _outputCollector = &outputCollector;
+            }
 
-			virtual void Close() {
+            virtual void Close() {
 
-			}
-			virtual void Execute() {
+            }
+            virtual void Execute() {
 
-			}
+            }
 
-		private:
-			base::OutputCollector* _outputCollector;
-		};
-	}
+        private:
+            base::OutputCollector* _outputCollector;
+        };
+    }
 }

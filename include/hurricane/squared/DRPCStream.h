@@ -21,33 +21,33 @@
 #include "hurricane/base/Fields.h"
 
 namespace hurricane {
-    namespace trident {
-        class TridentTopology;
-        class TridentSpout;
+    namespace squared {
+        class SquaredTopology;
+        class SquaredSpout;
         class Operation;
         class BaseFunction;
         class BaseFilter;
-        class BaseAggregater;
-        class TridentState;
-        class TridentStateFactory;
+        class BaseAggregator;
+        class SquaredState;
+        class SquaredStateFactory;
         class MapGet;
 
         class DRPCStream {
         public:
             DRPCStream();
             DRPCStream(const std::string& spoutName.
-                TridentSpout* spout);
+                SquaredSpout* spout);
 
             DRPCStream* Each(const base::Fields& inputFields,
                 Operation* operation, const base::Fields& outputFields);
             DRPCStream* GroupBy(const Fields& fields);
-            DRPCStream* StateQuery(TridentState* state, base::Fields& inputFields,
+            DRPCStream* StateQuery(SquaredState* state, base::Fields& inputFields,
                 MapGet* mapGetter, base::Fields& outputFields);
-            DRPCStream* Aggregate(base::Fields& inputFields, BaseAggregater* aggregater,
+            DRPCStream* Aggregate(base::Fields& inputFields, BaseAggregator* aggregator,
                 base::Fields* outputFields);
             std::string WaitFormResult(const std::string& args);
 
-            void Deploy(TridentToplogy* topology);
+            void Deploy(SquaredToplogy* topology);
         };
     }
 }

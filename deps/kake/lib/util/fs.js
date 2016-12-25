@@ -1,30 +1,49 @@
 'use strict';
 
-let fs = require('fs');
+const logger = require('./loggers').kake;
+const fs = require('fs');
+const path = require('path');
+
+function exists(filePath) {
+    try {
+        fs.accessSync(filePath, fs.F_OK);
+
+        return true;
+    }
+    catch (e) {
+        return false;
+    }
+}
+
+function mkdir(directoryPath) {
+    const pathParts = directoryPath.split(path.sep);
+
+    const rootDir = path.parse(directoryPath).root;
+
+    let currentPath = rootDir;
+    pathParts.forEach(pathPart => {
+        currentPath = path.join(currentPath, pathPart);
+        if ( !exists(currentPath) ) {
+            logger.info(`Create directory ${currentPath}`);
+            fs.mkdir(currentPath);
+        }
+    });
+}
+
+function absolutePath(relPath) {
+    try {
+        return fs.realpathSync(relPath);
+    }
+    catch (e) {
+        return null;
+    }
+}
 
 function relativePath(originPath, basePath) {
     let absoluteOriginPath = fs.realpathSync(originPath);
     let absoluteBasePath = fs.realpathSync(basePath);
 
-    absoluteOriginPath = replaceAll(absoluteOriginPath, '\\', '/');
-    absoluteBasePath = replaceAll(absoluteBasePath, '\\', '/');
-
-    let originPathParts = absoluteOriginPath.split('/');
-    let originFileName = originPathParts[originPathParts.length - 1];
-    originPathParts = originPathParts.slice(0, originPathParts.length - 1);
-    let basePathParts = absoluteBasePath.split('/');
-
-    let commonPrefixIndex = commonPathPrefix(originPathParts, basePathParts);
-    let backTimes = basePathParts.length - commonPrefixIndex;
-    let backPathParts = makeBackPathParts(backTimes);
-    let remainingPathParts = originPathParts.slice(commonPrefixIndex);
-
-    let finalPathParts = backPathParts.concat(remainingPathParts);
-    finalPathParts.push(originFileName);
-
-    let finalPath = finalPathParts.join('/');
-
-    return finalPath;
+    return path.relative(basePath, originPath);
 }
 
 function findFiles(options) {
@@ -111,7 +130,10 @@ function min(a, b) {
 }
 
 module.exports = {
+    absolutePath,
     relativePath,
+    exists,
+    mkdir,
     findFiles
 };
 

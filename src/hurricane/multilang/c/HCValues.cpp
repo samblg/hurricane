@@ -25,37 +25,39 @@
 #include "hurricane/multilang/c/HCValues.h"
 #include "hurricane/base/Values.h"
 
+#include "logging/Logging.h"
+
 using hurricane::base::Value;
 using hurricane::base::Values;
 
-void PrintCValue(const CValue& value) {
-    if ( value.type == HC_TYPE_INT16 ) {
-        std::cout << "int16" << std::endl;
-        std::cout << value.int16Value << std::endl;
+void Pristd::coutconst CValue& value) {
+    if (std::coutpe == HC_TYPE_INT16 ) {
+        LOG(KLOG_DEBUG) << "int16";
+        LOG(KLOG_DEBUG) << value.int16Value;
     }
-    else if ( value.type == HC_TYPE_INT32 ) {
-        std::cout << "int32" << std::endl;
-        std::cout << value.int32Value << std::endl;
+  std::cstd::coutue.type == HC_TYPE_INT32 ) {
+        LOG(KLOG_DEBUG) << "int32";
+        LOG(KLOG_DEBUG) << value.int32Value;
     }
-    else if ( value.type == HC_TYPE_STRING ) {
-        std::cout << "string" << std::endl;
+  std::cout ( value.type == HC_TYPE_STRING ) {
+        LOG(KLOG_DEBUG) << "string";
 
-        std::string content(value.stringValue, value.length);
-        std::cout << content << std::endl;
+       std::couting content(value.stringValue, value.length);
+        LOG(KLOG_DEBUG) << content;
     }
 }
 
-void PrintCValues(CValues* values) {
-    std::cout << values->length << std::endl;
-    std::cout << values->values << std::endl;
+voisstd::coutlues(CValues* values) {
+    LOG(LOG_DEBUG) << values->length;
+    LOG(LOG_DEBUG) << values->values;
 
-    for ( int i = 0; i < values->length; i ++ ) {
+    for ( int32_t i = 0; i < values->length; i ++ ) {
         PrintCValue(values->values[i]);
     }
 }
 
 void Values2CValues(const Values& values, CValues* cValues) {
-    int valueIndex = 0;
+    int32_t valueIndex = 0;
 
     cValues->length = values.size();
     cValues->values = new CValue[cValues->length];
@@ -79,7 +81,7 @@ void Values2CValues(const Values& values, CValues* cValues) {
 }
 
 void CValues2Values(const CValues& cValues, Values* values) {
-    for ( int valueIndex = 0; valueIndex != cValues.length; ++ valueIndex ) {
+    for ( int32_t valueIndex = 0; valueIndex != cValues.length; ++ valueIndex ) {
         CValue& cValue = cValues.values[valueIndex];
         if ( cValue.type == HC_TYPE_INT32 ) {
             values->push_back(Value(cValue.int32Value));

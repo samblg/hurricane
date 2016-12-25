@@ -18,22 +18,33 @@
 
 #pragma once
 
-#include "net.h"
+#include "Net.h"
 #include "IOCPStream.h"
 #include <Windows.h>
 #include <thread>
 
 namespace meshy {
 
-	class WSAConnection : public IOCPStream {
-	public:
-		WSAConnection(NativeSocket clientSocket, NativeSocketAddress clientAddress) :
+    class WSAConnection : public IOCPStream {
+    public:
+        WSAConnection(NativeSocket clientSocket, NativeSocketAddress clientAddress) :
             IOCPStream(clientSocket, clientAddress) {
-		}
+        }
 
-		WSAConnection(const IOCPStream& stream) = delete;
-	};
+        WSAConnection(const IOCPStream& stream) = delete;
 
-	typedef std::shared_ptr<WSAConnection> WSAConnectionPtr;
+        virtual void OnData(DataHandler handler) {
+            _dataHandler = handler;
+        }
+
+        virtual DataHandler GetDataHandler() {
+            return _dataHandler;
+        }
+
+    private:
+        DataHandler _dataHandler;
+    };
+
+    typedef std::shared_ptr<WSAConnection> WSAConnectionPtr;
 
 }

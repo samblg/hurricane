@@ -26,9 +26,9 @@ BEGIN_C_DECALRE
 #include <stdint.h>
 
 typedef int32_t (*CSpoutClone)();
-typedef int32_t(*CSpoutOpen)(int spoutIndex);
-typedef int32_t(*CSpoutClose)(int spoutIndex);
-typedef int32_t(*CSpoutExecute)(int spoutIndex, void* wrapper, void* emitter);
+typedef int32_t(*CSpoutOpen)(int32_t spoutIndex);
+typedef int32_t(*CSpoutClose)(int32_t spoutIndex);
+typedef int32_t(*CSpoutExecute)(int32_t spoutIndex, void* wrapper, void* emitter);
 
 typedef struct {
     CSpoutClone onClone;
@@ -65,7 +65,7 @@ namespace hurricane {
 
         private:
             CSpout _cSpout;
-            int _spoutIndex;
+            int32_t _spoutIndex;
             base::OutputCollector* _collector;
         };
     }

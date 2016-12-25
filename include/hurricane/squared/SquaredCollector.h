@@ -21,21 +21,21 @@
 #include "hurricane/base/OutputCollector.h"
 
 namespace hurricane {
-    namespace trident {
-        class TridentCollector : public base::OutputCollector {
+    namespace squared {
+        class SquaredCollector : public base::OutputCollector {
         public:
             bool IsFinished();
 
-            void SetBatchId(int batchId) {
+            void SetBatchId(int32_t batchId) {
                 _batchId = batchId;
             }
 
-            int GetBatchId() const {
+            int32_t GetBatchId() const {
                 return _batchId;
             }
 
         private:
-            int batchId;
+            int32_t batchId;
         };
     }
 }

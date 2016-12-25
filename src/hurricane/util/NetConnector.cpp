@@ -17,49 +17,59 @@
  */
 
 #include "hurricane/util/NetConnector.h"
+#include "logging/Logging.h"
+
 #include <iostream>
-#ifdef USE_MESHY
-#include "Meshy.h"
-#endif
 
 namespace hurricane {
-	namespace util {
-		const int RECEIVE_BUFFER_SIZE = 65535;
+    namespace util {
+        const int32_t RECEIVE_BUFFER_SIZE = 65535;
 
-		void NetConnector::Connect()
-		{
+        void NetConnector::Connect()
+        {
             if ( !_client.get() ) {
                 _client = std::make_shared<TcpClient>();
 
                 try {
                     _client->Connect(_host.GetHost(), _host.GetPort());
                 }
-                catch ( const std::exception& e ) {
-                    std::cout << "Release client" << std::endl;
+                catch ( const SocketError& e ) {
+                    LOG(LOG_ERROR) << "Release client";
                     _client.reset();
                     throw e;
                 }
             }
-		}
+        }
 
-		void NetConnector::Connect(ConnectCallback callback) {
-			Connect();
-			callback();
-		}
+        void NetConnector::Connect(ConnectCallback callback) {
+            try {
+                Connect();
+                callback(SocketError());
+            }
+            catch ( const SocketError& e ) {
+                callback(e);
+            }
+        }
 
-		int32_t NetConnector::SendAndReceive(const char * buffer, int32_t size, char* resultBuffer, int32_t resultSize)
-		{
-			_client->Send(buffer, size);
-			return _client->Receive(resultBuffer, resultSize);
-		}
-
-		void NetConnector::SendAndReceive(const char* buffer, int32_t size, DataReceiver receiver)
+        int32_t NetConnector::SendAndReceive(const char* buffer, int32_t size, char* resultBuffer, int32_t resultSize)
         {
             _client->Send(buffer, size);
-			char resultBuffer[RECEIVE_BUFFER_SIZE];
-			int readSize = _client->Receive(resultBuffer, RECEIVE_BUFFER_SIZE);
+            return _client->Receive(resultBuffer, resultSize);
+        }
 
-			receiver(resultBuffer, readSize);
-		}
-	}
+        void NetConnector::SendAndReceive(const char* buffer, int32_t size, DataReceiver receiver)
+        {
+            _client->SendAsync(buffer, size, [this, receiver](int32_t sentSize, const SocketError& error) {
+                if ( error.GetType() != SocketError::Type::NoError ) {
+                    receiver(nullptr, 0, error);
+                    return;
+                }
+
+                char resultBuffer[RECEIVE_BUFFER_SIZE];
+                int32_t readSize = _client->Receive(resultBuffer, RECEIVE_BUFFER_SIZE);
+
+                receiver(resultBuffer, readSize, SocketError());
+            });
+        }
+    }
 }

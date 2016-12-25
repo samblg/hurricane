@@ -18,16 +18,16 @@
 
 #pragma once
 
-#include "TridentBolt.h"
+#include "SquaredBolt.h"
 
 namespace hurricane {
-    namespace trident {
-        class GroupByBolt : public TridentBolt {
+    namespace squared {
+        class GroupByBolt : public SquaredBolt {
         public:
             GroupByBolt(const base::Fields& fields);
 
-            virtual void Execute(const TridentTuple& tuple,
-                TridentCollector* collector) override;
+            virtual void Execute(const SquaredTuple& tuple,
+                SquaredCollector* collector) override;
         };
 
     }

@@ -1,11 +1,10 @@
 all:
-	cd deps/meshy/target/build/linux/x64/Release;make
-	cd target/build/linux/x64/Release;make
+	cd deps/logging/target/linux/x64/Release/build;make install
+	cd deps/meshy/target/linux/x64/Release/build;make install
+	cd target/linux/x64/Release/build;make install
 
 clean:
-	cd target/build/linux/x64/Release;make clean
-	cd deps/meshy/target/build/linux/x64/Release;make clean
+	cd target/linux/x64/Release/build;make clean
+	cd deps/meshy/target/linux/x64/Release/build;make clean
+	cd deps/logging/target/linux/x64/Release/build;make clean
 
-install:
-	cd deps/meshy/target/build/linux/x64/Release;make install
-	cd target/build/linux/x64/Release;make install
