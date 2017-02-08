@@ -25,7 +25,7 @@
 namespace hurricane {
 
 namespace spout {
-    class ISpout;
+class ISpout;
 }
 namespace task {
 
@@ -35,14 +35,25 @@ public:
     ~SpoutExecutor() {}
 
     void Start();
-    void SetSpout(spout::ISpout* spout);
+
+    void SetSpout(spout::ISpout* spout)
+    {
+        _spout.reset(spout);
+    }
 
     std::shared_ptr<spout::ISpout> GetSpout() {
         return _spout;
     }
 
-    int32_t GetFlowParam() const;
-    void SetFlowParam(int32_t GetFlowParam);
+    int32_t GetFlowParam() const
+    {
+        return _flowParam;
+    }
+
+    void SetFlowParam(int32_t flowParam)
+    {
+        _flowParam = flowParam;
+    }
 
 private:
     void MainLoop();

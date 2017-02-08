@@ -23,44 +23,36 @@
 
 namespace hurricane {
 namespace base {
-    class NetAddress : public Serializable {
-    public:
-        NetAddress() : _port(0) {
-        }
 
-        NetAddress(const std::string& host, int32_t port) : _host(host), _port(port) {
-        }
+class NetAddress : public Serializable {
+public:
+    inline NetAddress();
+    inline NetAddress(const std::string& host, int32_t port);
+    inline void Serialize(Variants& variants) const override;
+    inline void Deserialize(Variants::const_iterator& it) override;
 
-        const std::string& GetHost() const {
-            return _host;
-        }
+    const std::string& GetHost() const {
+        return _host;
+    }
 
-        void SetHost(const std::string& host) {
-            _host = host;
-        }
+    void SetHost(const std::string& host) {
+        _host = host;
+    }
 
-        int32_t GetPort() const {
-            return _port;
-        }
+    int32_t GetPort() const {
+        return _port;
+    }
 
-        void SetPort(int32_t port) {
-            _port = port;
-        }
+    void SetPort(int32_t port) {
+        _port = port;
+    }
 
-        virtual void Serialize(Variants& variants) const override {
-            Variant::Serialize(variants, _host);
-            Variant::Serialize(variants, _port);
-        }
-
-        virtual void Deserialize(Variants::const_iterator& it) override {
-            Variant::Deserialize(it, _host);
-            Variant::Deserialize(it, _port);
-        }
-
-    private:
-        std::string _host;
-        int32_t _port;
-    };
+private:
+    std::string _host;
+    int32_t _port;
+};
 
 }
 }
+
+#include "hurricane/base/NetAddress.tcc"

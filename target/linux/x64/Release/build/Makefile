@@ -1,12 +1,18 @@
 all:
-	cd president;make
-	cd manager;make
-	cd wordcount;make
+	@make -s -C hurricane-java
+	@make -s -C president
+	@make -s -C manager
+	@make -s -C wordcount
+	@make -s -C jwordcount
 clean:
-	cd president;make clean
-	cd manager;make clean
-	cd wordcount;make clean
+	@make -s -C hurricane-java clean
+	@make -s -C president clean
+	@make -s -C manager clean
+	@make -s -C wordcount clean
+	@make -s -C jwordcount clean
 install:
-	cd president;make install
-	cd manager;make install
-	cd wordcount;make install
+	@make -s -C hurricane-java install
+	@make -s -C president install
+	@make -s -C manager install
+	@make -s -C wordcount install
+	@make -s -C jwordcount install

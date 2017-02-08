@@ -18,8 +18,6 @@
 
 #pragma once
 
-#include "hurricane/message/Message.h"
-
 namespace hurricane {
 namespace task {
 

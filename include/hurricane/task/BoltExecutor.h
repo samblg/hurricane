@@ -53,11 +53,7 @@ public:
         _taskQueue = taskQueue;
     }
 
-protected:
-    hurricane::message::MessageLoop _loop;
-
 private:
-    void OnTuple(hurricane::message::Message& message);
     void StartLoop();
 
     std::thread _thread;

@@ -1,7 +1,5 @@
 #Hurricane Real-time Processing
 
-- Current latest stable version: 0.6.1 (master)
-
 ##0.6.1 Branch
 This branch includes the following major updates:
 

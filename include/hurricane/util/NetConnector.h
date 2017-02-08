@@ -25,32 +25,31 @@
 #include <memory>
 
 namespace hurricane {
-    namespace util {
-        class NetConnector {
-        public:
-            typedef std::function<void(const SocketError&)> ConnectCallback;
-            typedef std::function<void(char* resultBuffer, int32_t readSize, const SocketError&)> DataReceiver;
+namespace util {
+class NetConnector {
+public:
+    typedef std::function<void(const SocketError&)> ConnectCallback;
+    typedef std::function<void(char* resultBuffer, int32_t readSize, const SocketError&)> DataReceiver;
 
-            NetConnector(const hurricane::base::NetAddress& host) :
-                _host(host) {
-            }
+    NetConnector(const hurricane::base::NetAddress& host);
 
-            const hurricane::base::NetAddress& GetHost() const {
-                return _host;
-            }
-
-            void SetHost(const hurricane::base::NetAddress& host) {
-                _host = host;
-            }
-
-            void Connect();
-            void Connect(ConnectCallback callback);
-            int32_t SendAndReceive(const char* buffer, int32_t size, char* resultBuffer, int32_t resultSize);
-            void SendAndReceive(const char* buffer, int32_t size, DataReceiver receiver);
-
-        private:
-            hurricane::base::NetAddress _host;
-            std::shared_ptr<TcpClient> _client;
-        };
+    const hurricane::base::NetAddress& GetHost() const {
+        return _host;
     }
+
+    void SetHost(const hurricane::base::NetAddress& host) {
+        _host = host;
+    }
+
+    void Connect();
+    void Connect(ConnectCallback callback);
+    int32_t SendAndReceive(const char* buffer, int32_t size, char* resultBuffer, int32_t resultSize);
+    void SendAndReceive(const char* buffer, int32_t size, DataReceiver receiver);
+    void Close();
+
+private:
+    hurricane::base::NetAddress _host;
+    std::shared_ptr<TcpClient> _client;
+};
+}
 }

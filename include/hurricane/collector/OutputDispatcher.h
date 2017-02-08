@@ -51,11 +51,8 @@ class OutputDispatcher {
 public:
     typedef std::function<void(task::ExecutorPosition)> AskFieldCallback;
 
-    OutputDispatcher() : _selfSpoutCount(0) {
-    }
-
-    OutputDispatcher(std::shared_ptr<OutputQueue> queue) : _queue(queue), _selfSpoutCount(0) {
-    }
+    OutputDispatcher();
+    OutputDispatcher(std::shared_ptr<OutputQueue> queue);
 
     void SetQueue(std::shared_ptr<OutputQueue> queue) {
         _queue = queue;

@@ -26,9 +26,7 @@ namespace collector {
 
 class TaskItem {
 public:
-    TaskItem(int32_t taskIndex, const base::Tuple& tuple) :
-            _taskIndex(taskIndex), _tuple(tuple) {
-    }
+    inline TaskItem(int32_t taskIndex, const base::Tuple& tuple);
 
     int32_t GetTaskIndex() const {
         return _taskIndex;
@@ -48,3 +46,5 @@ class TaskQueue : public base::BlockingQueue<TaskItem*> {
 
 }
 }
+
+#include "hurricane/collector/TaskItem.tcc"

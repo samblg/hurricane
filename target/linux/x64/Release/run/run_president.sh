@@ -1,5 +1,5 @@
 ./deploy.sh
 
-export LD_LIBRARY_PATH=. 
+source environment.sh
 
 ./president president.properties

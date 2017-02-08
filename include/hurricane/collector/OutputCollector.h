@@ -23,34 +23,33 @@
 
 namespace hurricane {
 namespace base {
-    class Tuple;
+class Tuple;
 }
 
 namespace collector {
-    class OutputQueue;
 
-    class OutputCollector {
-    public:
-        OutputCollector() : _taskIndex(-1) {}
-        OutputCollector(int32_t taskIndex, const std::string& taskName, std::shared_ptr<OutputQueue> queue) :
-            _taskIndex(taskIndex), _taskName(taskName), _queue(queue) {
-        }
+class OutputQueue;
 
-        void SetQueue(std::shared_ptr<OutputQueue> queue) {
-            _queue = queue;
-        }
+class OutputCollector {
+public:
+    OutputCollector();
+    OutputCollector(int32_t taskIndex, const std::string& taskName, std::shared_ptr<OutputQueue> queue);
 
-        std::shared_ptr<OutputQueue> GetQueue() const {
-            return _queue;
-        }
+    void SetQueue(std::shared_ptr<OutputQueue> queue) {
+        _queue = queue;
+    }
 
-        void Emit(const hurricane::base::Tuple& tuple);
+    std::shared_ptr<OutputQueue> GetQueue() const {
+        return _queue;
+    }
 
-    private:
-        int32_t _taskIndex;
-        std::string _taskName;
-        std::shared_ptr<OutputQueue> _queue;
-    };
+    void Emit(const hurricane::base::Tuple& tuple);
+
+private:
+    int32_t _taskIndex;
+    std::string _taskName;
+    std::shared_ptr<OutputQueue> _queue;
+};
 
 }
 }

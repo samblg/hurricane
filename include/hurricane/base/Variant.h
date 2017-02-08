@@ -29,453 +29,129 @@
 
 #include "logging/Logging.h"
 
-#define VARIANT_GETTER(TypeName, CType, valueName) \
+#define VARIANT_AECCESS(TypeName, CType, valueName) \
+    Variant(CType value) : _type(Type::TypeName), valueName(value) {} \
+    \
     CType Get##TypeName##Value() const { \
         if ( _type == Type::Invalid ) { \
-            LOG(KLOG_ERROR) << "Invalid"; \
+            LOG(LOG_ERROR) << "Invalid"; \
         } \
     \
-        if ( _type == Type::##TypeName ) { \
+        if ( _type == Type::TypeName ) { \
             return valueName; \
         } \
     \
+        LOG(LOG_ERROR) << "Type mismatched. " << \
+                 "Expected: " << TypeNames[Type::TypeName] << \
+                 ". Actually: " << TypeNames[_type]; \
         throw "Type mismatched"; \
+    } \
+    \
+    void Set##TypeName##Value(CType value) { \
+        _type = Type::TypeName; \
+        valueName = value; \
+    } \
+    \
+    static void Deserialize(Variants::const_iterator& it, CType& value) { \
+        value = it->Get##TypeName##Value(); \
+        it ++; \
+    } \
+    \
+    static void Serialize(Variants& variants, CType value) { \
+        variants.push_back(Variant(value)); \
     }
 
 namespace hurricane {
-    namespace base {
-        class Variant;
-        typedef std::vector<Variant> Variants;
-
-        class Serializable {
-        public:
-            virtual void Serialize(Variants& variants) const = 0;
-            virtual void Deserialize(Variants::const_iterator& it) = 0;
-        };
-
-        class Variant {
-        public:
-            enum class Type {
-                Invalid,
-                Int32,
-                Int64,
-                UInt32,
-                UInt64,
-                Boolean,
-                Float,
-                String,
-            };
-
-            static std::map<Type, int8_t> TypeCodes;
-            static std::map<Type, std::string> TypeNames;
-
-            Variant() : _type(Type::Invalid) {}
-            Variant(int32_t intValue) : _type(Type::Int32), _int32Value(intValue) {}
-            Variant(int64_t longValue) : _type(Type::Int64), _int64Value(longValue) {}
-            Variant(uint32_t intValue) : _type(Type::UInt32), _uint32Value(intValue) {}
-            Variant(uint64_t longValue) : _type(Type::UInt64), _uint64Value(longValue) {}
-            Variant(bool boolValue) : _type(Type::Boolean), _boolValue(boolValue) {}
-            Variant(float floatValue) : _type(Type::Float), _floatValue(floatValue) {}
-            Variant(const std::string& stringValue) : _type(Type::String), _stringValue(stringValue) {
-            }
-            Variant(const char* stringValue) : _type(Type::String), _stringValue(stringValue) {
-            }
-
-            ~Variant() {}
-            Variant(const Variant& variant) : _type(variant._type) {
-                if ( _type == Type::Int32 ) {
-                    _int32Value = variant._int32Value;
-                }
-                else if ( _type == Type::Int64 ) {
-                    _int64Value = variant._int64Value;
-                }
-                else if ( _type == Type::UInt32 ) {
-                    _uint32Value = variant._uint32Value;
-                }
-                else if ( _type == Type::UInt64 ) {
-                    _uint64Value = variant._uint64Value;
-                }
-                else if ( _type == Type::Boolean ) {
-                    _boolValue = variant._boolValue;
-                }
-                else if ( _type == Type::Float ) {
-                    _floatValue = variant._floatValue;
-                }
-                else if ( _type == Type::String ) {
-                    _stringValue = variant._stringValue;
-                }
-            }
-
-            const Variant& operator=(const Variant& variant) {
-                _type = variant._type;
-                if ( _type == Type::Int32 ) {
-                    _int32Value = variant._int32Value;
-                }
-                else if ( _type == Type::Int64 ) {
-                    _int64Value = variant._int64Value;
-                }
-                else if ( _type == Type::UInt32 ) {
-                    _uint32Value = variant._uint32Value;
-                }
-                else if ( _type == Type::UInt64 ) {
-                    _uint64Value = variant._uint64Value;
-                }
-                else if ( _type == Type::Boolean ) {
-                    _boolValue = variant._boolValue;
-                }
-                else if ( _type == Type::Float ) {
-                    _floatValue = variant._floatValue;
-                }
-                else if ( _type == Type::String ) {
-                    _stringValue = variant._stringValue;
-                }
-
-                return *this;
-            }
-
-            Type GetType() const {
-                return _type;
-            }
-
-            template <class Value>
-            Value GetValue() const {
-                throw "Not Implemented";
-            }
-
-            int32_t GetInt32Value() const {
-                if ( _type == Type::Invalid ) {
-                    LOG(LOG_ERROR) << "Invalid";
-                }
-
-                if ( _type == Type::Int32 ) {
-                    return _int32Value;
-                }
-
-                LOG(LOG_ERROR) << "Type mismatched. " <<
-                             "Expected: " << TypeNames[Type::Int32] <<
-                             ". Actually: " << TypeNames[_type];
-                throw "Type mismatched";
-            }
-
-            void SetInt32Value(int32_t value) {
-                _type = Type::Int32;
-                _int32Value = value;
-            }
-
-            int64_t GetInt64Value() const {
-                if ( _type == Type::Invalid ) {
-                    LOG(LOG_ERROR) << "Invalid";
-                }
-
-                if ( _type == Type::Int64 ) {
-                    return _int64Value;
-                }
-
-                LOG(LOG_ERROR) << "Type mismatched. " <<
-                             "Expected: " << TypeNames[Type::Int64] <<
-                             ". Actually: " << TypeNames[_type];
-                throw "Type mismatched";
-            }
-
-            void SetInt64Value(int64_t value) {
-                _type = Type::Int64;
-                _int64Value = value;
-            }
-
-            uint32_t GetUInt32Value() const {
-                if ( _type == Type::Invalid ) {
-                    LOG(LOG_ERROR) << "Invalid";
-                }
-
-                if ( _type == Type::UInt32 ) {
-                    return _uint32Value;
-                }
-
-                LOG(LOG_ERROR) << "Type mismatched. " <<
-                             "Expected: " << TypeNames[Type::UInt32] <<
-                             ". Actually: " << TypeNames[_type];
-                throw "Type mismatched";
-            }
-
-            void SetUInt32Value(uint32_t value) {
-                _type = Type::UInt32;
-                _uint32Value = value;
-            }
-
-            uint64_t GetUInt64Value() const {
-                if ( _type == Type::Invalid ) {
-                    LOG(LOG_ERROR) << "Invalid";
-                }
-
-                if ( _type == Type::UInt64 ) {
-                    return _uint64Value;
-                }
-
-                LOG(LOG_ERROR) << "Type mismatched. " <<
-                             "Expected: " << TypeNames[Type::UInt64] <<
-                             ". Actually: " << TypeNames[_type];
-                throw "Type mismatched";
-            }
-
-            void SetUInt64Value(uint64_t value) {
-                _type = Type::UInt64;
-                _uint64Value = value;
-            }
-
-            bool GetBooleanValue() const {
-                if ( _type == Type::Invalid ) {
-                    LOG(LOG_ERROR) << "Invalid";
-                }
-
-                if ( _type == Type::Boolean ) {
-                    return _boolValue;
-                }
-
-                LOG(LOG_ERROR) << "Type mismatched. " <<
-                             "Expected: " << TypeNames[Type::Boolean] <<
-                             ". Actually: " << TypeNames[_type];
-                throw "Type mismatched";
-            }
-
-            void SetBooleanValue(bool value) {
-                _type = Type::Boolean;
-                _boolValue = value;
-            }
-
-            float GetFloatValue() const {
-                if ( _type == Type::Invalid ) {
-                    LOG(LOG_ERROR) << "Invalid";
-                }
-
-                if ( _type == Type::Float ) {
-                    return _floatValue;
-                }
-
-                LOG(LOG_ERROR) << "Type mismatched. " <<
-                             "Expected: " << TypeNames[Type::Float] <<
-                             ". Actually: " << TypeNames[_type];
-                throw "Type mismatched";
-            }
-
-            void SetFloatValue(float value) {
-                _type = Type::Float;
-                _floatValue = value;
-            }
-
-            std::string GetStringValue() const {
-                if ( _type == Type::Invalid ) {
-                    LOG(LOG_ERROR) << "Invalid";
-                }
-
-                if ( _type == Type::String ) {
-                    return _stringValue;
-                }
-
-                LOG(LOG_ERROR) << "Type mismatched. " <<
-                             "Expected: " << TypeNames[Type::String] <<
-                             ". Actually: " << TypeNames[_type];
-                throw "Type mismatched";
-            }
-
-            void SetStringValue(const std::string& value) {
-                _type = Type::String;
-                _stringValue = value;
-            }
-
-            static void Deserialize(Variants::const_iterator& it, Variant& value) {
-                value = *it;
-                it ++;
-            }
-
-            static void Deserialize(Variants::const_iterator& it, int32_t& value) {
-                value = it->GetInt32Value();
-                it ++;
-            }
-
-            static void Deserialize(Variants::const_iterator& it, int64_t& value) {
-                value = it->GetInt64Value();
-                it ++;
-            }
-
-            static void Deserialize(Variants::const_iterator& it, uint32_t& value) {
-                value = it->GetUInt32Value();
-                it ++;
-            }
-
-            static void Deserialize(Variants::const_iterator& it, uint64_t& value) {
-                value = it->GetUInt64Value();
-                it ++;
-            }
-
-            static void Deserialize(Variants::const_iterator& it, std::string& value) {
-                value = it->GetStringValue();
-                it ++;
-            }
-
-            static void Deserialize(Variants::const_iterator& it, Serializable& value) {
-                value.Deserialize(it);
-            }
-
-            template <class Element>
-            static void Deserialize(Variants::const_iterator& it, std::vector<Element>& values) {
-                size_t size = 0;
-                Deserialize(it, size);
-
-                values.resize(size);
-                for ( Element& value : values ) {
-                    Deserialize(it, value);
-                }
-            }
-
-            template <class Element>
-            static void Deserialize(Variants::const_iterator& it, std::list<Element>& values) {
-                size_t size = 0;
-                Deserialize(it, size);
-
-                values.resize(size);
-                for ( Element& value : values ) {
-                    Deserialize(it, value);
-                }
-            }
-
-            template <class Element>
-            static void Deserialize(Variants::const_iterator& it, std::set<Element>& values) {
-                size_t size = 0;
-                Deserialize(it, size);
-
-                values.clear();
-                for ( size_t i = 0; i != size; ++ i ) {
-                    Element value;
-                    Deserialize(it, value);
-
-                    values.insert(value);
-                }
-            }
-
-            template <class Key, class Element>
-            static void Deserialize(Variants::const_iterator& it, std::map<Key, Element>& values) {
-                size_t size = 0;
-                Deserialize(it, size);
-
-                for ( size_t i = 0; i != size; ++ i ) {
-                    Key key;
-                    Deserialize(it, key);
-
-                    Element value;
-                    Deserialize(it, value);
-
-                    values.insert({ key, value });
-                }
-            }
-
-            static void Serialize(Variants& variants, const Variant& value) {
-                variants.push_back(value);
-            }
-
-            static void Serialize(Variants& variants, int32_t value) {
-                variants.push_back(Variant(value));
-            }
-
-            static void Serialize(Variants& variants, int64_t value) {
-                variants.push_back(Variant(value));
-            }
-
-            static void Serialize(Variants& variants, uint32_t value) {
-                variants.push_back(Variant(value));
-            }
-
-            static void Serialize(Variants& variants, uint64_t value) {
-                variants.push_back(Variant(value));
-            }
-
-            static void Serialize(Variants& variants, bool value) {
-                variants.push_back(Variant(value));
-            }
-
-            static void Serialize(Variants& variants, float value) {
-                variants.push_back(Variant(value));
-            }
-
-            static void Serialize(Variants& variants, const std::string& value) {
-                variants.push_back(Variant(value));
-            }
-
-            template <class Element>
-            static void Serialize(Variants& variants, std::vector<Element> values) {
-                variants.push_back(Variant(values.size()));
-                for ( const Element& value : values ) {
-                    Serialize(variants, value);
-                }
-            }
-
-            template <class Element>
-            static void Serialize(Variants& variants, std::list<Element> values) {
-                variants.push_back(Variant(values.size()));
-                for ( const Element& value : values ) {
-                    Serialize(variants, value);
-                }
-            }
-
-            template <class Element>
-            static void Serialize(Variants& variants, std::set<Element> values) {
-                variants.push_back(Variant(values.size()));
-                for ( const Element& value : values ) {
-                    Serialize(variants, value);
-                }
-            }
-
-            template <class Key, class Element>
-            static void Serialize(Variants& variants, std::map<Key, Element> values) {
-                variants.push_back(Variant(values.size()));
-                for ( const std::pair<Key, Element>& value : values ) {
-                    Serialize(variants, value.first);
-                    Serialize(variants, value.second);
-                }
-            }
-
-            static void Serialize(Variants& variants, const Serializable& object) {
-                object.Serialize(variants);
-            }
-
-        private:
-            Type _type;
-            union {
-                int32_t _int32Value;
-                int64_t _int64Value;
-                uint32_t _uint32Value;
-                uint64_t _uint64Value;
-                bool _boolValue;
-                float _floatValue;
-            };
-            std::string _stringValue;
-        };
-
-        template<> inline int32_t Variant::GetValue<int32_t>() const {
-            return GetInt32Value();
-        }
-
-        template<> inline int64_t Variant::GetValue<int64_t>() const {
-            return GetInt64Value();
-        }
-
-        template<> inline uint32_t Variant::GetValue<uint32_t>() const {
-            return GetUInt32Value();
-        }
-
-        template<> inline uint64_t Variant::GetValue<uint64_t>() const {
-            return GetUInt64Value();
-        }
-
-        template<> inline bool Variant::GetValue<bool>() const {
-            return GetBooleanValue();
-        }
-
-        template<> inline float Variant::GetValue<float>() const {
-            return GetFloatValue();
-        }
-
-        template<> inline std::string Variant::GetValue<std::string>() const {
-            return GetStringValue();
-        }
+namespace base {
+
+class Variant;
+typedef std::vector<Variant> Variants;
+
+class Serializable {
+public:
+    virtual void Serialize(Variants& variants) const = 0;
+    virtual void Deserialize(Variants::const_iterator& it) = 0;
+};
+
+class Variant {
+public:
+    enum class Type {
+        Invalid,
+        Int32,
+        Int64,
+        UInt32,
+        UInt64,
+        Boolean,
+        Float,
+        String,
+    };
+
+    static std::map<Type, int8_t> TypeCodes;
+    static std::map<Type, std::string> TypeNames;
+
+    Variant();
+    Variant(const char* stringValue);
+    Variant(const Variant& variant);
+
+    ~Variant();
+
+    const Variant& operator=(const Variant& variant);
+
+    Type GetType() const {
+        return _type;
     }
+
+    template <class Value>
+    Value GetValue() const {
+        throw "Not Implemented";
+    }
+
+    static inline void Deserialize(Variants::const_iterator& it, Variant& value);
+    static inline void Deserialize(Variants::const_iterator& it, Serializable& value);
+
+    template <class Element>
+    static void Deserialize(Variants::const_iterator& it, std::vector<Element>& values);
+    template <class Element>
+    static void Deserialize(Variants::const_iterator& it, std::list<Element>& values);
+    template <class Element>
+    static void Deserialize(Variants::const_iterator& it, std::set<Element>& values);
+    template <class Key, class Element>
+    static void Deserialize(Variants::const_iterator& it, std::map<Key, Element>& values);
+
+    static inline void Serialize(Variants& variants, const Variant& value);
+    static inline void Serialize(Variants& variants, const Serializable& object);
+
+    template <class Element>
+    static void Serialize(Variants& variants, std::vector<Element> values);
+    template <class Element>
+    static void Serialize(Variants& variants, std::list<Element> values) ;
+    template <class Element>
+    static void Serialize(Variants& variants, std::set<Element> values) ;
+    template <class Key, class Element>
+    static void Serialize(Variants& variants, std::map<Key, Element> values);
+
+    VARIANT_AECCESS(Int32, int32_t, _int32Value)
+    VARIANT_AECCESS(UInt32, uint32_t, _uint32Value)
+    VARIANT_AECCESS(Int64, int64_t, _int64Value)
+    VARIANT_AECCESS(UInt64, uint64_t, _uint64Value)
+    VARIANT_AECCESS(Boolean, bool, _boolValue)
+    VARIANT_AECCESS(Float, float, _floatValue)
+    VARIANT_AECCESS(String, std::string, _stringValue)
+
+    private:
+        Type _type;
+    union {
+        int32_t _int32Value;
+        int64_t _int64Value;
+        uint32_t _uint32Value;
+        uint64_t _uint64Value;
+        bool _boolValue;
+        float _floatValue;
+    };
+    std::string _stringValue;
+};
+
 }
+}
+
+#include "hurricane/base/Variant.tcc"

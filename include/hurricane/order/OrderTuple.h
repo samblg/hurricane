@@ -26,8 +26,7 @@ namespace order {
 class OrderTuple : public hurricane::base::Tuple {
 public:
     OrderTuple() = default;
-    OrderTuple(const base::Tuple& tuple) : base::Tuple(tuple) {
-    }
+    OrderTuple(const base::Tuple& tuple);
 
     base::Value& operator[](size_t index) {
         return base::Tuple::operator [](index);
@@ -38,18 +37,23 @@ public:
     }
 
     base::Value& operator[](const std::string& fieldName) {
-        return base::Tuple::operator [](_fieldsMap->at(fieldName));
+        return base::Tuple::operator [](fieldName);
     }
 
     const base::Value& operator[](const std::string& fieldName) const {
-        return base::Tuple::operator [](_fieldsMap->at(fieldName));
+        return base::Tuple::operator [](fieldName);
     }
 
-    void Serialize(base::Variants& variants) const override;
-    void Deserialize(base::Variants::const_iterator& it) override;
+    base::Tuple ToBaseTuple() const;
+    void ParseBaseTuple();
 
-    int32_t GetOrderId() const;
-    void SetOrderId(int32_t orderId);
+    int64_t GetOrderId() const {
+        return _orderId;
+    }
+
+    void SetOrderId(int64_t orderId) {
+        _orderId = orderId;
+    }
 
 private:
     int64_t _orderId;
