@@ -28,6 +28,17 @@ target/linux/x64/Release/run/president
 target/linux/x64/Release/run/manager
 target/linux/x64/Release/run/*.so
 
+
+target/linux/x64/Release-with-JVM/bin/*
+!target/linux/x64/Release-with-JVM/bin/README.md
+target/linux/x64/Release-with-JVM/lib/*
+!target/linux/x64/Release-with-JVM/lib/README.md
+target/linux/x64/Release-with-JVM/build/president/president
+target/linux/x64/Release-with-JVM/build/manager/manager
+target/linux/x64/Release-with-JVM/run/president
+target/linux/x64/Release-with-JVM/run/manager
+target/linux/x64/Release-with-JVM/run/*.so
+
 Hurricane.config
 *.creator
 *.creator.user
