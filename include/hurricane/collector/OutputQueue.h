@@ -26,10 +26,7 @@ namespace collector {
 
 class OutputItem {
 public:
-    OutputItem(int32_t taskIndex, const base::Tuple& tuple, const std::string& taskName) :
-            _taskIndex(taskIndex), _tuple(tuple) {
-        _tuple.SetSourceTask(taskName);
-    }
+    inline OutputItem(int32_t taskIndex, const base::Tuple& tuple, const std::string& taskName);
 
     int32_t GetTaskIndex() const {
         return _taskIndex;
@@ -53,3 +50,5 @@ class OutputQueue : public base::BlockingQueue<OutputItem*> {
 
 }
 }
+
+#include "hurricane/collector/OutputItem.tcc"

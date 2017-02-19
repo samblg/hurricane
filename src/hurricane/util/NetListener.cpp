@@ -24,47 +24,57 @@
 #include <chrono>
 
 namespace hurricane {
-    namespace util {
-        const int32_t DATA_BUFFER_SIZE = 65535;
+namespace util {
 
-        void NetListener::StartListen()
-        {
-            _server = std::make_shared<TcpServer>();
+const int32_t DATA_BUFFER_SIZE = 65535;
 
-            _server->Listen(_host.GetHost(), _host.GetPort());
-            LOG(LOG_INFO) << "Listen on " << _host.GetHost() << ":" << _host.GetPort();
+NetListener::NetListener(const hurricane::base::NetAddress& host) :
+    _host(host) {
+}
 
-            while ( true )
-            {
-                std::shared_ptr<TcpConnection> connection = std::shared_ptr<TcpConnection>(_server->Accept());
+void NetListener::StartListen()
+{
+    _server = std::make_shared<TcpServer>();
 
-                LOG(LOG_ERROR) << "A client is connected";
+    _server->Listen(_host.GetHost(), _host.GetPort());
+    LOG(LOG_INFO) << "Listen on " << _host.GetHost() << ":" << _host.GetPort();
 
-                std::thread dataThread(std::bind(&NetListener::DataThreadMain, this, std::placeholders::_1),
-                    connection);
-                dataThread.detach();
-            }
-        }
+    while ( true )
+    {
+        std::shared_ptr<TcpConnection> connection = std::shared_ptr<TcpConnection>(_server->Accept());
 
-        void NetListener::DataThreadMain(std::shared_ptr<TcpConnection> connection)
-        {
-            int32_t _lostTime = 0;
+        LOG(LOG_ERROR) << "A client is connected";
 
-            _connectionCallback(connection);
+        std::thread dataThread(std::bind(&NetListener::DataThreadMain, this, std::placeholders::_1),
+                               connection);
+        dataThread.detach();
+    }
+}
 
-            try {
-                char buffer[DATA_BUFFER_SIZE];
-                while ( true ) {
-                    bool successful = connection->ReceiveAsync(buffer, DATA_BUFFER_SIZE);
+void NetListener::DataThreadMain(std::shared_ptr<TcpConnection> connection)
+{
+    int32_t _lostTime = 0;
 
-                    if ( !successful ) {
-                        break;
-                    }
-                }
-            }
-            catch ( const std::exception& e ) {
-                LOG(LOG_ERROR) << e.what();
+    _connectionCallback(connection);
+
+    try {
+        char buffer[DATA_BUFFER_SIZE];
+        while ( true ) {
+            bool successful = connection->ReceiveAsync(buffer, DATA_BUFFER_SIZE);
+
+            if ( !successful ) {
+                break;
             }
         }
     }
+    catch ( const std::exception& e ) {
+        LOG(LOG_ERROR) << e.what();
+    }
+}
+
+void NetListener::OnConnection(ConnectionCallback callback) {
+    _connectionCallback = callback;
+}
+
+}
 }

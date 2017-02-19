@@ -23,53 +23,89 @@
 #include <iostream>
 
 namespace hurricane {
-    namespace message {
-        void Command::Deserialize(const hurricane::base::ByteArray& data) {
-            hurricane::base::DataPackage dataPackage;
-            dataPackage.Deserialize(data);
+namespace message {
 
-            if ( !dataPackage.GetVariants().size() ) {
-                LOG(LOG_ERROR) << "Data package error";
-            }
+Command::Command(int32_t type) : _type(type) {
+}
 
-            _arguments = dataPackage.GetVariants();
-            _type = _arguments[0].GetInt32Value();
-            _arguments.erase(_arguments.begin());
-        }
+Command::Command(int32_t type, std::vector<hurricane::base::Variant>& arguments) :
+    _type(type), _arguments(arguments) {
+}
 
-        hurricane::base::ByteArray Command::Serialize() const {
-            hurricane::base::DataPackage dataPackage;
+void Command::AddArgument(const hurricane::base::Variant& argument) {
+    _arguments.push_back(argument);
+}
 
-            dataPackage.AddVariant(hurricane::base::Variant(_type));
-            for ( const hurricane::base::Variant& argument : _arguments ) {
-                dataPackage.AddVariant(argument);
-            }
-
-            return dataPackage.Serialize();
-        }
-
-        void Response::Deserialize(const hurricane::base::ByteArray& data) {
-            hurricane::base::DataPackage dataPackage;
-            dataPackage.Deserialize(data);
-
-            if ( !dataPackage.GetVariants().size() ) {
-                LOG(LOG_ERROR) << "Data package error";
-            }
-
-            _arguments = dataPackage.GetVariants();
-            _status = _arguments[0].GetInt32Value();
-            _arguments.erase(_arguments.begin());
-        }
-
-        hurricane::base::ByteArray Response::Serialize() const {
-            hurricane::base::DataPackage dataPackage;
-
-            dataPackage.AddVariant(hurricane::base::Variant(_status));
-            for ( const hurricane::base::Variant& argument : _arguments ) {
-                dataPackage.AddVariant(argument);
-            }
-
-            return dataPackage.Serialize();
-        }
+void Command::AddArguments(const std::vector<hurricane::base::Variant>& arguments) {
+    for ( const hurricane::base::Variant& argument : arguments ) {
+        _arguments.push_back(argument);
     }
+}
+
+void Command::Deserialize(const hurricane::base::ByteArray& data) {
+    hurricane::base::DataPackage dataPackage;
+    dataPackage.Deserialize(data);
+
+    if ( !dataPackage.GetVariants().size() ) {
+        LOG(LOG_ERROR) << "Data package error";
+    }
+
+    _arguments = dataPackage.GetVariants();
+    _type = _arguments[0].GetInt32Value();
+    _arguments.erase(_arguments.begin());
+}
+
+hurricane::base::ByteArray Command::Serialize() const {
+    hurricane::base::DataPackage dataPackage;
+
+    dataPackage.AddVariant(hurricane::base::Variant(_type));
+    for ( const hurricane::base::Variant& argument : _arguments ) {
+        dataPackage.AddVariant(argument);
+    }
+
+    return dataPackage.Serialize();
+}
+
+Response::Response(int32_t status) : _status(status) {
+}
+
+Response::Response(int32_t status, std::vector<hurricane::base::Variant>& arguments) :
+    _status(status), _arguments(arguments) {
+}
+
+void Response::AddArguments(const std::vector<hurricane::base::Variant>& arguments) {
+    for ( const hurricane::base::Variant& argument : arguments ) {
+        _arguments.push_back(argument);
+    }
+}
+
+void Response::AddArgument(const hurricane::base::Variant& argument) {
+    _arguments.push_back(argument);
+}
+
+void Response::Deserialize(const hurricane::base::ByteArray& data) {
+    hurricane::base::DataPackage dataPackage;
+    dataPackage.Deserialize(data);
+
+    if ( !dataPackage.GetVariants().size() ) {
+        LOG(LOG_ERROR) << "Data package error";
+    }
+
+    _arguments = dataPackage.GetVariants();
+    _status = _arguments[0].GetInt32Value();
+    _arguments.erase(_arguments.begin());
+}
+
+hurricane::base::ByteArray Response::Serialize() const {
+    hurricane::base::DataPackage dataPackage;
+
+    dataPackage.AddVariant(hurricane::base::Variant(_status));
+    for ( const hurricane::base::Variant& argument : _arguments ) {
+        dataPackage.AddVariant(argument);
+    }
+
+    return dataPackage.Serialize();
+}
+
+}
 }

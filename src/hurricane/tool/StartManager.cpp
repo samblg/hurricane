@@ -17,16 +17,24 @@
  */
 
 #include "hurricane/service/Manager.h"
+
+#ifdef ENABLE_MULTILANG_JAVA
+#include "hurricane/multilang/java/VirtualMachine.h"
+#endif // ENABLE_MULTILANG_JAVA
+
 #include "hurricane/util/Configuration.h"
 #include "hurricane/base/Constants.h"
 #include "logging/Logging.h"
 
 #include <iostream>
 #include <string>
+#include <csignal>
 
 using namespace std;
 
 void StartManager(const std::string& configFileName);
+static void StartJVM(const hurricane::util::Configuration& configuration);
+static void ProcessSignal(int signalNumber);
 
 int main(int argc, char* argv[])
 {
@@ -40,15 +48,21 @@ int main(int argc, char* argv[])
 }
 
 void StartManager(const std::string& configFileName) {
-    using hurricane::ConfigurationKey;
-
     hurricane::util::Configuration managerConfiguration;
     managerConfiguration.Parse(configFileName);
 
-    LOG(LOG_INFO) << managerConfiguration.GetProperty(ConfigurationKey::PresidentHost);
-    LOG(LOG_INFO) << managerConfiguration.GetIntegerProperty(ConfigurationKey::PresidentPort);
-    LOG(LOG_INFO) << managerConfiguration.GetProperty(ConfigurationKey::ManagerHost);
-    LOG(LOG_INFO) << managerConfiguration.GetIntegerProperty(ConfigurationKey::ManagerPort);
+    LOG(LOG_INFO) << managerConfiguration.GetProperty(hurricane::CONF_KEY_PRESIDENT_HOST);
+    LOG(LOG_INFO) << managerConfiguration.GetIntegerProperty(hurricane::CONF_KEY_PRESIDENT_PORT);
+    LOG(LOG_INFO) << managerConfiguration.GetProperty(hurricane::CONF_KEY_MANAGER_HOST);
+    LOG(LOG_INFO) << managerConfiguration.GetIntegerProperty(hurricane::CONF_KEY_MANAGER_PORT);
+
+#ifdef ENABLE_MULTILANG_JAVA
+    if ( managerConfiguration.GetBooleanProperty(hurricane::CONF_KEY_ENABLE_JAVA) ) {
+        StartJVM(managerConfiguration);
+    }
+#endif // ENABLE_MULTILANG_JAVA
+
+    signal(SIGINT, ProcessSignal);
 
     hurricane::service::Manager manager(managerConfiguration);
     manager.JoinPresident([&manager](const hurricane::message::Response& response) {
@@ -64,4 +78,26 @@ void StartManager(const std::string& configFileName) {
 
         manager.StartListen();
     });
+}
+
+#ifdef ENABLE_MULTILANG_JAVA
+static void StartJVM(const hurricane::util::Configuration& configuration)
+{
+    using hurricane::java::VirtualMachine;
+
+    VirtualMachine* vm = new VirtualMachine();
+    VirtualMachine::SetDefault(vm);
+    vm->SetVersion(JNI_VERSION_1_8);
+    vm->AddClassPath(configuration.GetProperty(hurricane::CONF_KEY_JAVA_CLASSPATH));
+    LOG(LOG_DEBUG) << "Java classpath: " <<
+                      configuration.GetProperty(hurricane::CONF_KEY_JAVA_CLASSPATH);
+
+    vm->Start();
+}
+#endif // ENABLE_MULTILANG_JAVA
+
+static void ProcessSignal(int signalNumber) {
+    LOG(LOG_ERROR) << "Receive signal number: " << signalNumber;
+    LOG(LOG_ERROR) << "Exit";
+    exit(0);
 }

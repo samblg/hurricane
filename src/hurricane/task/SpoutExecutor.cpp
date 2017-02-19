@@ -36,11 +36,6 @@ void SpoutExecutor::Start()
     _thread = std::thread(&SpoutExecutor::MainLoop, this);
 }
 
-void SpoutExecutor::SetSpout(spout::ISpout* spout)
-{
-    _spout.reset(spout);
-}
-
 void SpoutExecutor::MainLoop()
 {
     int32_t flowTime = BASIC_FLOW_PARAM / _flowParam;
@@ -48,16 +43,6 @@ void SpoutExecutor::MainLoop()
         _spout->NextTuple();
         std::this_thread::sleep_for(std::chrono::microseconds(flowTime));
     }
-}
-
-int32_t SpoutExecutor::GetFlowParam() const
-{
-    return _flowParam;
-}
-
-void SpoutExecutor::SetFlowParam(int32_t flowParam)
-{
-    _flowParam = flowParam;
 }
 
 }

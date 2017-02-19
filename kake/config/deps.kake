@@ -7,6 +7,12 @@ module.exports = {
         lib: 'target/$(Platform)/Release/lib',
         inputs: ['logging']
     },
+    meshy: {
+        scope: 'custom',
+        basePath: '$(SolutionDir)/../deps/meshy',
+        lib: 'target/$(Platform)/Release/lib',
+        inputs: ['meshy']
+    },
     dl: {
         scope: 'system',
         inputs: ['dl']
@@ -14,5 +20,12 @@ module.exports = {
     pthread: {
         scope: 'system',
         inputs: ['pthread']
+    },
+    jni: {
+        scope: 'custom',
+        basePath: '/opt/jdk1.8.0_111',
+        include: [ 'include', 'include/linux' ],
+        lib: [ 'jre/lib/amd64/server' ],
+        inputs: [ 'jvm' ]
     }
 };

@@ -25,17 +25,12 @@ namespace task {
 
 BoltExecutor::BoltExecutor()
 {
-    _loop.MessageMap(Executor::MessageType::OnTuple, this, &BoltExecutor::OnTuple);
 }
 
 void BoltExecutor::Start()
 {
     // It is managed by main thread, so we don't need to detach it
     _thread = std::thread(&BoltExecutor::StartLoop, this);
-}
-
-void BoltExecutor::OnTuple(message::Message& message)
-{
 }
 
 void BoltExecutor::StartLoop()

@@ -28,78 +28,83 @@
 #include <memory>
 
 namespace hurricane {
-    namespace util {
-        class NetConnector;
-        class Configuration;
-    }
+namespace util {
+class NetConnector;
+class Configuration;
+}
 
-    namespace message {
-        class CommandClient;
-    }
+namespace message {
+class CommandClient;
+}
 
-    namespace task {
-        class SpoutExecutor;
-        class BoltExecutor;
-    }
+namespace task {
+class SpoutExecutor;
+class BoltExecutor;
+}
 
-    namespace topology {
-        class Topology;
-    }
+namespace topology {
+class Topology;
+}
 
-    namespace collector {
-        class OutputCollector;
-        class TaskQueue;
-    }
+namespace collector {
+class OutputCollector;
+class TaskQueue;
+}
 
-    namespace service {
-        class Manager : public hurricane::message::CommandServer<ManagerContext> {
-        public:
-            typedef std::function<void(const hurricane::message::Response& response)> JoinPresidentCallback;
-            
-            Manager(const hurricane::util::Configuration& configuration);
+namespace service {
+class Manager : public hurricane::message::CommandServer<ManagerContext> {
+public:
+    static void SetGlobalInstance(Manager* manager);
+    static Manager* GetGlobalInstance();
 
-            void OnConnect(ManagerContext* context);
+    typedef std::function<void(const hurricane::message::Response& response)> JoinPresidentCallback;
 
-            void JoinPresident(JoinPresidentCallback callback);
+    Manager(const hurricane::util::Configuration& configuration);
 
-            void OnHeartbeat(ManagerContext* context, const hurricane::message::Command& command,
-                            hurricane::message::CommandServer<hurricane::message::BaseCommandServerContext>::Responsor Responsor);
-            void OnSyncMetadata(ManagerContext* context, const hurricane::message::Command& command,
-                            hurricane::message::CommandServer<hurricane::message::BaseCommandServerContext>::Responsor Responsor);
-            void OnSendTuple(ManagerContext* context, const hurricane::message::Command& command,
-                            hurricane::message::CommandServer<hurricane::message::BaseCommandServerContext>::Responsor Responsor);
+    void OnConnect(ManagerContext* context);
 
+    void JoinPresident(JoinPresidentCallback callback);
 
-        private:
-            void InitSelfContext();
-            void InitExecutors();
-            void OwnManagerTasks();
-            void ShowManagerMetadata();
-            void ShowTaskInfos();
-            void InitSpoutExecutors();
-            void InitBoltExecutors();
-            void InitPresidentConnector();
-            void ReserveExecutors();
-            void InitEvents();
-            void InitTaskFieldsMap();
+    void OnHeartbeat(ManagerContext* context, const hurricane::message::Command& command,
+                     hurricane::message::CommandServer<hurricane::message::BaseCommandServerContext>::Responsor Responsor);
+    void OnSyncMetadata(ManagerContext* context, const hurricane::message::Command& command,
+                        hurricane::message::CommandServer<hurricane::message::BaseCommandServerContext>::Responsor Responsor);
+    void OnSendTuple(ManagerContext* context, const hurricane::message::Command& command,
+                     hurricane::message::CommandServer<hurricane::message::BaseCommandServerContext>::Responsor Responsor);
 
-        private:
-            std::string _name;
-            std::string _host;
-            int32_t _port;
-            std::shared_ptr<hurricane::util::Configuration> _managerConfiguration;
-            hurricane::util::NetConnector* _presidentConnector;
-            hurricane::message::CommandClient* _presidentClient;
-            std::shared_ptr<hurricane::service::ManagerContext> _selfContext;
-            std::vector<std::shared_ptr<hurricane::task::SpoutExecutor>> _spoutExecutors;
-            std::vector<std::shared_ptr<hurricane::task::BoltExecutor>> _boltExecutors;
-            std::vector<std::shared_ptr<hurricane::collector::OutputCollector>> _spoutCollectors;
-            std::vector<std::shared_ptr<hurricane::collector::OutputCollector>> _boltCollectors;
-            std::vector<std::shared_ptr<hurricane::collector::TaskQueue>> _boltTaskQueues;
-            std::shared_ptr<topology::Topology> _topology;
-            hurricane::collector::OutputDispatcher _outputDispatcher;
-            std::map<std::string, const std::vector<std::string>*> _taskFields;
-            std::map<std::string, const std::map<std::string, int32_t>*> _taskFieldsMap;
-        };
-    }
+    message::CommandClient* CreatePresidentClient();
+    std::string GetTopologyName() const;
+
+private:
+    void InitSelfContext();
+    void InitExecutors();
+    void OwnManagerTasks();
+    void ShowManagerMetadata();
+    void ShowTaskInfos();
+    void InitSpoutExecutors();
+    void InitBoltExecutors();
+    void InitPresidentConnector();
+    void ReserveExecutors();
+    void InitEvents();
+    void InitTaskFieldsMap();
+
+private:
+    std::string _name;
+    std::string _host;
+    int32_t _port;
+    std::shared_ptr<hurricane::util::Configuration> _managerConfiguration;
+    hurricane::util::NetConnector* _presidentConnector;
+    hurricane::message::CommandClient* _presidentClient;
+    std::shared_ptr<hurricane::service::ManagerContext> _selfContext;
+    std::vector<std::shared_ptr<hurricane::task::SpoutExecutor>> _spoutExecutors;
+    std::vector<std::shared_ptr<hurricane::task::BoltExecutor>> _boltExecutors;
+    std::vector<std::shared_ptr<hurricane::collector::OutputCollector>> _spoutCollectors;
+    std::vector<std::shared_ptr<hurricane::collector::OutputCollector>> _boltCollectors;
+    std::vector<std::shared_ptr<hurricane::collector::TaskQueue>> _boltTaskQueues;
+    std::shared_ptr<topology::Topology> _topology;
+    hurricane::collector::OutputDispatcher _outputDispatcher;
+    std::map<std::string, const std::vector<std::string>*> _taskFields;
+    std::map<std::string, const std::map<std::string, int32_t>*> _taskFieldsMap;
+};
+}
 }

@@ -25,6 +25,18 @@ using hurricane::base::Variant;
 using hurricane::base::Variants;
 using hurricane::base::Serializable;
 
+ExecutorPosition::ExecutorPosition() : _executorIndex(-1) {
+}
+
+ExecutorPosition::ExecutorPosition(const hurricane::base::NetAddress& manager, int32_t executorIndex) :
+    _manager(manager), _executorIndex(executorIndex) {
+}
+
+PathInfo::PathInfo() : _groupMethod(GroupMethod::Invalid) {}
+
+TaskInfo::TaskInfo() : _managerContext(nullptr), _executorIndex(-1) {
+}
+
 void TaskInfo::Serialize(base::Variants& variants) const
 {
     Variant::Serialize(variants, _topologyName);

@@ -21,26 +21,27 @@
 #include "logging/Logging.h"
 
 namespace hurricane {
-    namespace topology {
-        const std::string& GET_TOPOLOGY_INTERFACE = "GetTopology";
+namespace topology {
+const std::string& GET_TOPOLOGY_INTERFACE = "GetTopology";
 
-        TopologyLoader& TopologyLoader::GetInstance() {
-            static TopologyLoader instance;
+TopologyLoader& TopologyLoader::GetInstance() {
+    static TopologyLoader instance;
 
-            return instance;
-        }
+    return instance;
+}
 
-        std::shared_ptr<Topology> TopologyLoader::GetTopology(const std::string& topologyName) {
-            if ( _libraryHandles.find(topologyName) == _libraryHandles.end() ) {
-                LibraryHandle libraryHandle = HurricaneLibraryLoad(topologyName);
-                _libraryHandles[topologyName] = libraryHandle;
-                TopologyGetter topologyGetter =
-                    HurricaneLibraryGetSymbol<TopologyGetter>(libraryHandle, GET_TOPOLOGY_INTERFACE);
+std::shared_ptr<Topology> TopologyLoader::GetTopology(const std::string& topologyName) {
+    if ( _libraryHandles.find(topologyName) == _libraryHandles.end() ) {
+        LibraryHandle libraryHandle = HurricaneLibraryLoad(topologyName);
+        _libraryHandles[topologyName] = libraryHandle;
+        TopologyGetter topologyGetter =
+                HurricaneLibraryGetSymbol<TopologyGetter>(libraryHandle, GET_TOPOLOGY_INTERFACE);
 
-                _topologies[topologyName].reset(topologyGetter());
-            }
-
-            return _topologies[topologyName];
-        }
+        _topologies[topologyName].reset(topologyGetter());
     }
+
+    return _topologies[topologyName];
+}
+
+}
 }

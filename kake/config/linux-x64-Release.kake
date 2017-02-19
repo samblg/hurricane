@@ -1,6 +1,10 @@
 'use strict';
 
 module.exports = {
+    baseConf: 'Release',
+    options: {
+        enableMultilangJava: false
+    },
     compiler: {
         cxx: 'g++',
         std: 'c++11',

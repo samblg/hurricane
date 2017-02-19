@@ -17,3 +17,13 @@
  */
 
 #include "hurricane/task/TaskDeclarer.h"
+
+namespace hurricane {
+namespace task {
+
+TaskDeclarer::TaskDeclarer() :
+    _type(Type::Invalid), _groupMethod(GroupMethod::Global), _parallismHint(1) {
+}
+
+}
+}

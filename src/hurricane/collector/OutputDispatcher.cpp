@@ -28,6 +28,12 @@
 namespace hurricane {
 namespace collector {
 
+OutputDispatcher::OutputDispatcher() : _selfSpoutCount(0) {
+}
+
+OutputDispatcher::OutputDispatcher(std::shared_ptr<OutputQueue> queue) : _queue(queue), _selfSpoutCount(0) {
+}
+
 void OutputDispatcher::SetTaskInfos(const std::vector<task::TaskInfo>& taskInfos)
 {
     _taskInfos = taskInfos;

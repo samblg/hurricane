@@ -5,9 +5,20 @@ module.exports = {
     version: '0.0.1',
     type: 'solution',
     basePath: '..',
-    projects: [
-        'projects/president',
-        'projects/manager',
-        'projects/wordcount'
-    ]
+    common: {
+        projects: [
+            'projects/president',
+            'projects/manager',
+            'projects/wordcount',
+        ]
+    },
+    options: {
+        enableMultilangJava: {
+            $eq: true,
+            projects: [
+                'projects/hurricane-java',
+                'projects/jwordcount'
+            ]
+        }
+    }
 };

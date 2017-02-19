@@ -7,16 +7,17 @@ module.exports = {
     target: 'dynamic_library',
     common: {
         compiler: {
+            defines: [ '$(Inherit)', 'USE_KLOG' ],
             src: [
                 'src/hurricane/base',
-                'src/hurricane/bolt',
+                'src/hurricane/bolt/BoltDeclarer.cpp',
                 'src/hurricane/collector/OutputCollector.cpp',
                 'src/hurricane/message',
-                'src/hurricane/spout',
+                'src/hurricane/spout/SpoutDeclarer.cpp',
                 'src/hurricane/task/TaskDeclarer.cpp',
                 'src/hurricane/topology/Topology.cpp',
                 'src/hurricane/util',
-                'src/sample'
+                'src/sample/wordcount'
             ],
             includePaths: [
                 'include'
@@ -24,7 +25,17 @@ module.exports = {
         },
         dependencies: {
             logging: 'latest',
-            dl: 'latest'
+            dl: 'latest',
+        }
+    },
+    options: {
+        enableMultilangJava: {
+            $eq: true,
+            defines: [ '$(Inherit)', 'ENABLE_MULTILANG_JAVA' ],
+            dependencies: {
+                jni: 'latest',
+                'hurricane-java': 'latest'
+            }
         }
     }
 };

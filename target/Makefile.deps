@@ -1,0 +1,2 @@
+JNI_INCLUDE := -I"/opt/jdk1.8.0_111/include" -I"/opt/jdk1.8.0_111/include/linux"
+JNI_LIB := -L"/opt/jdk1.8.0_111/jre/lib/amd64/server"

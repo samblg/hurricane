@@ -16,37 +16,26 @@
  * limitations under the license.
  */
 
-#pragma once
-
 #include "hurricane/order/OrderTuple.h"
 
 namespace hurricane {
 namespace order {
 
-void OrderTuple::Serialize(base::Variants& variants) const
+OrderTuple::OrderTuple(const base::Tuple& tuple) : base::Tuple(tuple), _orderId(0) {
+}
+
+base::Tuple OrderTuple::ToBaseTuple() const
 {
     base::Tuple tuple = *this;
     tuple.Add({ _orderId });
 
-    tuple.Serialize(variants);
+    return tuple;
 }
 
-void OrderTuple::Deserialize(base::Variants::const_iterator& it)
+void OrderTuple::ParseBaseTuple()
 {
-    Tuple::Deserialize(it);
-
     _orderId = GetValues()[GetSize() - 1].GetInt64Value();
     Pop();
-}
-
-int32_t OrderTuple::GetOrderId() const
-{
-    return _orderId;
-}
-
-void OrderTuple::SetOrderId(int32_t orderId)
-{
-    _orderId = orderId;
 }
 
 }
