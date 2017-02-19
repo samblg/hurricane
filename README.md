@@ -60,7 +60,14 @@ It's very simple to build with Makefile, simply type the following command:
 make
 
 ### Build Hurricane usin gmake
-Enter target/build/linux/x64/Release and type:
+First the jvm lib which is needed when linking objects and the include path for jni.h should be specified in corresponding Makefile.deps. For now modify target/Makefile.deps
+
+```
+    JNI_INCLUDE := -I"/opt/jdk1.8.0_111/include" -I"/opt/jdk1.8.0_111/include/linux"
+    JNI_LIB := -L"/opt/jdk1.8.0_111/jre/lib/amd64/server"
+```
+
+Enter target/build/linux/x64/Release/build and type:
 
     make install
 
