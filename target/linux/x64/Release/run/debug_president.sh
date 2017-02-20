@@ -2,4 +2,4 @@
 
 source environment.sh
 
-./president president.properties
+gdb ./president core

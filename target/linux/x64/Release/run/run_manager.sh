@@ -1,6 +1,6 @@
 ./deploy.sh
 
-export LD_LIBRARY_PATH=. 
+source environment.sh
 
 config_file="manager$1".properties
 ./manager "${config_file}"
