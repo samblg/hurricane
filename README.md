@@ -74,4 +74,4 @@ Enter target/build/linux/x64/Release/build and type:
 The nimbus and supervisor will be built into target/bin/linux/x64/Release. The demo project will submit a sample word count topololgy.
 
 ## Get Started
-After the installation, you can write a simple topology described in ![docs/introduction.md](docs/introduction.md). Then submit the output shared library to Hurricane.
+After the installation, you can write a simple topology described in [docs/introduction.md](https://github.com/samblg/hurricane/blob/master/docs/introduction.md). Then submit the output shared library to Hurricane.
