@@ -59,7 +59,7 @@ It's very simple to build with Makefile, simply type the following command:
 
 make
 
-### Build Hurricane usin gmake
+### Build Hurricane using gmake
 First the jvm lib which is needed when linking objects and the include path for jni.h should be specified in corresponding Makefile.deps. For now modify target/Makefile.deps
 
 ```
