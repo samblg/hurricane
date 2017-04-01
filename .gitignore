@@ -45,3 +45,4 @@ Hurricane.config
 *.files
 *.includes
 *.so
+*timestamp*.txt
