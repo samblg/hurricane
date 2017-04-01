@@ -18,6 +18,7 @@ msvc/**/Debug
 msvc/**/Release
 *.opensdf
 *.sdf
+*.suo
 target/linux/x64/Release/bin/*
 !target/linux/x64/Release/bin/README.md
 target/linux/x64/Release/lib/*

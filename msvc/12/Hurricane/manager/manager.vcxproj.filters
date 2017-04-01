@@ -126,7 +126,10 @@
     <ClCompile Include="..\..\..\..\src\hurricane\tool\StartManager.cpp">
       <Filter>hurricane\tool</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\hurricane\base\Constants.cpp">
+    <ClCompile Include="..\..\..\..\src\hurricane\base\ByteArray.cpp">
+      <Filter>hurricane\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\hurricane\base\Variant.cpp">
       <Filter>hurricane\base</Filter>
     </ClCompile>
   </ItemGroup>

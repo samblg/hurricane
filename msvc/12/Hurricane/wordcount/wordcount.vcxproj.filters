@@ -45,9 +45,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\src\hurricane\base\Constants.cpp">
-      <Filter>源文件\hurricane\base</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\hurricane\base\DataPackage.cpp">
       <Filter>源文件\hurricane\base</Filter>
     </ClCompile>
@@ -116,6 +113,12 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\sample\wordcount\WordCountTopology.cpp">
       <Filter>源文件\sample</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\hurricane\base\ByteArray.cpp">
+      <Filter>源文件\hurricane\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\hurricane\base\Variant.cpp">
+      <Filter>源文件\hurricane\base</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

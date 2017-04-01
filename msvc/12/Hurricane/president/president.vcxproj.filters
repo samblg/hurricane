@@ -156,7 +156,10 @@
     <ClCompile Include="..\..\..\..\src\hurricane\util\StringUtil.cpp">
       <Filter>源文件\hurricane\util</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\hurricane\base\Constants.cpp">
+    <ClCompile Include="..\..\..\..\src\hurricane\base\ByteArray.cpp">
+      <Filter>源文件\hurricane\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\hurricane\base\Variant.cpp">
       <Filter>源文件\hurricane\base</Filter>
     </ClCompile>
   </ItemGroup>
