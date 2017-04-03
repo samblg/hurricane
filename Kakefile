@@ -1,0 +1,22 @@
+project:
+    name: hurricane
+    version: 0.1.0
+    type: cpp
+
+make:
+    configuration:
+        targets:
+            nimbus:
+                type: executable
+                exclude: [ "hurricane/SupervisorLauncher.cpp" ]
+            supervisor:
+                type: executable
+                exclude: [ "hurricane/NimbusLauncher.cpp" ]
+        compiler:
+            cpp:
+                flags: "-std=c++11"
+            defines: [ "OS_LINUX" ]
+        linker:
+            ld: g++
+            library_paths: [ "deps/meshy/target" ]
+            libraries: [ "meshy" ]

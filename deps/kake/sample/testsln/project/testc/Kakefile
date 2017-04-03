@@ -1,0 +1,11 @@
+project:
+    name: testc
+    version: 0.0.1
+    type: cpp
+
+make:
+    configuration:
+        compiler:
+            cflags: -std=c99
+        linker:
+            autolink: false

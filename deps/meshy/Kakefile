@@ -1,0 +1,24 @@
+project:
+    name: meshy
+    version: 0.1.0
+    type: cpp
+
+make:
+    configuration:
+        targets:
+            meshy:
+                type: shared_library
+                exclude: [ "sample.cpp", "client_sample.cpp" ]
+            sample:
+                type: executable
+                exclude: [ "client_sample.cpp" ]
+            client_sample:
+                type: executable
+                exclude: [ "sample.cpp" ]
+        compiler:
+            cpp:
+                flags: "-std=c++11 -fPIC"
+            defines: [ "OS_LINUX" ]
+        linker:
+            ld: g++
+            libraries: [ "pthread" ]

@@ -1,0 +1,14 @@
+project:
+    name: testld
+    version: 0.0.1
+    type: ld
+
+dependencies:
+    - { name: testc, source: { type: solution } }
+
+make:
+    configuration:
+        target:
+            type: executable
+        linker:
+            include: [ testc ]
