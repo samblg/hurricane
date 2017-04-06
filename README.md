@@ -1,5 +1,7 @@
 #Hurricane Real-time Processing
 
+## You may refer to [Book Case](https://github.com/samblg/hurricane/tree/book_case) for the code of book and the first workable source code.
+
 ##0.6.1 Branch
 This branch includes the following major updates:
 
@@ -7,7 +9,7 @@ This branch includes the following major updates:
 - New features in kake build system. (Isolation of project and platform configurations, completed log mechanism and support of build/install/clean commands.)
 - kqueue enhancment in meshy network library.
 
-###0.6.2 TODO-list
+##0.6.2 TODO-list
 - New APIs in meshy network library.
 - OpenSSL support in meshy network library.
 - Windows server platform support. (Providing Microsoft Visual Studio projects.)
