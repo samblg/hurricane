@@ -22,6 +22,7 @@
 #include "DataSink.h"
 #include "IOCPConnection.h"
 #include "IOCPServer.h"
+#include "Export.h"
 
 #include <WinSock2.h>
 #include <Windows.h>
@@ -36,7 +37,7 @@ namespace meshy {
 
     class EventQueue;
 
-    class IOCPLoop : public Loop {
+    class MESHY_API IOCPLoop : public Loop {
     public:
         static IOCPLoop* Get();
         void AddServer(IOCPServer* server);

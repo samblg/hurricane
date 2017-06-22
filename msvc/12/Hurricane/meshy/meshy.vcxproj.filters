@@ -25,6 +25,21 @@
     <Filter Include="源文件\utils">
       <UniqueIdentifier>{c0c9055e-608f-4ac0-a430-eb4e83aff275}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\iocp">
+      <UniqueIdentifier>{5072466f-f013-4984-a3b9-86edc718fdb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\rest">
+      <UniqueIdentifier>{41524c9b-ffe6-4010-ad74-2e157601cd97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\template">
+      <UniqueIdentifier>{db81daa6-6ed3-4d38-84f2-57cc038ff53f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\utils">
+      <UniqueIdentifier>{2cf71ca3-092e-4f2a-8ec1-bab9c560c78f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\win32">
+      <UniqueIdentifier>{31b963c7-b726-46a3-ba90-1e94aad9c6de}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\deps\meshy\src\iocp\IOCPConnection.cpp">
@@ -75,5 +90,99 @@
     <ClCompile Include="..\..\..\..\deps\meshy\src\utils\String.cpp">
       <Filter>源文件\utils</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\ByteArray.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\DataSink.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\EventQueue.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\EventQueueLoop.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\IoLoop.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\Loop.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\Meshy.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\Net.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\PackageDataSink.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\win32\NetWin32.h">
+      <Filter>头文件\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\iocp\IOCPClient.h">
+      <Filter>头文件\iocp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\iocp\IOCPConnection.h">
+      <Filter>头文件\iocp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\iocp\IOCPLoop.h">
+      <Filter>头文件\iocp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\iocp\IOCPServer.h">
+      <Filter>头文件\iocp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\iocp\IOCPStream.h">
+      <Filter>头文件\iocp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\utils\CommonUtils.h">
+      <Filter>头文件\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\utils\ConcurrentQueue.h">
+      <Filter>头文件\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\utils\Exendian.h">
+      <Filter>头文件\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\utils\String.h">
+      <Filter>头文件\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\utils\ThreadPool.h">
+      <Filter>头文件\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\utils\Time.h">
+      <Filter>头文件\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\rest\HttpClient.h">
+      <Filter>头文件\rest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\rest\HttpConnection.h">
+      <Filter>头文件\rest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\rest\HttpContext.h">
+      <Filter>头文件\rest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\rest\HttpDataSink.h">
+      <Filter>头文件\rest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\rest\HttpRequest.h">
+      <Filter>头文件\rest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\rest\HttpResponse.h">
+      <Filter>头文件\rest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\rest\HttpServer.h">
+      <Filter>头文件\rest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\Export.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\deps\meshy\include\template\utils\thread_pool.tcc">
+      <Filter>头文件\template</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -21,13 +21,15 @@
 
 #include "Meshy.h"
 #include "rest/HttpConnection.h"
+#include "Export.h"
+
 #include <vector>
 #include <functional>
 
 namespace  meshy {
     class IoLoop;
 
-    class HttpServer {
+    class MESHY_API HttpServer {
     public:
         typedef std::function<void(HttpConnection* connection)> ConnectionHandler;
 

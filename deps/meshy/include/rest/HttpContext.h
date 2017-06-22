@@ -20,13 +20,15 @@
 #define NET_FRAMEWORK_HTTPCONTEXT_H_H
 
 #include "ByteArray.h"
+#include "Export.h"
+
 #include <map>
 #include <string>
 #include <vector>
 
 typedef std::vector<std::string> StdStringList;
 
-class HttpContext {
+class MESHY_API HttpContext {
 public:
     virtual ~HttpContext() {
     }

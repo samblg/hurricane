@@ -20,9 +20,10 @@
 #define NET_FRAMEWORK_HTTPREQUEST_H
 
 #include "rest/HttpContext.h"
+#include "Export.h"
 
 namespace meshy {
-    class HttpRequest : public HttpContext {
+    class MESHY_API HttpRequest : public HttpContext {
     public:
         HttpRequest() {}
         void ParseStdString(const std::string& text);

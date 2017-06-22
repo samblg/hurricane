@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include "Export.h"
+
 #include <WinSock2.h>
 
 namespace meshy {
@@ -27,7 +29,7 @@ namespace meshy {
 
 #define CloseSocket(socket) closesocket(socket);
 
-    class WindowsSocketInitializer {
+    class MESHY_API WindowsSocketInitializer {
     public:
         static void Initialize();
 

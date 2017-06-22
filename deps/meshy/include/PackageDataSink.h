@@ -21,13 +21,14 @@
 #include "DataSink.h"
 #include "ByteArray.h"
 #include "utils/ThreadPool.h"
+#include "Export.h"
 
 namespace meshy {
     class EventQueue;
 
     class BaseEvent;
 
-    class PackageDataSink : public DataSink {
+    class MESHY_API PackageDataSink : public DataSink {
     public:
         PackageDataSink(EventQueue* eventQueue);
 

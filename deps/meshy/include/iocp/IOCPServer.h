@@ -23,11 +23,13 @@
 #include "PackageDataSink.h"
 #include "iocp/IOCPConnection.h"
 #include "iocp/IOCPStream.h"
+#include "Export.h"
+
 #include <vector>
 
 namespace meshy {
 
-    class IOCPServer : public BasicServer<WSAConnectionPtr> {
+    class MESHY_API IOCPServer : public BasicServer<WSAConnectionPtr> {
     public:
         IOCPServer();
         virtual ~IOCPServer();

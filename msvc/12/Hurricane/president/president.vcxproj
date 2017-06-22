@@ -98,6 +98,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\..\include;$(SolutionDir)..\..\..\deps\logging\include;$(SolutionDir)..\..\..\deps\meshy\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -171,6 +172,9 @@
   <ItemGroup>
     <ProjectReference Include="..\logging\logging.vcxproj">
       <Project>{7620ff96-d903-48e4-a90d-56728770c6ae}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\meshy\meshy.vcxproj">
+      <Project>{4d5ef334-e308-4381-badc-11b1cffe0990}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

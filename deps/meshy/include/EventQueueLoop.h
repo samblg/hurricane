@@ -19,15 +19,16 @@
 #pragma once
 
 #include "Loop.h"
-#include <memory>
+#include "Export.h"
 
+#include <memory>
 
 namespace meshy {
     class EventQueue;
 
     class BaseEvent;
 
-    class EventQueueLoop : public Loop
+    class MESHY_API EventQueueLoop : public Loop
     {
     public:
         EventQueueLoop(EventQueue* queue);

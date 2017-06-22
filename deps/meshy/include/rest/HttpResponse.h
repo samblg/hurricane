@@ -20,9 +20,10 @@
 #define NET_FRAMEWORK_HTTPREPONSE_H
 
 #include "rest/HttpContext.h"
+#include "Export.h"
 
 namespace meshy {
-    class HttpResponse : public HttpContext {
+    class MESHY_API HttpResponse : public HttpContext {
     public:
         HttpResponse() {}
         virtual std::string ToStdString() const override;

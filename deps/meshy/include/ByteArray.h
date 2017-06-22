@@ -19,6 +19,8 @@
 #pragma once
 
 #include "utils/Exendian.h"
+#include "Export.h"
+
 #include <cstring>
 #include <vector>
 #include <cstdint>
@@ -27,7 +29,7 @@
 namespace meshy {
 
 
-    class ByteArray : public std::vector<char> {
+    class MESHY_API ByteArray : public std::vector<char> {
     public:
         ByteArray() = default;
 
@@ -68,7 +70,7 @@ namespace meshy {
         }
     };
 
-    class IODevice {
+    class MESHY_API IODevice {
     public:
         enum class SeekMode {
             Set,
@@ -79,7 +81,7 @@ namespace meshy {
         ~IODevice() { }
     };
 
-    class ByteArrayReader : public IODevice {
+    class MESHY_API ByteArrayReader : public IODevice {
     public:
         ByteArrayReader(const ByteArray& buffer) :
                 _buffer(buffer), _pos(0) { }
@@ -166,7 +168,7 @@ namespace meshy {
         int32_t _pos;
     };
 
-    class ByteArrayWriter {
+    class MESHY_API ByteArrayWriter {
     public:
         ByteArrayWriter() {
         }

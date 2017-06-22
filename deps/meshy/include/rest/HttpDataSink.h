@@ -24,10 +24,11 @@
 #define NET_FRAMEWORK_HTTPDATASINK_H
 
 #include "Net.h"
+#include "Export.h"
 #include "HttpRequest.h"
 
 namespace meshy {
-class HttpDataSink {
+class MESHY_API HttpDataSink {
     virtual OnDataIndication(TcpStream* stream, const HttpRequest& request) = 0;
 };
 }

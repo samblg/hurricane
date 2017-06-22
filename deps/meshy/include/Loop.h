@@ -18,9 +18,11 @@
 
 #pragma once
 
+#include "Export.h"
+
 namespace meshy {
 
-    class Loop {
+    class MESHY_API Loop {
     public:
         virtual ~Loop() { }
 

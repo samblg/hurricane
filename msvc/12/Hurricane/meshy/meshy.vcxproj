@@ -31,7 +31,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -97,7 +97,8 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;OS_WIN32;MESHY_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\..\deps\logging\include;$(SolutionDir)..\..\..\include;$(SolutionDir)..\..\..\deps\meshy\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -112,7 +113,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;MESHY_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)..\..\..\deps\logging\include;$(SolutionDir)..\..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -130,7 +131,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;OS_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;OS_WIN32;MESHY_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)..\..\..\deps\logging\include;$(SolutionDir)..\..\..\include;$(SolutionDir)..\..\..\deps\meshy\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -162,6 +163,40 @@
     <ProjectReference Include="..\logging\logging.vcxproj">
       <Project>{7620ff96-d903-48e4-a90d-56728770c6ae}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\ByteArray.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\DataSink.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\EventQueue.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\EventQueueLoop.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\Export.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\iocp\IOCPClient.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\iocp\IOCPConnection.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\iocp\IOCPLoop.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\iocp\IOCPServer.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\iocp\IOCPStream.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\IoLoop.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\Loop.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\Meshy.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\Net.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\PackageDataSink.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\rest\HttpClient.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\rest\HttpConnection.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\rest\HttpContext.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\rest\HttpDataSink.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\rest\HttpRequest.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\rest\HttpResponse.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\rest\HttpServer.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\utils\CommonUtils.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\utils\ConcurrentQueue.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\utils\Exendian.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\utils\String.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\utils\ThreadPool.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\utils\Time.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\win32\NetWin32.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\deps\meshy\include\template\utils\thread_pool.tcc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

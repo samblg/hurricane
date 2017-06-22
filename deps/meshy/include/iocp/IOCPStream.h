@@ -19,13 +19,14 @@
 #pragma once
 
 #include "Net.h"
+#include "Export.h"
 
 namespace meshy {
     class IOCPStream;
     typedef std::shared_ptr<IOCPStream> IOCPStreamPtr;
 
     // TODO: move utility to other places
-    class IOCP {
+    class MESHY_API IOCP {
     public:
         enum {
             DataBuffSize = BUFSIZ
@@ -53,7 +54,7 @@ namespace meshy {
         static OperationDataPtr CreateOperationData(IOCPStreamPtr stream, HANDLE completionPort);
         static void ResetOperationData(OperationData* perIOData);
     };
-    class IOCPStream : public BasicStream {
+    class MESHY_API IOCPStream : public BasicStream {
     public:
         IOCPStream(NativeSocket clientSocket, NativeSocketAddress clientAddress) :
             BasicStream(clientSocket), _clientAddress(clientAddress) {

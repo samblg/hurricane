@@ -22,10 +22,12 @@
 #include "Meshy.h"
 #include "rest/HttpRequest.h"
 #include "rest/HttpResponse.h"
+#include "Export.h"
+
 #include <functional>
 
 namespace meshy {
-    class HttpConnection {
+    class MESHY_API HttpConnection {
     public:
         typedef std::function<void(const HttpRequest& request)> RequestHandler;
         typedef std::function<void(const std::string& data)> DataHandler;

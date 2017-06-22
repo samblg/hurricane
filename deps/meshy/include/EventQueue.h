@@ -19,6 +19,8 @@
 #pragma once
 
 #include "ByteArray.h"
+#include "Export.h"
+
 #include <string>
 #include <mutex>
 #include <condition_variable>
@@ -30,7 +32,7 @@ namespace meshy
 
     class IStream;
 
-    class BaseEvent
+    class MESHY_API BaseEvent
     {
     public:
         BaseEvent() { }
@@ -77,7 +79,7 @@ namespace meshy
         IStream* _stream;
     };
 
-    class EventQueue {
+    class MESHY_API EventQueue {
     public:
         EventQueue(int32_t timeout = 0) : _timeout(timeout) { }
 

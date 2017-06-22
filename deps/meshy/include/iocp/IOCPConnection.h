@@ -20,12 +20,14 @@
 
 #include "Net.h"
 #include "IOCPStream.h"
+#include "Export.h"
+
 #include <Windows.h>
 #include <thread>
 
 namespace meshy {
 
-    class WSAConnection : public IOCPStream {
+    class MESHY_API WSAConnection : public IOCPStream {
     public:
         WSAConnection(NativeSocket clientSocket, NativeSocketAddress clientAddress) :
             IOCPStream(clientSocket, clientAddress) {
