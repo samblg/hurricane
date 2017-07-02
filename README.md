@@ -1,56 +1,59 @@
 #Hurricane
 
-##简介
-Hurricane是使用C++开发的分布式计算框架
+##Introduction
+Hurricane is a distributed computing framework developing by C++.
 
-##安装
-###依赖需求
-Hurricane使用了Meshy，Meshy包含在deps目录中，请先构建。
-Hurricane支持gmake的Makefile和kake。kake的安装过程参见使用kake编译一节
+##Installation
+###Dependencies
+Hurricane use the library called Meshy which is including in deps directory, you need to build it firstly.
+You can use gmake and kake to build Hurricane, please reference to the manual to learn how to build Hurricane
 
-### 使用Makefile编译Hurricane
-为了方便广大Linux用户，我们提供了传统的Makefile。
-使用Makefile编译Hurricane是很简单的事情，只需要使用make即可。
+### Build Hurricane by Makefile
+We provide the Makefile for convinience of compiling.
+You can use make to build Hurricane
 
 make
 
-### 使用kake编译
-#### kake简介
-Kake是一个基于约定的构建工具
+### Build Hurricane by kake
+#### Introduction to kake
+Kake is a building tool.
 
-#### 依赖需求
-Kake使用python3编写，使用了PyYAML库，因此需要安装Python、libyaml和Python的PyYAML。
+#### Dependencies
+Kake is written in python3. It depends on PyYAML, so you need to install Python, libyaml and PyYAML for Python.
 
-如果使用ubuntu，请安装以下包：
+If you use Ubuntu, you can use apt-get to install all packages.
 
     sudo apt-get install libyaml-0-2 libyaml-dev
     sudo apt-get install python3 libpython3-dev python3-pip
 
-然后使用pip安装PyYAML
+Then use pip to install PyYAML.
 
     sudo pip3 install PyYAML
 
-#### 安装kake
-Kake本身安装很简单，将kake的代码clone到某个用户目录下即可。
-假设我们将kake安装到~/apps下，命令行如下：
+#### Install kake
+It is easy to install kake.
+
+You can use git clone to clone the git code from online repository.
+If we install kake in ~/apps, you can execute following commands.
 
     cd ~/apps
     git clone https://git.oschina.net/kinuxroot/kake.git 
 
-然后编辑~/.bashrc，添加如下一行：
+Then edit the ~/.bashrc to append following code.
 
     export KAKE_HOME=~/apps/kake
 
-最后，将kake/bin目录下的kake添加到PATH路径，或者在PATH路径对应的目录下建立一个符号链接，比如我将kake所在目录添加到PATH路径，编辑~/.bashrc，在文件末尾添加如下一行：
+At last, don't forget to append the kake/bin to PATH variable, or create a symbolic link to kake under one path in PATH variable.
+
+If you want to append kake/bin to PATH variable, you can append following to ~/.bashrc
 
     export PATH="${PATH}:${KAKE_HOME}/bin"
 
-#### 验证安装
-验证kake有没有安装好很简单，在一个没有Kakefile的目录下执行kake，如果输出：
+#### Verify installation
+You can execute kake under one directory without Kakefile, if it print following contents, then the kake is installed successfully.
 
     Project file not exists.
 
-说明kake已经安装完成
-使用kake编译也非常简单，只需要在目录下执行kake即可。
+You can execute `kake` to build Hurricane.
 
     kake
