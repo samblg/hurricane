@@ -17,27 +17,29 @@
  */
 
 #include "hurricane/Hurricane.h"
-#if ( HURRICANE_MODE == HURRICANE_RELEASE ) 
 
-#include "BoltOutputCollector.h"
+#include "hurricane/bolt/BoltOutputCollector.h"
 #include "hurricane/bolt/BoltExecutor.h"
 
-void Hurricane::bolt::BoltOutputCollector::RandomDestination()
-{
-	_executor->RandomDestination(this);
+namespace hurricane {
+    namespace bolt {
+        void BoltOutputCollector::RandomDestination()
+        {
+            _executor->RandomDestination(this);
+        }
+
+        void BoltOutputCollector::GroupDestination()
+        {
+            _executor->GroupDestination(this, GetGroupField());
+        }
+
+        void BoltOutputCollector::Ack(const base::Values & values)
+        {
+        }
+
+        void BoltOutputCollector::Fail(const base::Values & values)
+        {
+        }
+    }
 }
 
-void Hurricane::bolt::BoltOutputCollector::GroupDestination()
-{
-	_executor->GroupDestination(this, GetFieldIndex());
-}
-
-void Hurricane::bolt::BoltOutputCollector::Ack(const Values & values)
-{
-}
-
-void Hurricane::bolt::BoltOutputCollector::Fail(const Values & values)
-{
-}
-
-#endif

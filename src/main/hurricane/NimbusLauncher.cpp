@@ -22,15 +22,18 @@
 #include <vector>
 #include <map>
 
-#if ( HURRICANE_MODE == HURRICANE_RELEASE ) 
 #include "hurricane/base/NetAddress.h"
 #include "hurricane/base/ByteArray.h"
 #include "hurricane/base/DataPackage.h"
-#include "temp/NetListener.h"
+#include "hurricane/base/NetListener.h"
+#include "hurricane/base/NetConnector.h"
 #include "hurricane/message/CommandDispatcher.h"
 #include "hurricane/message/NimbusCommander.h"
 #include "hurricane/base/Node.h"
-#include "temp/WordCountTopology.h"
+#include "hurricane/topology/ITopology.h"
+#include "hurricane/spout/ISpout.h"
+#include "hurricane/bolt/IBolt.h"
+#include "Meshy.h"
 
 using hurricane::base::NetAddress;
 using hurricane::base::ByteArray;
@@ -42,6 +45,8 @@ using hurricane::base::Node;
 using hurricane::topology::ITopology;
 using hurricane::spout::ISpout;
 using hurricane::bolt::IBolt;
+
+hurricane::topology::ITopology* GetTopology();
 
 const NetAddress NIMBUS_ADDRESS{ "127.0.0.1", 6000 };
 const std::map<std::string, NetAddress> SUPERVISOR_ADDRESSES{
@@ -155,20 +160,19 @@ std::pair<Node, int> GetFieldDestination(
     std::string field = fieldPair.second;
 
     auto &network = topology->GetNetwork();
-    int destIndex = rand() % tasks.size();
+    int destIndex = rand() % boltTasks.size();
     int currentIndex = 0;
-
     int taskDestIndex = rand() % DEFAULT_BOLT_EXECUTOR_COUNT;
 
-    currentIndex = 0;
-    int destIndex = 0;
     std::string hostName;
     for ( auto& boltTasksPair : boltTasks ) {
         int taskIndex = 0;
         std::string supervisorName = boltTasksPair.first;
+        std::string nextBoltName;
+
         for ( auto & taskName : boltTasksPair.second ) {
             if ( taskName == nextBoltName ) {
-                if ( currentIndx == taskDestIndex ) {
+                if ( currentIndex == taskDestIndex ) {
                     destIndex = taskIndex;
                     hostName = supervisorName;
                     break;
@@ -187,12 +191,9 @@ std::pair<Node, int> GetFieldDestination(
     return result;
 }
 
-#endif
-
 int main() {
     std::cerr << "Nimbus started" << std::endl;
 
-#if ( HURRICANE_MODE == HURRICANE_RELEASE ) 
     ITopology* topology = GetTopology();
 
     std::map<std::string, Node> supervisors;
@@ -205,7 +206,7 @@ int main() {
     CommandDispatcher dispatcher;
     dispatcher
         .OnCommand(Command::Type::Join,
-            [&](hurricane::base::Variants args, std::shared_ptr<TcpConnection> src) -> void {
+            [&](hurricane::base::Variants args, std::shared_ptr<meshy::TcpConnection> src) -> void {
         std::string supervisorName = args[0].GetStringValue();
 
         // Create supervisor node
@@ -222,7 +223,7 @@ int main() {
         });
 
         ByteArray commandBytes = command.ToDataPackage().Serialize();
-        src->Send(commandBytes.data(), commandBytes.size());
+        src->Send(*(reinterpret_cast<meshy::ByteArray*>(&commandBytes)));
 
         if ( supervisors.size() == SUPERVISOR_ADDRESSES.size() ) {
             std::cout << "All supervisors started" << std::endl;
@@ -230,7 +231,7 @@ int main() {
         }
     })
         .OnCommand(Command::Type::Alive,
-            [&](hurricane::base::Variants args, std::shared_ptr<TcpConnection> src) -> void {
+            [&](hurricane::base::Variants args, std::shared_ptr<meshy::TcpConnection> src) -> void {
         std::string supervisorName = args[0].GetStringValue();
         supervisors[supervisorName].Alive();
 
@@ -239,10 +240,10 @@ int main() {
         });
 
         ByteArray commandBytes = command.ToDataPackage().Serialize();
-        src->Send(commandBytes.data(), commandBytes.size());
+        src->Send(*(reinterpret_cast<meshy::ByteArray*>(&commandBytes)));
     })
         .OnCommand(Command::Type::RandomDestination,
-            [&](hurricane::base::Variants args, std::shared_ptr<TcpConnection> src) -> void {
+            [&](hurricane::base::Variants args, std::shared_ptr<meshy::TcpConnection> src) -> void {
         std::string supervisorName = args[0].GetStringValue();
         std::string srcType = args[1].GetStringValue();
         int srcIndex = args[2].GetIntValue();
@@ -252,9 +253,9 @@ int main() {
 
             std::string nextBoltName;
             auto &network = topology->GetNetwork();
-            int destIndex = rand() % tasks.size();
+            int destIndex = rand() % boltTasks.size();
             int currentIndex = 0;
-            for ( auto& taskName : network[spoutName] ) {
+            for ( auto& taskName : network.at(spoutName) ) {
                 if ( destIndex == currentIndex ) {
                     destIndex = currentIndex;
                 }
@@ -265,14 +266,15 @@ int main() {
             int taskDestIndex = rand() % DEFAULT_BOLT_EXECUTOR_COUNT;
 
             currentIndex = 0;
-            int destIndex = 0;
+            destIndex = 0;
+
             std::string hostName;
             for ( auto& boltTasksPair : boltTasks ) {
                 int taskIndex = 0;
                 std::string supervisorName = boltTasksPair.first;
                 for ( auto & taskName : boltTasksPair.second ) {
                     if ( taskName == nextBoltName ) {
-                        if ( currentIndx == taskDestIndex ) {
+                        if ( currentIndex == taskDestIndex ) {
                             destIndex = taskIndex;
                             hostName = supervisorName;
                             break;
@@ -287,21 +289,21 @@ int main() {
             Command command(Command::Type::Response, {
                 std::string("nimbus"), 
                 supervisors[hostName].GetAddress().GetHost(),
-                supervisors[hostName].GetAddress().GetPort()
+                supervisors[hostName].GetAddress().GetPort(),
                 destIndex
             });
 
             ByteArray commandBytes = command.ToDataPackage().Serialize();
-            src->Send(commandBytes.data(), commandBytes.size());
+            src->Send(*(reinterpret_cast<meshy::ByteArray*>(&commandBytes)));
         }
-        else if ( srcType = "bolt" ) {
+        else if ( srcType == "bolt" ) {
             std::string boltName = boltTasks[supervisorName][srcIndex];
 
             std::string nextBoltName;
             auto &network = topology->GetNetwork();
-            int destIndex = rand() % tasks.size();
+            int destIndex = rand() % boltTasks.size();
             int currentIndex = 0;
-            for ( auto& taskName : network[boltName] ) {
+            for ( auto& taskName : network.at(boltName) ) {
                 if ( destIndex == currentIndex ) {
                     destIndex = currentIndex;
                 }
@@ -312,14 +314,14 @@ int main() {
             int taskDestIndex = rand() % DEFAULT_BOLT_EXECUTOR_COUNT;
 
             currentIndex = 0;
-            int destIndex = 0;
+            destIndex = 0;
             std::string hostName;
             for ( auto& boltTasksPair : boltTasks ) {
                 int taskIndex = 0;
                 std::string supervisorName = boltTasksPair.first;
                 for ( auto & taskName : boltTasksPair.second ) {
                     if ( taskName == nextBoltName ) {
-                        if ( currentIndx == taskDestIndex ) {
+                        if ( currentIndex == taskDestIndex ) {
                             destIndex = taskIndex;
                             hostName = supervisorName;
                             break;
@@ -334,16 +336,16 @@ int main() {
             Command command(Command::Type::Response, {
                 std::string("nimbus"),
                 supervisors[hostName].GetAddress().GetHost(),
-                supervisors[hostName].GetAddress().GetPort()
+                supervisors[hostName].GetAddress().GetPort(),
                 destIndex
             });
 
             ByteArray commandBytes = command.ToDataPackage().Serialize();
-            src->Send(commandBytes.data(), commandBytes.size());
+            src->Send(*(reinterpret_cast<meshy::ByteArray*>(&commandBytes)));
         }
     })
     .OnCommand(Command::Type::GroupDestination,
-        [&](hurricane::base::Variants args, std::shared_ptr<TcpConnection> src) -> void {
+        [&](hurricane::base::Variants args, std::shared_ptr<meshy::TcpConnection> src) -> void {
         std::string supervisorName = args[0].GetStringValue();
         std::string srcType = args[1].GetStringValue();
         int srcIndex = args[2].GetIntValue();
@@ -352,9 +354,9 @@ int main() {
 
         if ( srcType == "spout" ) {
             std::string spoutName = spoutTasks[supervisorName][srcIndex];
-            std::string  = topology->GetSpouts().at(spoutName)->DeclareFields()[fieldIndex];
+            field = topology->GetSpouts().at(spoutName)->DeclareFields()[fieldIndex];
             auto result = GetFieldDestination(fieldDestinations,
-                std::make_pair(spoutName, field));
+                std::make_pair(spoutName, field), topology, supervisors, spoutTasks, boltTasks);
 
 
             Command command(Command::Type::Response, {
@@ -365,13 +367,13 @@ int main() {
             });
 
             ByteArray commandBytes = command.ToDataPackage().Serialize();
-            src->Send(commandBytes.data(), commandBytes.size());
+            src->Send(*(reinterpret_cast<meshy::ByteArray*>(&commandBytes)));
         }
         else if ( srcType == "bolt" ) {
             std::string boltName = boltTasks[supervisorName][srcIndex];
-            std::string  = topology->GetBolts().at(boltName)->DeclareFields()[fieldIndex];
+            std::string field = topology->GetBolts().at(boltName)->DeclareFields()[fieldIndex];
             auto result = GetFieldDestination(fieldDestinations,
-                std::make_pair(spoutName, field));
+                std::make_pair(boltName, field), topology, supervisors, spoutTasks, boltTasks);
 
             Command command(Command::Type::Response, {
                 std::string("nimbus"),
@@ -381,19 +383,19 @@ int main() {
             });
 
             ByteArray commandBytes = command.ToDataPackage().Serialize();
-            src->Send(commandBytes.data(), commandBytes.size());
+            src->Send(*(reinterpret_cast<meshy::ByteArray*>(&commandBytes)));
         }
 
         if ( srcType == "spout" ) {
         }
-        else if ( srcType = "bolt" ) {
+        else if ( srcType == "bolt" ) {
             std::string boltName = boltTasks[supervisorName][srcIndex];
 
             std::string nextBoltName;
             auto &network = topology->GetNetwork();
-            int destIndex = rand() % tasks.size();
+            int destIndex = rand() % boltTasks.size();
             int currentIndex = 0;
-            for ( auto& taskName : network[boltName] ) {
+            for ( auto& taskName : network.at(boltName) ) {
                 if ( destIndex == currentIndex ) {
                     destIndex = currentIndex;
                 }
@@ -404,14 +406,14 @@ int main() {
             int taskDestIndex = rand() % DEFAULT_BOLT_EXECUTOR_COUNT;
 
             currentIndex = 0;
-            int destIndex = 0;
+            destIndex = 0;
             std::string hostName;
             for ( auto& boltTasksPair : boltTasks ) {
                 int taskIndex = 0;
                 std::string supervisorName = boltTasksPair.first;
                 for ( auto & taskName : boltTasksPair.second ) {
                     if ( taskName == nextBoltName ) {
-                        if ( currentIndx == taskDestIndex ) {
+                        if ( currentIndex == taskDestIndex ) {
                             destIndex = taskIndex;
                             hostName = supervisorName;
                             break;
@@ -426,30 +428,27 @@ int main() {
             Command command(Command::Type::Response, {
                 std::string("nimbus"),
                 supervisors[hostName].GetAddress().GetHost(),
-                supervisors[hostName].GetAddress().GetPort()
+                supervisors[hostName].GetAddress().GetPort(),
                 destIndex
             });
 
             ByteArray commandBytes = command.ToDataPackage().Serialize();
-            src->Send(commandBytes.data(), commandBytes.size());
+            src->Send(*(reinterpret_cast<meshy::ByteArray*>(&commandBytes)));
         }
     });
     
-    netListener.OnData([&](std::shared_ptr<TcpConnection> connection, 
+    netListener.OnData([&](meshy::TcpStream* connection, 
             const char* buffer, int32_t size) -> void {
         ByteArray receivedData(buffer, size);
         DataPackage receivedPackage;
         receivedPackage.Deserialize(receivedData);
         
         Command command(receivedPackage);
-        command.SetSrc(connection);
 
         dispatcher.Dispatch(command);
     });
 
     netListener.StartListen();
-
-#endif
 
     return 0;
 }

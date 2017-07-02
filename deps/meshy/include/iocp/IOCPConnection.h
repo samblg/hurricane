@@ -32,6 +32,17 @@ namespace meshy {
 		}
 
 		WSAConnection(const IOCPStream& stream) = delete;
+
+        virtual void OnDataIndication(DataIndicationHandler handler) {
+            _dataHandler = handler;
+        }
+
+        virtual DataIndicationHandler GetDataIndication() {
+            return _dataHandler;
+        }
+
+    private:
+        DataIndicationHandler _dataHandler;
 	};
 
 	typedef std::shared_ptr<WSAConnection> WSAConnectionPtr;

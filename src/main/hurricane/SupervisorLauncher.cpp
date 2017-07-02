@@ -25,7 +25,6 @@
 #include <thread>
 #include <chrono>
 
-#if ( HURRICANE_MODE == HURRICANE_RELEASE ) 
 #include "hurricane/base/NetAddress.h"
 #include "hurricane/base/ByteArray.h"
 #include "hurricane/base/DataPackage.h"
@@ -33,9 +32,8 @@
 #include "hurricane/base/Variant.h"
 #include "hurricane/message/SupervisorCommander.h"
 #include "hurricane/message/CommandDispatcher.h"
-#include "temp/WordCountTopology.h"
-#include "temp/NetListener.h"
-#include "temp/Supervisor.h"
+#include "hurricane/topology/ITopology.h"
+#include "hurricane/base/NetListener.h"
 
 using hurricane::base::NetAddress;
 using hurricane::base::ByteArray;
@@ -48,6 +46,8 @@ using hurricane::message::Command;
 using hurricane::message::CommandDispatcher;
 using hurricane::message::SupervisorCommander;
 using hurricane::topology::ITopology;
+
+hurricane::topology::ITopology* GetTopology();
 
 const NetAddress NIMBUS_ADDRESS{ "127.0.0.1", 6000 };
 const std::map<std::string, NetAddress> SUPERVISOR_ADDRESSES{
@@ -63,7 +63,6 @@ void AliveThreadMain(const std::string& name) {
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 }
-#endif
 
 int main(int argc, char** argv) {
     if ( argc < 2 ) {
@@ -74,19 +73,16 @@ int main(int argc, char** argv) {
     std::string supervisorName(argv[1]);
     std::cerr << "Supervisor " << supervisorName << " started" << std::endl;
 
-#if ( HURRICANE_MODE == HURRICANE_RELEASE ) 
     ITopology* topology = GetTopology();
 
     std::thread aliveThread(AliveThreadMain, supervisorName);
     aliveThread.detach();
 
-    Supervisor supervisor(topology);
-
     NetListener netListener(SUPERVISOR_ADDRESSES.at(supervisorName));
     CommandDispatcher dispatcher;
     dispatcher
         .OnCommand(Command::Type::StartBolt,
-            [&](hurricane::base::Variants args, std::shared_ptr<TcpConnection> src) -> void {
+            [&](hurricane::base::Variants args, std::shared_ptr<meshy::TcpConnection> src) -> void {
         Command command(Command::Type::Response, {
             std::string(supervisorName)
         });
@@ -98,13 +94,11 @@ int main(int argc, char** argv) {
         std::cout << "Bolt name: " << taskName << std::endl;
         std::cout << "Executor index: " << executorIndex << std::endl;
 
-        supervisor.StartBolt(taskName, executorIndex);
-
         ByteArray commandBytes = command.ToDataPackage().Serialize();
-        src->Send(commandBytes.data(), commandBytes.size());
+        src->Send(*(reinterpret_cast<meshy::ByteArray*>(&commandBytes)));
     })
         .OnCommand(Command::Type::StartSpout,
-            [&](hurricane::base::Variants args, std::shared_ptr<TcpConnection> src) -> void {
+            [&](hurricane::base::Variants args, std::shared_ptr<meshy::TcpConnection> src) -> void {
         Command command(Command::Type::Response, {
             std::string(supervisorName)
         });
@@ -116,13 +110,11 @@ int main(int argc, char** argv) {
         std::cout << "Spout name: " << taskName  << std::endl;
         std::cout << "Executor index: " << executorIndex  << std::endl;
 
-        supervisor.StartSpout(taskName, executorIndex);
-
         ByteArray commandBytes = command.ToDataPackage().Serialize();
-        src->Send(commandBytes.data(), commandBytes.size());
+        src->Send(*(reinterpret_cast<meshy::ByteArray*>(&commandBytes)));
     })
         .OnCommand(Command::Type::Data,
-            [&](Variants args, std::shared_ptr<TcpConnection> src) -> void {
+            [&](Variants args, std::shared_ptr<meshy::TcpConnection> src) -> void {
         //TODO: Dispatch tuple
         std::string srcSupervisorName = args[0].GetStringValue();
         args.erase(args.begin());
@@ -131,34 +123,30 @@ int main(int argc, char** argv) {
 
         Values values;
         for ( auto& arg : args ) {
-            values.push_back(Value::fromVariant(arg));
+            values.push_back(Value::FromVariant(arg));
         }
-
-        supervisor.postValues(values);
 
         Command command(Command::Type::Response, {
             std::string(supervisorName)
         });
 
         ByteArray commandBytes = command.ToDataPackage().Serialize();
-        src->Send(commandBytes.data(), commandBytes.size());
+        src->Send(*(reinterpret_cast<meshy::ByteArray*>(&commandBytes)));
     });
 
 
-    netListener.OnData([&](std::shared_ptr<TcpConnection> connection,
+    netListener.OnData([&](meshy::TcpStream* connection,
         const char* buffer, int32_t size) -> void {
         ByteArray receivedData(buffer, size);
         DataPackage receivedPackage;
         receivedPackage.Deserialize(receivedData);
 
         Command command(receivedPackage);
-        command.SetSrc(connection);
 
         dispatcher.Dispatch(command);
     });
 
     netListener.StartListen();
-#endif
 
     return 0;
 }

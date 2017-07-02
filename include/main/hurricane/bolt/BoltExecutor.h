@@ -28,26 +28,26 @@ namespace hurricane {
         class ITopology;
     }
 
+    namespace message {
+        class Message;
+        class SupervisorCommander;
+    }
+
     namespace bolt {
 
         class BoltMessageLoop;
         class BoltOutputCollector;
 
-        namespace message {
-            class SupervisorCommander;
-        }
-
         class BoltExecutor : public base::Executor<bolt::IBolt> {
         public:
-            BoltExecutor() : base::Executor<bolt::IBolt>() {
-            }
+            BoltExecutor();
 
             void SetExecutorIndex(int executorIndex) {
                 _executorIndex = executorIndex;
             }
 
             void SendData(const base::Values& values);
-            void OnData(const base::Values& values);
+            void OnData(hurricane::message::Message* message);
 
             void OnCreate() override;
             void OnStop() override;

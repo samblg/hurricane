@@ -22,15 +22,24 @@
 #include <map>
 #include <functional>
 
+namespace meshy {
+    class TcpConnection;
+}
+
 namespace hurricane {
 	namespace message {
 		class CommandDispatcher {
 		public:
 			typedef std::function<
-				void(hurricane::base::Variants args, std::shared_ptr<TcpConnection> src)
+				void(hurricane::base::Variants args, std::shared_ptr<meshy::TcpConnection> src)
 			> Handler;
 
-			CommandDispatcher& OnCommand(Command::Type::Values type, Handler handler);
+            CommandDispatcher& OnCommand(Command::Type::Values type, Handler handler) {
+                _handlers[type] = handler;
+
+                return *this;
+            }
+
 			void Dispatch(const Command& command);
 
 		private:

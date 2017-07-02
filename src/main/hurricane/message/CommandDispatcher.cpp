@@ -16,19 +16,11 @@
  * limitations under the license.
  */
 #include "hurricane/Hurricane.h"
-#if ( HURRICANE_MODE == HURRICANE_RELEASE ) 
 
 #include "hurricane/message/CommandDispatcher.h"
 
 namespace hurricane {
 	namespace message {
-		CommandDispatcher & CommandDispatcher::OnCommand(Command::Type::Values type, Handler handler)
-		{
-			_handlers[type] = handler;
-
-			return *this;
-		}
-
 		void CommandDispatcher::Dispatch(const Command & command)
 		{
 			Handler handler = _handlers[command.GetType()];
@@ -36,5 +28,3 @@ namespace hurricane {
 		}
 	}
 }
-
-#endif

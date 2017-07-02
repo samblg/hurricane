@@ -34,8 +34,8 @@ namespace hurricane {
             virtual void RandomDestination() override;
             virtual void GroupDestination() override;
 
-            void Ack(const Values& values);
-            void Fail(const Values& values);
+            void Ack(const base::Values& values);
+            void Fail(const base::Values& values);
 
         private:
             BoltExecutor* _executor;

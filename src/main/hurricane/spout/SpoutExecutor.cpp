@@ -16,12 +16,11 @@
  * limitations under the license.
  */
 #include "hurricane/Hurricane.h"
-#if ( HURRICANE_MODE == HURRICANE_RELEASE ) 
 
 #include "hurricane/spout/SpoutExecutor.h"
 #include "hurricane/base/OutputCollector.h"
 #include "hurricane/message/SupervisorCommander.h"
-#include "SpoutOutputCollector.h"
+#include "hurricane/spout/SpoutOutputCollector.h"
 
 #include <iostream>
 #include <string>
@@ -38,13 +37,12 @@ namespace hurricane {
             std::cout << "Start Spout Task" << std::endl;
             _needToStop = false;
 
-            base::OutputCollector outputCollector;
-            if ( task->getStrategy == Task::Strategy::Global ) {
-                outputCollector = base::OutputCollector(GetTaskName(), Task::Strategy::Global);
+            if ( _task->GetStrategy() == base::ITask::Strategy::Global ) {
+                SpoutOutputCollector outputCollector(GetTaskName(), base::ITask::Strategy::Global, this);
                 RandomDestination(&outputCollector);
-            })
 
-            _task->Open(outputCollector);
+                _task->Open(outputCollector);
+            }
 
             while ( !_needToStop ) {
                 _task->Execute();
@@ -88,5 +86,3 @@ namespace hurricane {
         }
     }
 }
-
-#endif

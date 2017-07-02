@@ -17,7 +17,6 @@
  */
 
 #include "hurricane/Hurricane.h"
-#if ( HURRICANE_MODE == HURRICANE_RELEASE ) 
 
 #include "hurricane/topology/SimpleTopology.h"
 #include "hurricane/spout/ISpout.h"
@@ -67,7 +66,7 @@ const std::map<std::string, std::vector<std::string>>& SimpleTopology::GetNetwor
 
 std::map<std::string, std::shared_ptr<spout::ISpout>>& SimpleTopology::GetSpouts()
 {
-    return spouts;
+    return _spouts;
 }
 
 std::map<std::string, std::shared_ptr<bolt::IBolt>>& SimpleTopology::GetBolts()
@@ -88,5 +87,3 @@ void SimpleTopology::allocateTask(std::map<std::string, std::shared_ptr<TaskType
 
 }
 }
-
-#endif

@@ -45,8 +45,8 @@ public:
     virtual ~Executor() {}
 
     void StartTask(const std::string& taskName, TaskType* task) {
-		//MessageMap(BoltMessage::MessageType::Data,
-		//	this, &BoltMessageLoop::OnData);
+		_messageLoop.MessageMap(BoltMessage::MessageType::Data,
+			this, &BoltMessageLoop::OnData);
         _taskName = taskName;
         _task = std::shared_ptr<TaskType>(task);
 

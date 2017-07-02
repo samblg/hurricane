@@ -18,8 +18,6 @@
 
 #include "hurricane/Hurricane.h"
 
-#if ( HURRICANE_MODE == HURRICANE_RELEASE ) 
-
 #include "hurricane/base/OutputCollector.h"
 #include "hurricane/topology/ITopology.h"
 
@@ -31,20 +29,18 @@ namespace base {
 void OutputCollector::Emit(const Values& values) {
 	if ( _strategy == Strategy::Global ) {
 		if ( _commander ) {
-			_commander->SendTuple(values);
+			_commander->SendTuple(this->_taskIndex, values);
 		}
 	}
 	else if ( _strategy == Strategy::Random ) {
 		this->RandomDestination();
-		_commander->SendTuple(values);
+        _commander->SendTuple(this->_taskIndex, values);
 	}
 	else if ( _strategy == Strategy::Group ) {
 		this->GroupDestination();
-		_commander->SendTuple(values);
+        _commander->SendTuple(this->_taskIndex, values);
 	}
 }
 
 }
 }
-
-#endif

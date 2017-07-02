@@ -41,7 +41,8 @@ namespace meshy {
     typedef EPollStream TcpStream;
 #elif defined(OS_WIN32)
     typedef IOCPServer TcpServer;
-    typedef WSAConnection TcpConnection;
+    //typedef WSAConnection TcpConnection;
+#define TcpConnection WSAConnection
     typedef IOCPClient TcpClient;
     typedef IOCPStream TcpStream;
 #endif

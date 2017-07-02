@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{4D5EF334-E308-4381-BADC-11B1CFFE0990}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>meshy</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;OS_WIN32;MESHY_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\..\deps\logging\include;$(ProjectDir)..\..\..\..\include;$(ProjectDir)..\..\..\..\deps\meshy\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level1</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;OS_WIN32;MESHY_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\..\deps\logging\include;$(ProjectDir)..\..\..\..\include;$(ProjectDir)..\..\..\..\deps\meshy\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../x64/Release/</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\deps\meshy\src\EventQueueLoop.cpp" />
+    <ClCompile Include="..\..\..\..\deps\meshy\src\http\HttpConnection.cpp" />
+    <ClCompile Include="..\..\..\..\deps\meshy\src\http\HttpContext.cpp" />
+    <ClCompile Include="..\..\..\..\deps\meshy\src\http\HttpRequest.cpp" />
+    <ClCompile Include="..\..\..\..\deps\meshy\src\http\HttpResponse.cpp" />
+    <ClCompile Include="..\..\..\..\deps\meshy\src\http\HttpServer.cpp" />
+    <ClCompile Include="..\..\..\..\deps\meshy\src\iocp\IOCPConnection.cpp" />
+    <ClCompile Include="..\..\..\..\deps\meshy\src\iocp\IOCPLoop.cpp" />
+    <ClCompile Include="..\..\..\..\deps\meshy\src\iocp\IOCPServer.cpp" />
+    <ClCompile Include="..\..\..\..\deps\meshy\src\iocp\IOCPStream.cpp" />
+    <ClCompile Include="..\..\..\..\deps\meshy\src\Net.cpp" />
+    <ClCompile Include="..\..\..\..\deps\meshy\src\PackageDataSink.cpp" />
+    <ClCompile Include="..\..\..\..\deps\meshy\src\utils\Common_Utils.cpp" />
+    <ClCompile Include="..\..\..\..\deps\meshy\src\utils\logger.cpp" />
+    <ClCompile Include="..\..\..\..\deps\meshy\src\utils\String.cpp" />
+    <ClCompile Include="..\..\..\..\deps\meshy\src\utils\Thread_Pool.cpp" />
+    <ClCompile Include="..\..\..\..\deps\meshy\src\utils\time.cpp" />
+    <ClCompile Include="..\..\..\..\deps\meshy\src\win32\Net_Win32.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\deps\meshy\include\ByteArray.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\DataSink.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\EventQueue.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\EventQueueLoop.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\Export.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\iocp\IOCPClient.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\iocp\IOCPConnection.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\iocp\IOCPLoop.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\iocp\IOCPServer.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\iocp\IOCPStream.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\IoLoop.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\Loop.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\Meshy.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\Net.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\PackageDataSink.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\rest\HttpClient.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\rest\HttpConnection.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\rest\HttpContext.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\rest\HttpDataSink.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\rest\HttpRequest.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\rest\HttpResponse.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\rest\HttpServer.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\utils\Common_Utils.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\utils\ConcurrentQueue.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\utils\Exendian.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\utils\String.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\utils\Thread_Pool.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\utils\Time.h" />
+    <ClInclude Include="..\..\..\..\deps\meshy\include\win32\Net_Win32.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\deps\meshy\include\template\utils\thread_pool.tcc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

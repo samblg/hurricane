@@ -17,7 +17,6 @@
  */
 
 #include "hurricane/Hurricane.h"
-#if ( HURRICANE_MODE == HURRICANE_RELEASE ) 
 
 #include "hurricane/message/SupervisorCommander.h"
 #include "hurricane/base/ByteArray.h"
@@ -80,7 +79,7 @@ namespace hurricane {
 
 			base::Variants args = { _supervisorName, _taskIndex };
 			for ( const base::Value& value : values ) {
-				args.pop_back(value.ToVariant());
+				args.push_back(value.ToVariant());
 			}
 
 			Command command(Command::Type::Data, args);
@@ -100,7 +99,7 @@ namespace hurricane {
 			std::cout << command.GetType() << std::endl;
 			std::cout << command.GetArg(0).GetStringValue() << std::endl;
 		}
-		void SupervisorCommander::RandomDestination(const std::string srcType, srcIndex, 
+		void SupervisorCommander::RandomDestination(const std::string srcType, int32_t srcIndex, 
 			std::string * host, int * port, int* destIndex)
 		{
 			Connect();
@@ -152,5 +151,3 @@ namespace hurricane {
 		}
 	}
 }
-
-#endif

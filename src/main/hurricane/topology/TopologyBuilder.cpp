@@ -16,7 +16,6 @@
  * limitations under the license.
  */
 #include "hurricane/Hurricane.h"
-#if ( HURRICANE_MODE == HURRICANE_RELEASE ) 
 
 #include "hurricane/topology/TopologyBuilder.h"
 #include "hurricane/spout/ISpout.h"
@@ -53,5 +52,3 @@ SimpleTopology* TopologyBuilder::Build() {
 
 }
 }
-
-#endif

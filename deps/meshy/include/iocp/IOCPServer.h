@@ -34,6 +34,7 @@ namespace meshy {
 
 		int32_t Bind(const std::string host, int32_t port);
 
+        int32_t Listen(const std::string& host, int32_t port, int32_t backlog = 20);
 		int32_t Listen(DataSink* dataSink, int32_t backlog = 20);
 
 		WSAConnectionPtr Accept(int32_t listenfd) override;
@@ -46,11 +47,17 @@ namespace meshy {
 
 		HANDLE GetCompletionPort() const;
 
+        virtual void OnConnectIndication(ConnectIndicationHandler handler);
+        virtual void OnDisconnectIndication(DisconnectIndicationHandler handler);
+
 	private:
 		HANDLE _completionPort;
 		NativeSocket _socket;
 		DataSink* _dataSink;
 		std::vector<IOCP::OperationDataPtr> _ioOperationDataGroup;
+
+        ConnectIndicationHandler _connectHandler;
+        DisconnectIndicationHandler _disconnectHandler;
 	};
 }
 #endif //NET_FRAMEWORK_IOCPSERVER_H

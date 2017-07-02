@@ -19,7 +19,7 @@
 #pragma once
 
 #include "hurricane/base/NetAddress.h"
-#include "temp/NetConnector.h"
+#include "hurricane/base/NetConnector.h"
 
 namespace hurricane {
 	namespace message {

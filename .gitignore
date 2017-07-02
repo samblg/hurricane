@@ -47,3 +47,5 @@ Hurricane.config
 *.includes
 *.so
 *timestamp*.txt
+
+deps/meshy/msvc/**/x64

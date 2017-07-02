@@ -70,6 +70,15 @@ namespace meshy {
 		return 0;
 	}
 
+    int32_t IOCPServer::Listen(const std::string& host, int32_t port, int32_t backlog) {
+        int32_t errorCode = Bind(host, port);
+        if ( errorCode != 0 ) {
+            return errorCode;
+        }
+
+        return Listen(nullptr, backlog);
+    }
+
 	int32_t IOCPServer::Listen(DataSink* dataSink, int32_t backlog) {
 		int32_t listenfd = GetNativeSocket();
 		int32_t errorCode = listen(listenfd, backlog);
@@ -81,6 +90,8 @@ namespace meshy {
 
 		this->SetDataSink(dataSink);
 		IOCPLoop::Get()->AddServer(this);
+
+        return 0;
 	}
 
 	WSAConnectionPtr IOCPServer::Accept(int32_t listenfd)
@@ -133,4 +144,13 @@ namespace meshy {
 	{
 		return _completionPort;
 	}
+
+
+    void IOCPServer::OnConnectIndication(ConnectIndicationHandler handler) {
+        this->_connectHandler = handler;
+
+    }
+    void IOCPServer::OnDisconnectIndication(DisconnectIndicationHandler handler) {
+        this->_disconnectHandler = handler;
+    }
 }

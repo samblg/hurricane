@@ -17,7 +17,6 @@
  */
 
 #include "hurricane/Hurricane.h"
-#if ( HURRICANE_MODE == HURRICANE_RELEASE ) 
 
 #include "hurricane/base/NetListener.h"
 #include "eventqueue.h"
@@ -36,11 +35,9 @@ void NetListener::StartListen()
     meshy::IoLoop::Get()->Start();
 
     _server.Listen(_host.GetHost(), _host.GetPort());
-    _server.OnConnectIndication([=](meshy::IStream* stream) {
-        stream->OnDataIndication([stream](const char* buf, int64_t size) mutable {
-            _receiver(stream, buffer, length);
+    _server.OnConnectIndication([this](meshy::IStream* stream) {
+        stream->OnDataIndication([stream, this](const char* buf, int64_t size) mutable {
+            this->_receiver(dynamic_cast<meshy::TcpStream*>(stream), buf, size);
         });
     });
 }
-
-#endif

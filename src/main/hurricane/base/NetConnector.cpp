@@ -17,9 +17,8 @@
  */
 
 #include "hurricane/Hurricane.h"
-#if ( HURRICANE_MODE == HURRICANE_RELEASE ) 
-
 #include "hurricane/base/NetConnector.h"
+#include "Meshy.h"
 
 #include <thread>
 #include <chrono>
@@ -49,5 +48,3 @@ int32_t NetConnector::SendAndReceive(const char * buffer, int32_t size, char* re
 
     return resultSize;
 }
-
-#endif

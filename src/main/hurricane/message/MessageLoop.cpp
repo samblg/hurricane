@@ -16,7 +16,6 @@
  * limitations under the license.
  */
 #include "hurricane/Hurricane.h"
-#if ( HURRICANE_MODE == HURRICANE_RELEASE ) 
 
 #include "hurricane/message/MessageLoop.h"
 #include "hurricane/message/Message.h"
@@ -62,5 +61,3 @@ namespace message {
 	}
 }
 }
-
-#endif

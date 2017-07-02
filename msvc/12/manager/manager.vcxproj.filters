@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="源文件\hurricane">
+      <UniqueIdentifier>{77e12290-34a3-4373-ac2b-1d8435dd388f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\hurricane\base">
+      <UniqueIdentifier>{1bd497b5-5876-4db0-a90b-576fa2fef765}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\hurricane\bolt">
+      <UniqueIdentifier>{d11c8059-0afe-406e-a74a-f589d0aeb6c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\hurricane\message">
+      <UniqueIdentifier>{15967b7f-866c-48f9-93ea-329b15ae0d8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\hurricane\spout">
+      <UniqueIdentifier>{672fcde2-c5f3-4556-856e-19323aefc3e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\hurricane\topology">
+      <UniqueIdentifier>{ab70078c-e867-4613-b3c1-a94f1f4416db}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\main\hurricane\Hurricane.cpp">
+      <Filter>源文件\hurricane</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\main\hurricane\SupervisorLauncher.cpp">
+      <Filter>源文件\hurricane</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\main\hurricane\topology\SimpleTopology.cpp">
+      <Filter>源文件\hurricane\topology</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\main\hurricane\topology\TopologyBuilder.cpp">
+      <Filter>源文件\hurricane\topology</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\main\hurricane\spout\SpoutExecutor.cpp">
+      <Filter>源文件\hurricane\spout</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\main\hurricane\spout\SpoutOutputCollector.cpp">
+      <Filter>源文件\hurricane\spout</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\main\hurricane\bolt\BoltExecutor.cpp">
+      <Filter>源文件\hurricane\bolt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\main\hurricane\bolt\BoltOutputCollector.cpp">
+      <Filter>源文件\hurricane\bolt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\main\hurricane\base\DataPackage.cpp">
+      <Filter>源文件\hurricane\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\main\hurricane\base\NetConnector.cpp">
+      <Filter>源文件\hurricane\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\main\hurricane\base\NetListener.cpp">
+      <Filter>源文件\hurricane\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\main\hurricane\base\OutputCollector.cpp">
+      <Filter>源文件\hurricane\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\main\hurricane\message\CommandDispatcher.cpp">
+      <Filter>源文件\hurricane\message</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\main\hurricane\message\MessageLoop.cpp">
+      <Filter>源文件\hurricane\message</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\main\hurricane\message\NimbusCommander.cpp">
+      <Filter>源文件\hurricane\message</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\main\hurricane\message\SupervisorCommander.cpp">
+      <Filter>源文件\hurricane\message</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\main\hurricane\base\Values.cpp">
+      <Filter>源文件\hurricane\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\main\hurricane\topology\TopologyInstance.cpp">
+      <Filter>源文件\hurricane\topology</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

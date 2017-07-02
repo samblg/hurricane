@@ -40,8 +40,10 @@ namespace meshy {
             _events = events;
         }
 
-        void Connect(const std::string& host, int32_t port) override;
-        static IOCPClientPtr Connect(const std::string& ip, int32_t port, DataSink* dataSink);
+        void Connect(const std::string& host, int32_t port) override {}
+        static IOCPClientPtr Connect(const std::string& ip, int32_t port, DataSink* dataSink) {
+            return IOCPClientPtr();
+        }
 
     private:
         IOCPClient(NativeSocket clientSocket, NativeSocketAddress clientAddress) :

@@ -25,8 +25,16 @@
 #include <initializer_list>
 #include <iostream>
 
+#ifdef WIN32
+#define NOEXCEPT
+#else
+#define NOEXCEPT noexcept
+#endif // NOEXCEPT
+
 namespace hurricane {
     namespace base {
+
+        class Variant;
 
         class TypeMismatchException : std::exception {
         public:
@@ -34,7 +42,7 @@ namespace hurricane {
                 _message(message) {}
 
 
-            const char* what() const noexcept override {
+            const char* what() const NOEXCEPT override{
                 return _message.c_str();
             }
 
@@ -45,6 +53,7 @@ namespace hurricane {
         class Value {
         public:
             enum class Type {
+                Invalid,
                 Boolean,
                 Character,
                 Int8,
@@ -66,6 +75,9 @@ namespace hurricane {
                 float floatValue;
                 double doubleValue;
             };
+
+            Value() : _type(Type::Invalid) {
+            }
 
             Value(bool value) : _type(Type::Boolean) {
                 _value.booleanValue = value;
@@ -159,6 +171,9 @@ namespace hurricane {
 
                 return _stringValue;
             }
+
+            Variant ToVariant() const;
+            static Value FromVariant(const Variant& variant);
 
         private:
             Type _type;

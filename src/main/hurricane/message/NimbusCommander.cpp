@@ -17,7 +17,6 @@
  */
 
 #include "hurricane/Hurricane.h"
-#if ( HURRICANE_MODE == HURRICANE_RELEASE ) 
 
 #include "hurricane/message/SupervisorCommander.h"
 #include "hurricane/base/ByteArray.h"
@@ -82,5 +81,3 @@ namespace hurricane {
 
 	}
 }
-
-#endif

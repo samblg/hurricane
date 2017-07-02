@@ -63,8 +63,12 @@ namespace hurricane {
                 return _groupField;
             }
 
-            virtual void RandomDestination() = 0;
-            virtual void GroupDestination() = 0;
+            int GetStrategy() const {
+                return _strategy;
+            }
+
+            virtual void RandomDestination() {};
+            virtual void GroupDestination() {};
 
         private:
             std::string _src;

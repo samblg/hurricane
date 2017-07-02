@@ -19,7 +19,7 @@
 #pragma once
 
 #include "hurricane/base/NetAddress.h"
-#include "temp/NetConnector.h"
+#include "hurricane/base/NetConnector.h"
 #include "hurricane/base/Values.h"
 #include <string>
 
@@ -42,7 +42,7 @@ namespace hurricane {
 			void Join();
 			void Alive();
 			void SendTuple(int taskIndex, const base::Values& values);
-			void RandomDestination(const std::string srcType, srcIndex,
+			void RandomDestination(const std::string srcType, int32_t srcIndex,
 				std::string * host, int * port, int* destIndex);
 			void GroupDestination(const std::string srcType, int srcIndex,
 				std::string * host, int * port, int* destIndex,
@@ -55,6 +55,7 @@ namespace hurricane {
 			hurricane::base::NetAddress _nimbusAddress;
 			std::string _supervisorName;
 			std::shared_ptr<NetConnector> _connector;
+            int32_t _taskIndex;
 		};
 	}
 }

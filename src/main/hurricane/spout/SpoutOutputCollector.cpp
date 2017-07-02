@@ -16,23 +16,24 @@
  * limitations under the license.
  */
 #include "hurricane/Hurricane.h"
-#if ( HURRICANE_MODE == HURRICANE_RELEASE ) 
 
-#include "SpoutOutputCollector.h"
+#include "hurricane/spout/SpoutOutputCollector.h"
 #include "hurricane/spout/SpoutExecutor.h"
 
-void hurricane::spout::SpoutOutputCollector::RandomDestination()
-{
-	_executor->RandomDestination(this);
-}
+namespace hurricane {
+    namespace spout {
+        void SpoutOutputCollector::RandomDestination()
+        {
+            _executor->RandomDestination(this);
+        }
 
-void hurricane::spout::SpoutOutputCollector::GroupDestination()
-{
-	_executor->GroupDestination(this, GetFieldIndex());
-}
+        void SpoutOutputCollector::GroupDestination()
+        {
+            _executor->GroupDestination(this, GetGroupField());
+        }
 
-void hurricane::spout::SpoutOutputCollector::Emit(const base::Values & values, int msgId)
-{
+        void SpoutOutputCollector::Emit(const base::Values & values, int msgId)
+        {
+        }
+    }
 }
-
-#endif

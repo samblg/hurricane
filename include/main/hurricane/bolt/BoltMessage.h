@@ -25,7 +25,7 @@ namespace hurricane {
 
     namespace bolt {
 
-        class BoltMessage : public message::Message{
+        class BoltMessage : public hurricane::message::Message{
         public:
             struct MessageType {
                 enum {
@@ -34,7 +34,7 @@ namespace hurricane {
             };
 
             BoltMessage(const base::Values& values) : 
-                message::Message(MessageType::Data), _values(values) {
+                hurricane::message::Message(MessageType::Data), _values(values) {
             }
 
             const base::Values& GetValues() const {

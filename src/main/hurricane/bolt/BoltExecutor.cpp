@@ -17,38 +17,39 @@
  */
 
 #include "hurricane/Hurricane.h"
-#if ( HURRICANE_MODE == HURRICANE_RELEASE ) 
 
 #include "hurricane/bolt/BoltExecutor.h"
 #include "hurricane/bolt/BoltMessage.h"
 #include "hurricane/message/MessageLoop.h"
-#include "hurricane/base/OutputCollector.h"
+#include "hurricane/bolt/BoltOutputCollector.h"
 #include "hurricane/message/SupervisorCommander.h"
 
 #include <iostream>
 #include <thread>
 #include <chrono>
 
+#ifdef WIN32
+#ifdef PostMessage
+#undef PostMessage
+#endif // PostMessage
+#endif // WIN32
+
 namespace hurricane {
 
     namespace bolt {
         BoltExecutor::BoltExecutor() : base::Executor<bolt::IBolt>() {
-            MessageMap(BoltMessage::MessageType::Data,
+            _messageLoop.MessageMap(BoltMessage::MessageType::Data,
                 this, &BoltExecutor::OnData);
         }
 
         void BoltExecutor::SendData(const base::Values& values)
         {
-            while ( !_messageLoop ) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-            }
-
-            _messageLoop->PostMessage(new BoltMessage(values));
+            _messageLoop.PostMessage(new BoltMessage(values));
         }
 
-        void BoltExecutor::OnData(message::Message* message)
+        void BoltExecutor::OnData(hurricane::message::Message* message) {
             BoltMessage* boltMessage = dynamic_cast<BoltMessage*>(message);
-            task->Execute(boltMessage->GetValues());
+            _task->Execute(boltMessage->GetValues());
 
             delete message;
         }
@@ -57,13 +58,12 @@ namespace hurricane {
         {
             std::cout << "Start Bolt Task" << std::endl;
 
-            base::OutputCollector outputCollector(GetTaskName());
-            if ( task->getStrategy == Task::Strategy::Global ) {
-                outputCollector = base::OutputCollector(GetTaskName(), Task::Strategy::Global);
+            if ( _task->GetStrategy() == base::ITask::Strategy::Global ) {
+                BoltOutputCollector outputCollector(GetTaskName(), base::OutputCollector::Strategy::Global, this);
                 RandomDestination(&outputCollector);
-            })
 
-            _task->Prepare(outputCollector);
+                _task->Prepare(outputCollector);
+            }
         }
 
         void BoltExecutor::OnStop()
@@ -101,5 +101,3 @@ namespace hurricane {
     }
 
 }
-
-#endif

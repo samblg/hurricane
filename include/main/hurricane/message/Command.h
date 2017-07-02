@@ -21,7 +21,9 @@
 #include "hurricane/base/DataPackage.h"
 #include <memory>
 
-class TcpConnection;
+namespace meshy {
+    class TcpConnection;
+}
 
 namespace hurricane {
 	namespace message {
@@ -105,18 +107,18 @@ namespace hurricane {
 				return arg;
 			}
 
-			std::shared_ptr<TcpConnection> GetSrc() const {
+			std::shared_ptr<meshy::TcpConnection> GetSrc() const {
 				return _src;
 			}
 
-			void SetSrc(std::shared_ptr<TcpConnection> src) {
+            void SetSrc(std::shared_ptr<meshy::TcpConnection> src) {
 				_src = src;
 			}
 
 		private:
 			Command::Type::Values _type;
 			hurricane::base::Variants _args;
-			std::shared_ptr<TcpConnection> _src;
+            std::shared_ptr<meshy::TcpConnection> _src;
 		};
 	}
 }

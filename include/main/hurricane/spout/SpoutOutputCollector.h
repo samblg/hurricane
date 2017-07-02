@@ -21,9 +21,9 @@
 #include "hurricane/base/OutputCollector.h"
 #include "hurricane/base/Values.h"
 namespace hurricane {
-    class SpoutExecutor;
-
     namespace spout {
+        class SpoutExecutor;
+
         class SpoutOutputCollector : public base::OutputCollector {
         public:
             SpoutOutputCollector(const std::string& src, int strategy, SpoutExecutor* executor) :
