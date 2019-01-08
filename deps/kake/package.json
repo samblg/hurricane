@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "log4js": "latest",
+    "log4js": "1.1.1",
     "fibers": "latest",
     "pixl-xml": "latest",
     "uuid": "latest"
