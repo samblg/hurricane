@@ -9,10 +9,10 @@ endif
 all:
 	cd deps/logging/target/linux/x64/$(CONFIGURATION)/build;make install
 	cd deps/meshy/target/linux/x64/$(CONFIGURATION)/build;make install
-	cd target/linux/x64/$(HURRICANE_CONFIGURATION)/build;make install
-
+	cd target/linux/x64/$(HURRICANE_CONFIGURATION)/build;make 
+	cd src/sample/wordcount;make all 
 clean:
 	cd target/linux/x64/$(HURRICANE_CONFIGURATION)/build;make clean
 	cd deps/meshy/target/linux/x64/$(CONFIGURATION)/build;make clean
-	cd deps/logging/target/linux/x64/$(CONFIGURATION)/build;make clean
+	cd src/sample/wordcount;maka install
 
