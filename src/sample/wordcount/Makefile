@@ -7,12 +7,12 @@ HURRICANE_DEPS_MESHY_INC_PATH := $(HURRICANE_SRC_ROOT_PATH)/deps/meshy/include
 HURRICANE_DEPS_LOGGING_LIB_PATH := $(HURRICANE_SRC_ROOT_PATH)/deps/logging/target/linux/x64/Release/lib
 HURRICANE_DEPS_MESHY_LIB_PATH := $(HURRICANE_SRC_ROOT_PATH)/deps/meshy/target/linux/x64/Release/lib
 
-HURRICANE_SRC_SPOUT_PATH := $(HURRICANE_SRC_ROOT_PATH)/src/hurricane/spout/SpoutDeclarer.cpp
+HURRICANE_SRC_SPOUT_PATH := $(HURRICANE_SRC_ROOT_PATH)/src/hurricane/spout
 HURRICANE_SRC_SERVICE_PATH := $(HURRICANE_SRC_ROOT_PATH)/src/hurricane/service
 HURRICANE_SRC_ORDER_PATH := $(HURRICANE_SRC_ROOT_PATH)/src/hurricane/order
 HURRICANE_SRC_MESSAGE_PATH := $(HURRICANE_SRC_ROOT_PATH)/src/hurricane/message
-HURRICANE_SRC_COLLECTOR_PATH := $(HURRICANE_SRC_ROOT_PATH)/src/hurricane/collector/Output*
-HURRICANE_SRC_BOLT_PATH := $(HURRICANE_SRC_ROOT_PATH)/src/hurricane/bolt/BoltDeclarer*
+HURRICANE_SRC_COLLECTOR_PATH := $(HURRICANE_SRC_ROOT_PATH)/src/hurricane/collector
+HURRICANE_SRC_BOLT_PATH := $(HURRICANE_SRC_ROOT_PATH)/src/hurricane/bolt
 HURRICANE_SRC_BASE_PATH := $(HURRICANE_SRC_ROOT_PATH)/src/hurricane/base
 HURRICANE_SRC_UTIL_PATH := $(HURRICANE_SRC_ROOT_PATH)/src/hurricane/util
 HURRICANE_SRC_TOPOLOGY_PATH := $(HURRICANE_SRC_ROOT_PATH)/src/hurricane/topology
@@ -22,7 +22,7 @@ TOP := ..
 
 COMM_DIR := .
 
-SRC_DIR := $(TOP)/whoami $(HURRICANE_SRC_SQUARED_PATH) $(HURRICANE_SRC_SPOUT_PATH) $(HURRICANE_SRC_SERVICE_PATH) \
+SRC_DIR :=  $(HURRICANE_SRC_SQUARED_PATH) $(HURRICANE_SRC_SPOUT_PATH) $(HURRICANE_SRC_SERVICE_PATH) \
 			$(HURRICANE_SRC_ORDER_PATH) $(HURRICANE_SRC_MESSAGE_PATH) $(HURRICANE_SRC_COLLECTOR_PATH) \
 			$(HURRICANE_SRC_BOLT_PATH) $(HURRICANE_SRC_BASE_PATH) $(HURRICANE_SRC_UTIL_PATH) $(HURRICANE_SRC_TOPOLOGY_PATH) $(HURRICANE_SRC_TASK_PATH) 
 
@@ -40,14 +40,15 @@ DEBUG = 1
 
 #遍历多个dir,并搜索该dir下面的所有.cpp文件
 SRCS := $(foreach dir, $(SRC_DIR), $(wildcard $(dir)/*.cpp))
-
+SRCS += $(foreach dir, $(SRC_DIR), $(wildcard $(dir)/*.tcc))
+SRCS += $(MAIN_MANAGER_FILE_PATH)
 ## Libraries to include in shared object file
 
 LIBS := logging meshy pthread dl 
 
 ## Add driver-specific include directory to the search path
 
-CFLAGS += -std=c++11 -O2 -msse3 -mavx -fPIC -DNDEBUG
+CFLAGS += -std=c++11 -O2 -msse3 -mavx -fPIC -DNDEBUG -DUSE_KLOG
 
 INC_PATH += $(HURRICANE_INC_PATH) $(HURRICANE_DEPS_LOGGING_INC_PATH) $(HURRICANE_DEPS_MESHY_INC_PATH)
 
@@ -112,7 +113,7 @@ endif
 ## C的源文件
 CSRCS:=$(filter %.c %.C,$(SRCS))
 ## C++的源文件
-CPPSRCS:=$(filter %.cc %.CC %.cpp %.Cpp %.CPP,$(SRCS))
+CPPSRCS:=$(filter %.cc %.CC %.cpp %.Cpp %.CPP %.tcc, $(SRCS))
 
 ## 去除目录，只剩文件名和后缀，此时只需要把后缀修改成.o然后再加上一个目录，就是OBJS了
 SRCFILE:=$(notdir $(SRCS))
@@ -126,6 +127,7 @@ OBJS :=$(OBJS:.CC=.o)
 OBJS :=$(OBJS:.cpp=.o)
 OBJS :=$(OBJS:.Cpp=.o)
 OBJS :=$(OBJS:.CPP=.o)
+OBJS :=$(OBJS:.tcc=.o)
 #OBJS :=$(addprefix $(OBJDIR),$(OBJS))
 OBJS :=$(foreach file,$(SRCS),$(OBJDIR)$(basename $(notdir $(file))).o)
 
@@ -183,7 +185,7 @@ CC      = $(CROSS)gcc
 CPP     = $(CROSS)g++
 LD      = $(CROSS)g++
 AR      = $(CROSS)ar
-INSTALL = install  -m 644
+INSTALL = install  -m 777
 OBJDUMP = objdump
 RM      = -@rm -f
 
