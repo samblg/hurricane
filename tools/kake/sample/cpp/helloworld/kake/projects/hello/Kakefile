@@ -1,0 +1,24 @@
+'use strict';
+
+module.exports = {
+    name: 'hello',
+    version: '1.0.0',
+    type: 'cpp',
+    target: 'dynamic_library',
+    common: {
+        compiler: {
+            src: [
+                'src/hello/hello.cpp'
+            ],
+            includePaths: [
+                'include'
+            ]
+        },
+        linker: {
+        },
+        dependencies: {
+        }
+    },
+    options: {
+    }
+};

@@ -1,0 +1,25 @@
+'use strict';
+
+module.exports = {
+    name: 'hellocaller',
+    version: '1.0.0',
+    type: 'cpp',
+    target: 'executable',
+    common: {
+        compiler: {
+            src: [
+                'src/caller/caller.cpp'
+            ],
+            includePaths: [
+                'include'
+            ]
+        },
+        linker: {
+        },
+        dependencies: {
+            hello: 'latest'
+        }
+    },
+    options: {
+    }
+};
