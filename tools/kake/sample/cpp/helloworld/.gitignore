@@ -1,0 +1,3 @@
+kake/config/*.kake
+target/*
+!target/README.md

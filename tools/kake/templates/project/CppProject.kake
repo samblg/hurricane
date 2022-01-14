@@ -1,0 +1,26 @@
+'use strict';
+
+module.exports = {
+    name: '##ProjectName##',
+    version: '##ProjectVersion##',
+    type: 'cpp',
+    target: '##TargetType##',
+    // Common configurations
+    common: {
+        compiler: {
+            // Append source files here(support file and directory)
+            src: [
+            ],
+            // Append include paths
+            includePaths: [
+            ]
+        },
+        linker: {
+        },
+        dependencies: {
+        }
+    },
+    // Optional configurations
+    options: {
+    }
+};
