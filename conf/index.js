@@ -18,20 +18,28 @@
 
 'use strict';
 
+const path = require('path');
+
 module.exports = {
     president: {
         host: '127.0.0.1',
-        port: 8700
+        port: 8700,
+        configFile: './president.conf',
     },
     managers: [{
         host: '127.0.0.1',
-        port: 8701
+        port: 8701,
+        configFile: './manager-0.conf',
     }, {
         host: '127.0.0.1',
-        port: 8702
+        port: 8702,
+        configFile: './manager-1.conf',
     }],
 
     paths: {
-        logs: 'logs'
+        logs: './logs',
+        configs: './conf',
+        president: './bin/nimbus',
+        manager: './bin/supervisor',
     }
 }

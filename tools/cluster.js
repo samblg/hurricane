@@ -18,11 +18,68 @@
 
 'use strict'
 
-let config = require('../conf');
+const config = require('../conf');
+const path = require('path');
+const util = require('util');
+const child_process = require('child_process');
 
-let president = config.president;
-let managers = config.managers;
+function main() {
+    console.log('Starting president ...')
+    loadPresident();
 
-managers.forEach(manager => {
-    console.log(manager);
-});
+    console.log('Starting manager ...')
+    loadManagers();
+}
+
+function loadPresident() {
+    const paths = config.paths;
+    const president = config.president;
+
+    const presidentFilePath = getFilePath(paths.president);
+    const configFilePath = getFilePath(president.configFile);
+
+    const command = util.format('%s %s', presidentFilePath, configFilePath);
+    child_process.exec(command, (error, stdout, stderr) => {
+        if (error) {
+            console.error(error);
+
+            return;
+        }
+
+        console.log('President stdout:', stdout);
+        console.log('President stderr:', stderr);
+    });
+}
+
+function loadManagers() {
+    let managers = config.managers;
+    managers.forEach(manager => {
+        loadManager(manager);
+    });
+}
+
+function loadManager(managerConfig) {
+    const paths = config.paths;
+    const managerFilePath = getFilePath(paths.manager);
+    const configFilePath = getFilePath(managerConfig.configFile);
+
+    const command = util.format('%s %s', managerFilePath, configFilePath);
+    child_process.exec(command, (error, stdout, stderr) => {
+        if (error) {
+            console.error(error);
+
+            return;
+        }
+
+        console.log('Manager stdout:', stdout);
+        console.log('Manager stderr:', stderr);
+    });
+}
+
+function getFilePath(inputPath) {
+    return path.isAbsolute(inputPath) 
+        ? inputPath
+        : path.join(__dirname, inputPath);
+}
+
+main();
