@@ -1,0 +1,10 @@
+@ECHO OFF
+
+SETLOCAL
+
+SET "KAKE_HOME=%~dp0"
+SET "KAKE_SCRIPT=%KAKE_HOME%main.js"
+
+SET "NODE_EXE=node"
+
+"%NODE_EXE%" "%KAKE_SCRIPT%" %*

@@ -1,0 +1,16 @@
+'use strict';
+
+module.exports = {
+    name: '##SolutionName##',
+    version: '##SolutionVersion##',
+    type: 'solution',
+    basePath: '##BasePath##',
+    // Please add common configuration here
+    common: {
+        projects: [
+        ],
+    },
+    // Add options definition here
+    options: {
+    }
+};
