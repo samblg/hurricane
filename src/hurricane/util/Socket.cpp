@@ -17,6 +17,9 @@
 */
 
 #include "hurricane/util/Socket.h"
+#include <cstring>
+
+#define PACKAGE_HEADER_SIZE 4
 
 #ifdef WIN32
 #pragma comment(lib, "ws2_32.lib")
@@ -59,6 +62,12 @@ Socket::Socket() {
 #ifdef WIN32
     WSAInitializer::InitInstance();
 #endif
+        // 接收缓冲区
+    int nRecvBuf=32*1024;//设置为32K
+    setsockopt(_socket,SOL_SOCKET,SO_RCVBUF,(const char*)&nRecvBuf,sizeof(int));
+    //发送缓冲区
+    int nSendBuf=32*1024;//设置为32K
+    setsockopt(_socket,SOL_SOCKET,SO_SNDBUF,(const char*)&nSendBuf,sizeof(int));
 }
 
 Socket::~Socket() {
@@ -67,10 +76,22 @@ Socket::~Socket() {
 
 int32_t Socket::Send(const char* buf, size_t size) {
     struct sockaddr addr;
-    int32_t iSend = static_cast<int32_t>(sendto(_socket, buf, static_cast<int32_t>(size), 0, &addr, sizeof(addr)));
+    char *send_buf = new char[size + PACKAGE_HEADER_SIZE];
+
+    memcpy(send_buf, &size, PACKAGE_HEADER_SIZE);
+    memcpy(send_buf + PACKAGE_HEADER_SIZE, buf, size);
+
+    int32_t iSend = static_cast<int32_t>(sendto(_socket, send_buf, static_cast<int32_t>(size + PACKAGE_HEADER_SIZE), 0, &addr, sizeof(addr)));
+    delete [] send_buf;
+    send_buf = nullptr;
+    
     if ( iSend == SOCKET_ERROR )
     {
         throw SocketError(SocketError::Type::SendError, "send() Failed");
+    }
+    if ( iSend != size + PACKAGE_HEADER_SIZE )
+    {
+        throw SocketError(SocketError::Type::SendError, "send() data size not fit!");
     }
 
     return iSend;
@@ -88,13 +109,26 @@ void Socket::SendAsync(const char* buf, size_t size, SendCallback callback) {
 }
 
 int32_t Socket::Receive(char* buf, size_t size) {
-    int32_t iLen = static_cast<int32_t>(recv(_socket, buf, static_cast<int32_t>(size), 0));
+    int32_t iLen = 0;
+    char len_buf[PACKAGE_HEADER_SIZE] = {0};
+    do {
+        iLen += static_cast<int32_t>(recv(_socket, len_buf, static_cast<int32_t>(PACKAGE_HEADER_SIZE - iLen), 0));
+    } while (iLen < PACKAGE_HEADER_SIZE);
+    int32_t buf_size = 0;
+    memcpy(&buf_size, len_buf, PACKAGE_HEADER_SIZE);
+
+    iLen = 0;
+    do {
+        iLen += static_cast<int32_t>(recv(_socket, buf+iLen, static_cast<int32_t>(buf_size - iLen), 0));
+    } while (iLen < buf_size);
 
     if ( iLen == SOCKET_ERROR )
     {
         throw SocketError(SocketError::Type::RecvError, "recv() Failed");
     }
-
+    if (iLen != buf_size) {
+        throw SocketError(SocketError::Type::RecvError, "recv() Data not fit!");
+    }
     return iLen;
 }
 

@@ -64,7 +64,7 @@ Manager::Manager(const hurricane::util::Configuration& configuration) :
 
 void Manager::InitPresidentConnector()
 {
-    hurricane::base::NetAddress presidentAddress(_managerConfiguration->GetProperty(CONF_KEY_PRESIDENT_PORT),
+    hurricane::base::NetAddress presidentAddress(_managerConfiguration->GetProperty(CONF_KEY_PRESIDENT_HOST),
                                                  _managerConfiguration->GetIntegerProperty(CONF_KEY_PRESIDENT_PORT));
     _presidentConnector = new hurricane::util::NetConnector(presidentAddress);
     _presidentClient = new hurricane::message::CommandClient(_presidentConnector);
